@@ -1,11 +1,9 @@
 package com.dfyy.b2b.service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +14,7 @@ import com.dfyy.b2b.dao.FunctionDao;
 import com.dfyy.b2b.dao.SUserDao;
 import com.dfyy.b2b.dao.UserDao;
 import com.dfyy.b2b.dao.ZoneDao;
+import com.dfyy.b2b.util.PublicHelper;
 import com.dfyy.b2b.web.form.RetisterForm;
 
 @Service
@@ -49,28 +48,46 @@ public class UserService {
 			throw new RuntimeException("此手机号无效，请获取正确的验证码");
 		}
 
-		SUser suser = sUserDao.getUserByPhone(form.getPhone());
-		if(suser != null){
+		SUser suser1 = sUserDao.getUserByPhone(form.getPhone());
+		if (suser1 != null) {
 			throw new RuntimeException("该手机号已注册。");
 		}
 
 		String codeString = UUID.randomUUID().toString();
-		
-		//在种好地的用户表中创建用户
-		
-		//
+
+		// 在种好地的用户表中创建用户
+
+		SUser suser = new SUser();
+		suser.setId(codeString);
+		suser.setPhone(form.getPassword());
+		// suser.setPassword(form.getPassword());
+		suser.setAlias("");
+		suser.setAddress("");
+		suser.setThumbnail("");
+		suser.setPoint(0);
+		suser.setCurrency(0);
+		suser.setTime(new Date());
+		suser.setScoring(0.0);
+		suser.setTjcoin(0);
+		suser.setLevelID(1);
+
+		// 生成唯一推荐码
+		String code = PublicHelper.generateCode();
+		while (true) {
+			if (sUserDao.getUserByTjCode(code) == null) {
+				suser.setTjcode(code);
+				break;
+			}
+			code = PublicHelper.generateCode();
+		}
+
+		sUserDao.save(suser);
+
+		// 在b2b的用户表中创建用户
 		User user = new User();
 		user.setId(codeString);
 		user.setPhone(form.getPhone());
 		user.setPassword(form.getPassword());
-		// user.setAlias(alias);
-		// user.setAddress(dto.getAddress());
-		// user.setThumbnail(dto.getThumbnail());
-		// user.setPoint(0);
-		// user.setCurrency(0);
-		// user.setTime(new Date());
-		// user.setScoring(0.0);
-		// user.setTjcoin(0);
 		// user.setLevel(levelDao.findOne(1));
 		userDao.save(user);
 		return user;
