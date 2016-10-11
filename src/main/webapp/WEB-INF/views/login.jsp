@@ -6,9 +6,9 @@
 <jsp:include page="./includes/indexheader.jsp" />
 
 <div class="container">
-	<c:url value="/manager/j_spring_security_check" var="loginUrl" />
+	<c:url value="/provider/j_spring_security_check" var="loginUrl" />
 	<form id="login-form" action="${loginUrl}" class="form-signin" method="post">
-		<h2 class="form-signin-heading">管理员登录</h2>
+		<h2 class="form-signin-heading">用户登录</h2>
 		<c:if test="${param.error != null}">
 			<div class="alert alert-error">
 				登录失败：
@@ -19,22 +19,19 @@
 		</c:if>
 		<c:if test="${param.logout != null}">
 		</c:if>
-		<label for="username" class="sr-only">用户名：</label>
-		<input type="text" id="username" name="username" class="form-control" placeholder="输入用户名" required autofocus>
+		<label for="username" class="sr-only">手机号：</label>
+		<input type="text" id="username" name="username" class="form-control" placeholder="输入手机号" required autofocus>
 		<label for="password" class="sr-only">密码：</label>
 		<input type="password" id="password" name="password" class="form-control" placeholder="输入密码" required>
-		<label for="zone" class="sr-only">区域：</label> <select class="selectpicker" name="zone" id="zone">
-			<c:forEach items="${zones}" var="cate">
-				<option value="${cate.id}"><c:out value="${cate.name}" /></option>
-			</c:forEach>
-		</select>
-
+	
 		<div class="checkbox">
 			<label> <label class="checkbox"> <input type="checkbox" checked="checked"
 						name="_spring_security_remember_me">下次自动登录 </label>
 			</label>
 		</div>
 		<button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+		<label for="password" class="sr-only"></label>
+		<A href="register" class="pull-right">注册用户</A>
 	</form>
 
 </div>

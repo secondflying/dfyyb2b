@@ -10,9 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dfyy.b2b.bussiness.RegisterCode;
 import com.dfyy.b2b.bussiness.SUser;
 import com.dfyy.b2b.bussiness.User;
+import com.dfyy.b2b.bussiness.UserDoc;
 import com.dfyy.b2b.dao.FunctionDao;
 import com.dfyy.b2b.dao.SUserDao;
 import com.dfyy.b2b.dao.UserDao;
+import com.dfyy.b2b.dao.UserDocDao;
 import com.dfyy.b2b.dao.ZoneDao;
 import com.dfyy.b2b.util.PublicHelper;
 import com.dfyy.b2b.web.form.RetisterForm;
@@ -23,6 +25,9 @@ public class UserService {
 
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private UserDocDao docDao;
 
 	@Autowired
 	private SUserDao sUserDao;
@@ -88,6 +93,7 @@ public class UserService {
 		user.setId(codeString);
 		user.setPhone(form.getPhone());
 		user.setPassword(form.getPassword());
+		user.setStatus(0);
 		// user.setLevel(levelDao.findOne(1));
 		userDao.save(user);
 		return user;
@@ -100,6 +106,7 @@ public class UserService {
 
 	public User getById(String id) {
 		User admin = userDao.findOne(id);
+		admin.setDocs(docDao.getByUser(admin.getId()));
 		return admin;
 	}
 
@@ -107,5 +114,13 @@ public class UserService {
 		User admin = userDao.findOne(id);
 		admin.setStatus(-1);
 		userDao.save(admin);
+	}
+	
+	public void update(User user){
+		userDao.save(user);
+	}
+	
+	public void saveDoc(UserDoc doc){
+		docDao.save(doc);
 	}
 }

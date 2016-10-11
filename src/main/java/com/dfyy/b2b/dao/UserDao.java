@@ -12,10 +12,10 @@ import com.dfyy.b2b.bussiness.User;
 @Repository
 public interface UserDao extends CrudRepository<User, String>, JpaSpecificationExecutor<String> {
 
-	@Query("select u from User u where u.status != -1")
+	@Query("select u from User u left join fetch u.type left join fetch u.zone where u.status != -1")
 	public List<User> getAll(Pageable pageable);
 
-	@Query("select u from User u where u.phone=?1 and u.status != -1")
+	@Query("select u from User u left join fetch u.type left join fetch u.zone where u.phone=?1 and u.status != -1")
 	public User findByPhone(String name);
 
 	@Query("select count(u) from User u where u.status != -1")
