@@ -9,7 +9,7 @@
 
 <section class="well shadow">
 	<c:url var="perfectUrl" value="perfect" />
-	<form id="user" action="${perfectUrl}" method="post">
+	<form id="userform" action="${perfectUrl}" method="post">
 		<fieldset>
 			<legend>
 				用户信息

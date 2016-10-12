@@ -35,6 +35,16 @@ public class LoginController {
 	public String login(Model model) {
 		return "login";
 	}
+	
+	@RequestMapping("/mlogin")
+	public String mlogin(Model model) {
+		return "mlogin";
+	}
+	
+	@RequestMapping("/test")
+	public String test(Model model) {
+		return "test";
+	}
 
 	@RequestMapping("/register")
 	public String register(Model model) {

@@ -22,11 +22,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.dfyy.b2b.bussiness.User;
 import com.dfyy.b2b.bussiness.UserDoc;
 import com.dfyy.b2b.bussiness.UserType;
+import com.dfyy.b2b.dto.AttachmentDto;
 import com.dfyy.b2b.service.UserContext;
 import com.dfyy.b2b.service.UserService;
 import com.dfyy.b2b.service.UserTypeService;
+import com.dfyy.b2b.service.ZoneService;
 import com.dfyy.b2b.util.PublicConfig;
 import com.dfyy.b2b.util.PublicHelper;
+import com.dfyy.b2b.web.form.UserForm;
 @Controller
 @RequestMapping("/provider")
 public class ProInfoController {
@@ -37,6 +40,8 @@ public class ProInfoController {
 	private UserService userService;
 	@Autowired
 	private UserTypeService typeService;
+	@Autowired
+	private ZoneService zoneService;
 	
 	
 	@RequestMapping(value = "/proinfo/info",method=RequestMethod.GET)
@@ -68,18 +73,26 @@ public class ProInfoController {
 	}
 	
 	@RequestMapping(value = "/proinfo/perfect", method = RequestMethod.POST)
-	public String perfectUser(@ModelAttribute("user") User user) {
-		if (user != null) {
-			User u = userService.getById(user.getId());
-			user.setPhone(u.getPhone());
-			user.setPassword(u.getPassword());
-			user.setTime(new Date());
-			user.setStatus(0);
-			userService.update(user);
-			if(user.getDocs()!=null && user.getDocs().size()>0){
-				for (Iterator iterator = user.getDocs().iterator(); iterator.hasNext();) {
-					UserDoc doc = (UserDoc) iterator.next();
-					doc.setUid(user.getId());
+	public String perfectUser(@ModelAttribute("userform") UserForm userForm) {
+		if (userForm != null) {
+			User u = userService.getById(userForm.getId());
+			u.setAlias(userForm.getAlias());
+			u.setType(userForm.getType()==null?null:typeService.geTypeById(userForm.getType().getId()));
+			u.setAddress(userForm.getAddress());
+			u.setZipcode(userForm.getZipcode());
+			u.setContacts(userForm.getContacts());
+			u.setX(userForm.getX());
+			u.setY(userForm.getY());
+			u.setZone(userForm.getZone()==null?null:userForm.getZone());			
+			u.setTime(new Date());
+			u.setStatus(0);
+			userService.update(u);
+			if(userForm.getDocs()!=null && userForm.getDocs().size()>0){
+				for (Iterator iterator = userForm.getDocs().iterator(); iterator.hasNext();) {
+					AttachmentDto dto = (AttachmentDto) iterator.next();
+					UserDoc doc = new UserDoc();
+					doc.setUid(userForm.getId());
+					doc.setUrl(dto.getUrl());
 					doc.setStatus(0);
 					userService.saveDoc(doc);
 				}

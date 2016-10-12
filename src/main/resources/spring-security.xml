@@ -19,7 +19,7 @@
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/login/*" access="permitAll" />
 		<intercept-url pattern="/logout" access="permitAll" />
-		<intercept-url pattern="/**" access="hasRole('ADMIN')" />
+		<intercept-url pattern="/**" access="hasRole('PROVIDER')" />
 		
 		<access-denied-handler error-page="/errors/403" />
 		<form-login login-page="/login" login-processing-url="/provider/j_spring_security_check"
@@ -32,6 +32,36 @@
 		<remember-me key="dfyy2b2" token-validity-seconds="86400"
 			user-service-ref="b2bUserDetailsService" />
 	</http>
+	
+	<http pattern="/manager/**" auto-config="true" use-expressions="true"
+		authentication-manager-ref="mauthenticationManager">
+		<intercept-url pattern="/" access="permitAll" />
+		<intercept-url pattern="/mlogin/*" access="permitAll" />
+		<intercept-url pattern="/mlogout" access="permitAll" />
+		<intercept-url pattern="/test" access="permitAll" />
+		<intercept-url pattern="/**" access="hasRole('ADMIN')" />
+		
+		<access-denied-handler error-page="/errors/403" />
+		<form-login login-page="/mlogin/form" login-processing-url="/manager/j_spring_security_check"
+			username-parameter="username" password-parameter="password"
+			authentication-failure-url="/mlogin/form?error" default-target-url="/test" />
+
+		<logout logout-url="/manager/j_spring_security_logout"
+			logout-success-url="/mlogin/form?logout" />
+
+		<remember-me key="dfyy2b2admin" token-validity-seconds="86400"
+			user-service-ref="adminDetailsService" />
+	</http>
+
+	<authentication-manager id="mauthenticationManager">
+		<authentication-provider ref="adminAuthenticationProvider" />
+	</authentication-manager>
+
+	<beans:bean id="adminAuthenticationProvider"
+		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="adminDetailsService" />
+		<beans:property name="hideUserNotFoundExceptions" value="false" />
+	</beans:bean>
 
 	<authentication-manager id="authenticationManager">
 		<authentication-provider ref="b2bAuthenticationProvider" />

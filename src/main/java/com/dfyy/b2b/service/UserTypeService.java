@@ -23,4 +23,8 @@ public class UserTypeService {
 	public List<UserType> getProvider(){
 		return dao.getProviders();
 	}
+	
+	public UserType geTypeById(int id){
+		return dao.findOne(id);
+	}
 }
