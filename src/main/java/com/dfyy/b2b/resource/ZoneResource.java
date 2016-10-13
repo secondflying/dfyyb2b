@@ -12,8 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dfyy.b2b.bussiness.Zone;
+import com.dfyy.b2b.bussiness.CommodityType;
 import com.dfyy.b2b.dto.ZoneResult;
+import com.dfyy.b2b.service.CommodityService;
 import com.dfyy.b2b.service.ZoneService;
 
 @Component
@@ -23,12 +24,15 @@ public class ZoneResource {
 	@Autowired
 	private ZoneService service;
 
+	@Autowired
+	private CommodityService commodityService;
+
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@GET
 	@Produces("application/json;charset=UTF-8")
-	public List<Zone> getAll() {
-		return service.getAll();
+	public List<CommodityType> getAll() {
+		return commodityService.getTreeCommodityType();
 	}
 
 	@GET

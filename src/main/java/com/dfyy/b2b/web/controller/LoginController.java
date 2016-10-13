@@ -62,20 +62,20 @@ public class LoginController {
 
 		String code = PublicHelper.game(4);
 
-		// 为1时默认用互亿发送
-		if (1 == 1) {
-			if (n % 2 == 0) {
-				smsService.sendsms(phone, code);
-			} else {
-				smsService.sendsms2(phone, code);
-			}
-		} else {
-			if (n % 2 == 0) {
-				smsService.sendsms2(phone, code);
-			} else {
-				smsService.sendsms(phone, code);
-			}
-		}
+//		// 为1时默认用互亿发送
+//		if (1 == 1) {
+//			if (n % 2 == 0) {
+//				smsService.sendsms(phone, code);
+//			} else {
+//				smsService.sendsms2(phone, code);
+//			}
+//		} else {
+//			if (n % 2 == 0) {
+//				smsService.sendsms2(phone, code);
+//			} else {
+//				smsService.sendsms(phone, code);
+//			}
+//		}
 
 		// 将手机号和验证码存到数据库，用于
 		codeService.add(phone, code);
