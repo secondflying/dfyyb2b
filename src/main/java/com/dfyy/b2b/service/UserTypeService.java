@@ -16,14 +16,27 @@ public class UserTypeService {
 	@Autowired
 	private UserTypeDao dao;
 	
+	/**
+	 * 获取所有用户类型
+	 * @return
+	 */
 	public List<UserType> getAll(){
 		return dao.getAll();
 	}
 	
+	/**
+	 * 获取所有供应商用户类型
+	 * @return
+	 */
 	public List<UserType> getProvider(){
 		return dao.getProviders();
 	}
 	
+	/**
+	 * 根据id获取用户类型
+	 * @param id
+	 * @return
+	 */
 	public UserType geTypeById(int id){
 		return dao.findOne(id);
 	}

@@ -21,9 +21,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.dfyy.b2b.bussiness.User;
 import com.dfyy.b2b.bussiness.UserDoc;
+import com.dfyy.b2b.bussiness.UserReview;
 import com.dfyy.b2b.bussiness.UserType;
 import com.dfyy.b2b.dto.AttachmentDto;
 import com.dfyy.b2b.service.UserContext;
+import com.dfyy.b2b.service.UserReviewService;
 import com.dfyy.b2b.service.UserService;
 import com.dfyy.b2b.service.UserTypeService;
 import com.dfyy.b2b.service.ZoneService;
@@ -42,6 +44,8 @@ public class ProInfoController {
 	private UserTypeService typeService;
 	@Autowired
 	private ZoneService zoneService;
+	@Autowired
+	private UserReviewService reviewService;
 	
 	
 	@RequestMapping(value = "/proinfo/info",method=RequestMethod.GET)
@@ -58,6 +62,10 @@ public class ProInfoController {
 		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "providers/small");
 		model.addAttribute("user", user);
 		model.addAttribute("size", size);
+		if(user.getStatus()==2){
+			UserReview userReview = reviewService.getByUid(user.getId());
+			model.addAttribute("review", userReview);
+		}
 		return "proinfo/info";
 	}
 	
@@ -100,6 +108,54 @@ public class ProInfoController {
 			return "redirect:info";
 		} else {
 			return "proinfo/perfect";
+		}
+	}
+	
+	@RequestMapping(value = "/proinfo/edit",method=RequestMethod.GET)
+	public String edit(Model model){
+		User user = userContext.getCurrentUser();
+		user = userService.getById(user.getId());
+		List<UserType> types = typeService.getProvider();
+		model.addAttribute("user", user);
+		model.addAttribute("types", types);
+		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "providers/small");
+		return "proinfo/edit";
+	}
+	
+	@RequestMapping(value = "/proinfo/edit", method = RequestMethod.POST)
+	public String editUser(@ModelAttribute("userform") UserForm userForm) {
+		if (userForm != null) {
+			User u = userService.getById(userForm.getId());
+			if(u.getDocs()!=null && u.getDocs().size()>0){
+				for (Iterator iterator = u.getDocs().iterator(); iterator.hasNext();) {
+					UserDoc doc = (UserDoc) iterator.next();
+					userService.deleteDoc(doc.getId());
+				}
+			}
+			u.setAlias(userForm.getAlias());
+			u.setType(userForm.getType()==null?null:typeService.geTypeById(userForm.getType().getId()));
+			u.setAddress(userForm.getAddress());
+			u.setZipcode(userForm.getZipcode());
+			u.setContacts(userForm.getContacts());
+			u.setX(userForm.getX());
+			u.setY(userForm.getY());
+			u.setZone(userForm.getZone()==null?null:userForm.getZone());			
+			u.setTime(new Date());
+			u.setStatus(0);
+			userService.update(u);
+			if(userForm.getDocs()!=null && userForm.getDocs().size()>0){
+				for (Iterator iterator = userForm.getDocs().iterator(); iterator.hasNext();) {
+					AttachmentDto dto = (AttachmentDto) iterator.next();
+					UserDoc doc = new UserDoc();
+					doc.setUid(userForm.getId());
+					doc.setUrl(dto.getUrl());
+					doc.setStatus(0);
+					userService.saveDoc(doc);
+				}
+			}
+			return "redirect:info";
+		} else {
+			return "proinfo/edit";
 		}
 	}
 	

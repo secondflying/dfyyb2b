@@ -4,15 +4,20 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <c:set var="pageTitle" value="用户信息" scope="request" />
-<jsp:include page="../includes/proheader.jsp" />
-
+<jsp:include page="../includes/mheader.jsp" />
+<div class="navbar">
+	<div class="navbar-inner">
+		<ul class="nav">
+			<c:url var="infoUrl" value="formal" />
+			<li class="active"><a href="${infoUrl}">正式用户</a></li>
+			<c:url var="infoUrl2" value="informal" />
+			<li class=""><a href="${infoUrl2}">待审核用户</a></li>
+		</ul>
+	</div>
+</div>
 <section class="content-wrap">
 	<div class="container">
-		<c:if test="${user.status==2 }">
-			<div class="alert alert-error">
-			  未能通过用户审核,原因如下：${review.opinion }。可编辑后继续提交审核。时间：${review.time }
-			</div>
-		</c:if>
+		
 		<div class="row">
 			<div class="column span8">
 				<div class="well">
@@ -42,12 +47,7 @@
 					<p class="muted">地址：${user.address }</p>
 					<p class="muted">邮编：${user.zipcode }</p>
 					<p class="muted">区域：${user.zone.name }</p>
-					<c:if test="${user.status==1 }">
-						<p class="text-success">审核通过</p>
-					</c:if>
-					<c:if test="${user.status==0 }">
-						<p class="text-warning">待审核</p>
-					</c:if>
+					<p class="text-success">审核通过</p>
 				</div>
 			</div>
 		</div>

@@ -17,6 +17,12 @@ public class RegisterCodeService {
 	@Autowired
 	private RegisterCodeDao dao;
 
+	/**
+	 * 记录一个验证码
+	 * @param phone
+	 * @param code
+	 * @return
+	 */
 	public RegisterCode add(String phone, String code) {
 
 		RegisterCode rc = dao.findByPhoneAndCode(phone, code);
@@ -33,10 +39,21 @@ public class RegisterCodeService {
 		return rc;
 	}
 	
+	/**
+	 * 根据手机号获取验证码
+	 * @param phone
+	 * @return
+	 */
 	public List<RegisterCode> findByPhone(String phone) {
 		return dao.findByPhone(phone);
 	}
 
+	/**
+	 * 验证
+	 * @param phone
+	 * @param code
+	 * @return
+	 */
 	public RegisterCode findByPhoneAndCode(String phone, String code) {
 		return dao.findByPhoneAndCode(phone, code);
 	}

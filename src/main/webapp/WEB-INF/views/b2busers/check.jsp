@@ -3,16 +3,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<c:set var="pageTitle" value="用户信息" scope="request" />
-<jsp:include page="../includes/proheader.jsp" />
-
+<c:set var="pageTitle" value="用户信息审查" scope="request" />
+<jsp:include page="../includes/mheader.jsp" />
+<div class="navbar">
+	<div class="navbar-inner">
+		<ul class="nav">
+			<c:url var="infoUrl" value="formal" />
+			<li class=""><a href="${infoUrl}">正式用户</a></li>
+			<c:url var="infoUrl2" value="informal" />
+			<li class="active"><a href="${infoUrl2}">待审核用户</a></li>
+		</ul>
+	</div>
+</div>
 <section class="content-wrap">
 	<div class="container">
-		<c:if test="${user.status==2 }">
-			<div class="alert alert-error">
-			  未能通过用户审核,原因如下：${review.opinion }。可编辑后继续提交审核。时间：${review.time }
-			</div>
-		</c:if>
 		<div class="row">
 			<div class="column span8">
 				<div class="well">
@@ -28,12 +32,6 @@
 				<div class="well" style="height:340px;">
 					<legend>
 						${user.alias }
-						<c:if test="${user.status==2 }">
-							<c:url var="eUrl" value="edit" />
-							<a id="editone" class="btn btn-small btn-success pull-right" href="${eUrl}">
-								编辑
-							</a>
-						</c:if>
 					</legend>
 					<p class="muted"></p>
 					<p class="muted">类型：${user.type.name }</p>
@@ -42,12 +40,6 @@
 					<p class="muted">地址：${user.address }</p>
 					<p class="muted">邮编：${user.zipcode }</p>
 					<p class="muted">区域：${user.zone.name }</p>
-					<c:if test="${user.status==1 }">
-						<p class="text-success">审核通过</p>
-					</c:if>
-					<c:if test="${user.status==0 }">
-						<p class="text-warning">待审核</p>
-					</c:if>
 				</div>
 			</div>
 		</div>
@@ -90,11 +82,66 @@
 				</div>
 			</div>
 		</div>
+		<div class="row">
+			<div class="column span12">
+				<div class="well" style="height:220px;">
+					<legend>
+						审查
+					</legend>
+					<div class="control-group">
+						<label class="control-label" for="opinion"></label>
+						<div class="controls">
+							<textarea rows="5" path="opinion" name='opinion' id="opinion" class="span8" placeholder="输入审查意见" maxlength="100"></textarea>
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<a class="btn btn-success pull-right" href="javascript:verify('${user.id}');"> 通过 </a>
+					<label class="pull-right" style="width: 10px;"> </label>
+					<a class="btn btn-danger pull-right" href="javascript:notverify('${user.id}');"> 拒绝 </a>
+					
+				</div>
+			</div>
+		</div>
 	</div>
 	
 </section>
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
 <script>
+function verify(id) {
+	bootbox.confirm("确定审查合格了吗？", "取消", "确定", function(isOk) {
+		if (!isOk) {
+			return;
+		}
+		var opinion = $("#opinion").val();
+		$.post('<c:url value="verify" />', {
+			id : id,
+			opinion:opinion
+		}).done(function(data) {
+			window.location.href = '<c:url value="informal" />';
+		}).fail(function() {
+		});
+	}); 
+}
+
+function notverify(id) {
+	bootbox.confirm("确定要拒绝吗？", "取消", "确定", function(isOk) {
+		if (!isOk) {
+			return;
+		}
+		var opinion = $("#opinion").val();
+		if(opinion==null || opinion==""){
+			bootbox.alert("请填写拒绝的理由");
+			return;
+		}
+		$.post('<c:url value="notverify" />', {
+			id : id,
+			opinion:opinion
+		}).done(function(data) {
+			window.location.href = '<c:url value="informal" />';
+		}).fail(function() {
+		});
+	});
+}
 $(document).ready(function () {
 
 	var map = new BMap.Map("mapContainer");

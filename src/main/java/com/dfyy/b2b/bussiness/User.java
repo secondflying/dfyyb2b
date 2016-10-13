@@ -89,7 +89,7 @@ public class User implements Serializable {
 	private Date time;
 
 	@Column(name = "status")
-	@XmlTransient
+	@XmlElement
 	private Integer status;
 	
 	@XmlElementWrapper

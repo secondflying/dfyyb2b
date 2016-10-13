@@ -1,9 +1,11 @@
 package com.dfyy.b2b.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +43,11 @@ public class UserService {
 	@Autowired
 	private RegisterCodeService codeService;
 
+	/**
+	 * 用户注册
+	 * @param form
+	 * @return
+	 */
 	public User register(RetisterForm form) {
 		// TODO 增加其他的验证，用户名是否已存在，手机号码是否合法等
 		if (!form.getPassword().equals(form.getPassword2())) {
@@ -98,29 +105,85 @@ public class UserService {
 		userDao.save(user);
 		return user;
 	}
+	
+	/**
+	 * 获取正式用户
+	 * @param pageable
+	 * @return
+	 */
+	public List<User> getFormal(String key,Pageable pageable){
+		return userDao.findByStatus(1,key, pageable);
+	}
+	
+	/**
+	 * 获取待审核的用户
+	 * @param pageable
+	 * @return
+	 */
+	public List<User> getInformal(String key,Pageable pageable){
+		return userDao.findByStatus(0,key, pageable);
+	}
+	
+	/**
+	 * 获取指定状态的用户个数
+	 * @param status
+	 * @return
+	 */
+	public int getCountByStatus(int status,String key){
+		return userDao.getCountByStatus(status,key);
+	}
 
+	/**
+	 * 通过手机号获取用户信息
+	 * @param name
+	 * @return
+	 */
 	public User findByPhone(String name) {
 		User admin = userDao.findByPhone(name);
 		return admin;
 	}
 
+	/**
+	 * 根据id获取用户
+	 * @param id
+	 * @return
+	 */
 	public User getById(String id) {
 		User admin = userDao.findOne(id);
 		admin.setDocs(docDao.getByUser(admin.getId()));
 		return admin;
 	}
 
+	/**
+	 * 删除用户
+	 * @param id
+	 */
 	public void delete(String id) {
 		User admin = userDao.findOne(id);
 		admin.setStatus(-1);
 		userDao.save(admin);
 	}
 	
+	/**
+	 * 更新用户信息
+	 * @param user
+	 */
 	public void update(User user){
 		userDao.save(user);
 	}
 	
+	/**
+	 * 存储用户资料
+	 * @param doc
+	 */
 	public void saveDoc(UserDoc doc){
 		docDao.save(doc);
+	}
+	/**
+	 * 删除用户资料
+	 * @param id
+	 */
+	public void deleteDoc(int id){
+		docDao.delete(id);
 	}
 }
