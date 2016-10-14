@@ -51,6 +51,37 @@ public class CommodityService {
 		List<CommodityType> crops2 = getChildrens(-1, crops);
 		return crops2;
 	}
+	
+	/**
+	 * 获取所有商品大类
+	 * @return
+	 */
+	public List<CommodityType> getCommodityTypeParent(){
+		List<CommodityType> crops = commodityTypeDao.getAllParent();
+		return crops;
+	}
+	/**
+	 * 根据id获取商品类型
+	 * @param id
+	 * @return
+	 */
+	public CommodityType getById(int id){
+		return commodityTypeDao.findOne(id);
+	}
+	/**
+	 * 存储商品分类
+	 * @param type
+	 */
+	public void saveCrop(CommodityType type){
+		commodityTypeDao.save(type);
+	}
+	/**
+	 * 删除商品分类
+	 * @param id
+	 */
+	public void deleteCrop(int id){
+		commodityTypeDao.delete(id);
+	}
 
 	/**
 	 * 获取所有商品标签
@@ -60,6 +91,30 @@ public class CommodityService {
 	public List<CommodityTag> getAllCommodityTags() {
 		List<CommodityTag> crops = commodityTagDao.getAll();
 		return crops;
+	}
+	/**
+	 * 根据id获取标签
+	 * @param id
+	 * @return
+	 */
+	public CommodityTag getTagById(int id){
+		return commodityTagDao.findOne(id);
+	}
+	
+	/**
+	 * 存储标签
+	 * @param tag
+	 */
+	public void  saveTag(CommodityTag tag){
+		commodityTagDao.save(tag);
+	}
+	
+	/**
+	 * 删除标签
+	 * @param id
+	 */
+	public void deleteTag(int id){
+		commodityTagDao.delete(id);
 	}
 
 	/**
@@ -75,6 +130,31 @@ public class CommodityService {
 	public List<CommodityTag> getTagsOfCommodity(int cid) {
 		Commodity2 commodity2 = commodity2Dao.findOne(cid);
 		return commodity2.getTags();
+	}
+	
+	/**
+	 * 根据id获取单位
+	 * @param id
+	 * @return
+	 */
+	public CommodityUnit getUnitById(int id){
+		return commodityUnitDao.findOne(id);
+	}
+	
+	/**
+	 * 存储商品单位
+	 * @param unit
+	 */
+	public void saveUnit(CommodityUnit unit){
+		commodityUnitDao.save(unit);
+	}
+	
+	/**
+	 * 删除商品分类
+	 * @param id
+	 */
+	public void deleteUnit(int id){
+		commodityUnitDao.delete(id);
 	}
 
 	/**

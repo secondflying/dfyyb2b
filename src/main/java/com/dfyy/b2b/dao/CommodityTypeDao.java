@@ -17,4 +17,7 @@ public interface CommodityTypeDao extends CrudRepository<CommodityType, Integer>
 
 	@Query("select u from CommodityType as u where u.category is not null order by u.category asc, u.id asc")
 	public List<CommodityType> getAllSub();
+	
+	@Query("select u from CommodityType as u where u.category = -1 order by u.id asc")
+	public List<CommodityType> getAllParent();
 }

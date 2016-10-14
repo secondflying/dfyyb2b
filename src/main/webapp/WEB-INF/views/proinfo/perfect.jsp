@@ -7,7 +7,7 @@
 <jsp:include page="../includes/proheader.jsp" />
 
 
-<section class="well shadow">
+<section class="well">
 	<c:url var="perfectUrl" value="perfect" />
 	<form id="userform" action="${perfectUrl}" method="post">
 		<fieldset>

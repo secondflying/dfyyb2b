@@ -45,6 +45,13 @@
 						</c:if>
 						<c:url var="userUrl" value="/manager/users/formal" />
 						<li class="${cssClass}"><a id="userLink" href="${userUrl}">用户管理</a></li>
+						
+						<c:set var="cssClass" value=" " />
+						<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/manager/parameters/')}">
+							<c:set var="cssClass" value="active" />
+						</c:if>
+						<c:url var="paramUrl" value="/manager/parameters/commoditytype" />
+						<li class="${cssClass}"><a id="paramLink" href="${paramUrl}">参数管理</a></li>
 					</ul>
 				</div>
 				<div id="nav-account" class="nav-collapse pull-right">
