@@ -20,11 +20,11 @@
 		<intercept-url pattern="/login/*" access="permitAll" />
 		<intercept-url pattern="/logout" access="permitAll" />
 		<intercept-url pattern="/**" access="hasRole('PROVIDER')" />
-		
+
 		<access-denied-handler error-page="/errors/403" />
 		<form-login login-page="/login" login-processing-url="/provider/j_spring_security_check"
 			username-parameter="username" password-parameter="password"
-			authentication-failure-url="/login/form?error" default-target-url="/provider/proinfo/info" />
+			authentication-failure-url="/login?error" default-target-url="/provider/proinfo/info" />
 
 		<logout logout-url="/provider/j_spring_security_logout"
 			logout-success-url="/login?logout" />
@@ -32,7 +32,7 @@
 		<remember-me key="dfyy2b2" token-validity-seconds="86400"
 			user-service-ref="b2bUserDetailsService" />
 	</http>
-	
+
 	<http pattern="/manager/**" auto-config="true" use-expressions="true"
 		authentication-manager-ref="mauthenticationManager">
 		<intercept-url pattern="/" access="permitAll" />
@@ -40,11 +40,11 @@
 		<intercept-url pattern="/mlogout" access="permitAll" />
 		<intercept-url pattern="/test" access="permitAll" />
 		<intercept-url pattern="/**" access="hasRole('ADMIN')" />
-		
+
 		<access-denied-handler error-page="/errors/403" />
 		<form-login login-page="/mlogin" login-processing-url="/manager/j_spring_security_check"
 			username-parameter="username" password-parameter="password"
-			authentication-failure-url="/mlogin/form?error" default-target-url="/manager/users/formal" />
+			authentication-failure-url="/mlogin?error" default-target-url="/manager/users/formal" />
 
 		<logout logout-url="/manager/j_spring_security_logout"
 			logout-success-url="/mlogin?logout" />
@@ -60,7 +60,8 @@
 	<beans:bean id="adminAuthenticationProvider"
 		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
 		<beans:property name="userDetailsService" ref="adminDetailsService" />
-		<beans:property name="hideUserNotFoundExceptions" value="false" />
+		<beans:property name="hideUserNotFoundExceptions"
+			value="false" />
 	</beans:bean>
 
 	<authentication-manager id="authenticationManager">
@@ -70,7 +71,8 @@
 	<beans:bean id="b2bAuthenticationProvider"
 		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
 		<beans:property name="userDetailsService" ref="b2bUserDetailsService" />
-		<beans:property name="hideUserNotFoundExceptions" value="false" />
+		<beans:property name="hideUserNotFoundExceptions"
+			value="false" />
 	</beans:bean>
 
 	<beans:bean id="messageSource"

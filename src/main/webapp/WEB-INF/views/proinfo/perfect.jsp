@@ -37,7 +37,7 @@
 			<div class="control-group">
 				<label class="control-label" for="address">地址</label>
 				<div class="controls">
-					<input path="address" name='address' id="address" class="input-xxlarge" placeholder="输入地址" required/>
+					<input path="address" name='address' id="address" class="input-xxlarge" placeholder="输入地址" />
 					<span class="help-inline"></span>
 				</div>
 			</div>

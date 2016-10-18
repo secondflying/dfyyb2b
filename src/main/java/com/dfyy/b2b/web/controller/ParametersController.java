@@ -63,17 +63,17 @@ public class ParametersController {
 		type.setCategory(c);
 		type.setImage(image);
 		type.setStatus(0);
-		service.saveCrop(type);
+		service.saveCommodityType(type);
 		
 		return "redirect:commoditytype";
 	}
 	
 	@RequestMapping(value = "/parameters/editcrop",method=RequestMethod.GET)
 	public String newcrop(Model model,@RequestParam(required = true) int id){
-		CommodityType crop = service.getById(id);
+		CommodityType crop = service.getCommodityType(id);
 		String cname = "";
 		if(crop.getCategory()!=-1){
-			CommodityType cType = service.getById(crop.getCategory());
+			CommodityType cType = service.getCommodityType(crop.getCategory());
 			cname = cType.getName();
 		}
 		model.addAttribute("crop", crop);
@@ -90,7 +90,7 @@ public class ParametersController {
 		String category = multipartRequest.getParameter("category");
 		String image = multipartRequest.getParameter("image");	
 		int id = Integer.parseInt(multipartRequest.getParameter("id").toString());
-		CommodityType type = service.getById(id);
+		CommodityType type = service.getCommodityType(id);
 		type.setName(name);
 		int c=-1;
 		if(!StringUtil.isBlank(category) && !StringUtil.isBlank(cname)){
@@ -99,7 +99,7 @@ public class ParametersController {
 		type.setCategory(c);
 		type.setImage(image);
 		type.setStatus(0);
-		service.saveCrop(type);
+		service.saveCommodityType(type);
 		
 		return "redirect:commoditytype";
 	}
@@ -107,7 +107,7 @@ public class ParametersController {
 	@RequestMapping(value = "/parameters/deletecrop", method = RequestMethod.POST)
 	@ResponseBody
 	public String deletecrop(@RequestParam(required = true) Integer id) {
-		service.deleteCrop(id);
+		service.deleteCommodityType(id);
 		return "true";
 	}
 	

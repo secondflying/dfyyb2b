@@ -39,7 +39,12 @@
 						</c:if>
 						<c:url var="infoUrl" value="/provider/proinfo/info" />
 						<li class="${cssClass}"><a id="infoLink" href="${infoUrl}">用户信息</a></li>
-						
+
+						<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/commodity')}">
+							<c:set var="cssClass" value="active" />
+						</c:if>
+						<c:url var="infoUrl" value="/provider/commodity/index" />
+						<li class="${cssClass}"><a id="infoLink" href="${infoUrl}">商品管理</a></li>
 					</ul>
 				</div>
 				<div id="nav-account" class="nav-collapse pull-right">
@@ -55,7 +60,7 @@
 								<li><a id="navLogoutLink" href="${logoutUrl}">退出系统</a></li>
 							</c:when>
 							<c:otherwise>
-								
+
 							</c:otherwise>
 						</c:choose>
 					</ul>
