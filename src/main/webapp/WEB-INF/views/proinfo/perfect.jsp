@@ -37,7 +37,7 @@
 			<div class="control-group">
 				<label class="control-label" for="address">地址</label>
 				<div class="controls">
-					<input path="address" name='address' id="address" class="input-xxlarge" placeholder="输入地址" />
+					<input path="address" name='address' id="address" class="input-xxlarge" placeholder="输入地址" required/>
 					<span class="help-inline"></span>
 				</div>
 			</div>
@@ -48,6 +48,7 @@
 					<span class="help-inline"></span>
 				</div>
 			</div>
+			<div id="expanddiv">
 			<div class="control-group">
 				<label class="control-label" for="contacts">联系人</label>
 				<div class="controls">
@@ -58,9 +59,9 @@
 			<div class="control-group">
 				<label class="control-label" for="zone.name">区域</label>
 				<div class="controls">
-					<input path="zone.name" name='zone.name' id="zonename" class="input-xxlarge" placeholder="区域" required/>
+					<input path="zonename" name='zonename' id="zonename" class="input-xxlarge" placeholder="区域" required/>
 					<span class="help-inline"></span>
-					<input id="zoneid" name="zone.id"type="hidden" value=""/>
+					<input id="zoneid" name="zone"type="hidden" value=""/>
 				</div>
 			</div>
 			<div class="control-group">
@@ -73,6 +74,7 @@
 						<div id="mapContainer" style="height: 300px; border: solid 1px #cccccc"></div>
 					</div>
 				</div>
+			</div>
 			</div>
 			<br />
 			<input type="file" name="uploadify" id="multiple_file_upload" />
@@ -117,7 +119,6 @@
 $(document).ready(function () {
 
 	setplaceholderSupport();
-	addFormValidate();
 	$('#typeid').change(function(){ 
 		setTipText();
 	});
@@ -196,75 +197,126 @@ $(document).ready(function () {
 });
 
 	function addFormValidate() {
-		$("#second").validate({
-			debug : true,
-			rules : {
-				alias : {
-					required : true
+		var selvalue = $("#typeid").children('option:selected').val();
+		if(selvalue==4){
+			$("#second").validate({
+				debug : true,
+				rules : {
+					alias : {
+						required : true
+					},
+					typeid : {
+						required : true
+					},
+					address : {
+						required : true
+					},
+					zipcode : {
+						required : true
+					}
 				},
-				typeid : {
-					required : true
+
+				messages : {
+					alias : {
+						required : "必填"
+					},
+					typeid : {
+						required : "必填"
+					},
+					address : {
+						required : "必填"
+					},
+					zipcode : {
+						required : "必填"
+					}
 				},
-				address : {
-					required : true
+
+				errorClass : 'invalid',
+				validClass : 'invalid',
+				errorPlacement : function(error, element) {
+					element.nextAll(".help-inline").html(error);
+
 				},
-				zipcode : {
-					required : true
+				success : function(label) {
+					label.html("");
 				},
-				contacts : {
-					required : true
-				},
-				zonename : {
-					required : true
-				},
-				x : {
-					required : true
-				},
-				y : {
-					required : true
+				submitHandler : function(form) {
+					form.submit();
 				}
-			},
+			});
+		}
+		else{
+			$("#second").validate({
+				debug : true,
+				rules : {
+					alias : {
+						required : true
+					},
+					typeid : {
+						required : true
+					},
+					address : {
+						required : true
+					},
+					zipcode : {
+						required : true
+					},
+					contacts : {
+						required : true
+					},
+					zonename : {
+						required : true
+					},
+					x : {
+						required : true
+					},
+					y : {
+						required : true
+					}
+				},
 
-			messages : {
-				alias : {
-					required : "必填"
+				messages : {
+					alias : {
+						required : "必填"
+					},
+					typeid : {
+						required : "必填"
+					},
+					address : {
+						required : "必填"
+					},
+					zipcode : {
+						required : "必填"
+					},
+					contacts : {
+						required : "必填"
+					},
+					zonename : {
+						required : "必填"
+					},
+					x : {
+						required : "必填"
+					},
+					y : {
+						required : "必填"
+					}
 				},
-				typeid : {
-					required : "必填"
+
+				errorClass : 'invalid',
+				validClass : 'invalid',
+				errorPlacement : function(error, element) {
+					element.nextAll(".help-inline").html(error);
+
 				},
-				address : {
-					required : "必填"
+				success : function(label) {
+					label.html("");
 				},
-				zipcode : {
-					required : "必填"
-				},
-				contacts : {
-					required : "必填"
-				},
-				zonename : {
-					required : "必填"
-				},
-				x : {
-					required : "必填"
-				},
-				y : {
-					required : "必填"
+				submitHandler : function(form) {
+					form.submit();
 				}
-			},
-
-			errorClass : 'invalid',
-			validClass : 'invalid',
-			errorPlacement : function(error, element) {
-				element.nextAll(".help-inline").html(error);
-
-			},
-			success : function(label) {
-				label.html("");
-			},
-			submitHandler : function(form) {
-				form.submit();
-			}
-		});
+			});
+		}
+		
 	}
 	function deleteImagePanel(id) {
 		$("#panel" + id).remove();
@@ -273,15 +325,35 @@ $(document).ready(function () {
 		var selvalue = $("#typeid").children('option:selected').val();
 		if(selvalue==1){
 			$('#attachmenttip').html("请上传营业执照、组织机构代码、法人身份证及与合伙人签订的合同照片等资料，否则审核不能通过");
+			$("#zonename").val("");
+			$("#zoneid").val("");
+			$("#contacts").val("");
+			$('#expanddiv').show();
 		}
 		if(selvalue==2){
 			$('#attachmenttip').html("请上传营业执照、组织机构代码、身份证等资料，否则审核不能通过");
+			$("#zonename").val("");
+			$("#zoneid").val("");
+			$("#contacts").val("");
+			$('#expanddiv').show();
 		}
 		if(selvalue==3){
 			$('#attachmenttip').html("请上传营业执照、组织机构代码、法人身份证等资料，否则审核不能通过");
+			$("#zonename").val("");
+			$("#zoneid").val("");
+			$("#contacts").val("");
+			$('#expanddiv').show();
 		}
+		if(selvalue==4){
+			$('#attachmenttip').html("请上传身份证等资料，否则审核不能通过");
+			$("#zonename").val(" ");
+			$("#zoneid").val("11");
+			$("#contacts").val(" ");
+			$('#expanddiv').hide();
+		}
+		addFormValidate();
 	}
-	function clickZoneNote(id,sname) {
+	function clickQuyuType(id,sname,level) {
 		$('#zonename').val(sname);
 		$('#zoneid').val(id);
 		$('#myModal').modal('hide');

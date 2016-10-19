@@ -1,6 +1,7 @@
 package com.dfyy.b2b.web.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.dfyy.b2b.bussiness.CommodityTag;
 import com.dfyy.b2b.bussiness.CommodityType;
 import com.dfyy.b2b.bussiness.CommodityUnit;
+import com.dfyy.b2b.bussiness.PpBrokerage;
+import com.dfyy.b2b.bussiness.SalesmanBrokerage;
+import com.dfyy.b2b.dto.ProkerageDto;
+import com.dfyy.b2b.service.BrokerageService;
 import com.dfyy.b2b.service.CommodityService;
 import com.dfyy.b2b.util.PublicConfig;
 import com.dfyy.b2b.util.PublicHelper;
@@ -33,6 +38,8 @@ public class ParametersController {
 	
 	@Autowired
 	private CommodityService service;
+	@Autowired
+	private BrokerageService brokerService;
 
 	@RequestMapping(value = "/parameters/commoditytype",method=RequestMethod.GET)
 	public String formal(Model model){
@@ -63,17 +70,17 @@ public class ParametersController {
 		type.setCategory(c);
 		type.setImage(image);
 		type.setStatus(0);
-		service.saveCommodityType(type);
+		service.saveCrop(type);
 		
 		return "redirect:commoditytype";
 	}
 	
 	@RequestMapping(value = "/parameters/editcrop",method=RequestMethod.GET)
 	public String newcrop(Model model,@RequestParam(required = true) int id){
-		CommodityType crop = service.getCommodityType(id);
+		CommodityType crop = service.getById(id);
 		String cname = "";
 		if(crop.getCategory()!=-1){
-			CommodityType cType = service.getCommodityType(crop.getCategory());
+			CommodityType cType = service.getById(crop.getCategory());
 			cname = cType.getName();
 		}
 		model.addAttribute("crop", crop);
@@ -90,7 +97,7 @@ public class ParametersController {
 		String category = multipartRequest.getParameter("category");
 		String image = multipartRequest.getParameter("image");	
 		int id = Integer.parseInt(multipartRequest.getParameter("id").toString());
-		CommodityType type = service.getCommodityType(id);
+		CommodityType type = service.getById(id);
 		type.setName(name);
 		int c=-1;
 		if(!StringUtil.isBlank(category) && !StringUtil.isBlank(cname)){
@@ -99,7 +106,7 @@ public class ParametersController {
 		type.setCategory(c);
 		type.setImage(image);
 		type.setStatus(0);
-		service.saveCommodityType(type);
+		service.saveCrop(type);
 		
 		return "redirect:commoditytype";
 	}
@@ -107,7 +114,7 @@ public class ParametersController {
 	@RequestMapping(value = "/parameters/deletecrop", method = RequestMethod.POST)
 	@ResponseBody
 	public String deletecrop(@RequestParam(required = true) Integer id) {
-		service.deleteCommodityType(id);
+		service.deleteCrop(id);
 		return "true";
 	}
 	
@@ -225,6 +232,60 @@ public class ParametersController {
 	public String deleteunit(@RequestParam(required = true) Integer id) {
 		service.deleteUnit(id);
 		return "true";
+	}
+	
+	@RequestMapping(value = "/parameters/brokerages",method=RequestMethod.GET)
+	public String brokerages(Model model){
+		List<ProkerageDto> objectss = brokerService.getByAllCrops();
+		SalesmanBrokerage sage = brokerService.getSalesmanBrokerage();
+		model.addAttribute("objects", objectss);
+		model.addAttribute("sage", sage);
+		return "b2bparameters/brokerages";
+	}
+	
+	@RequestMapping(value = "/parameters/editppbrokerage", method = RequestMethod.POST)
+	public String editppbrokerage(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes)
+			throws IllegalStateException, IOException, ServletException {
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		String cid = multipartRequest.getParameter("cid");
+		String pl = multipartRequest.getParameter("platform");
+		String pa = multipartRequest.getParameter("partner");
+		int crid = Integer.parseInt(cid);
+		PpBrokerage ppBrokerage = brokerService.getByCrop(crid);
+		if(ppBrokerage!=null){
+			brokerService.delete(ppBrokerage.getId());
+		}
+		ppBrokerage = new PpBrokerage();
+		CommodityType commodityType = new CommodityType();
+		commodityType.setId(crid);
+		ppBrokerage.setCrop(commodityType);
+		ppBrokerage.setPlatform(pl==null?0:Double.parseDouble(pl));
+		ppBrokerage.setPartner(pa==null?0:Double.parseDouble(pa));
+		ppBrokerage.setTime(new Date());
+		ppBrokerage.setStatus(0);
+		brokerService.save(ppBrokerage);
+		redirectAttributes.addFlashAttribute("success", "编辑成功");
+		return "redirect:brokerages";
+	}
+	
+	@RequestMapping(value = "/parameters/editsalesmanbrokerage", method = RequestMethod.POST)
+	public String editsalesmanbrokerage(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes)
+			throws IllegalStateException, IOException, ServletException {
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		String mi = multipartRequest.getParameter("min");
+		String ma = multipartRequest.getParameter("max");
+		SalesmanBrokerage salesmanBrokerage = brokerService.getSalesmanBrokerage();
+		if(salesmanBrokerage!=null){
+			brokerService.deleteS(salesmanBrokerage.getId());
+		}
+		salesmanBrokerage = new SalesmanBrokerage();
+		salesmanBrokerage.setMin(mi==null?0:Double.parseDouble(mi));
+		salesmanBrokerage.setMax(ma==null?0:Double.parseDouble(ma));
+		salesmanBrokerage.setTime(new Date());
+		salesmanBrokerage.setStatus(0);
+		brokerService.saveS(salesmanBrokerage);
+		redirectAttributes.addFlashAttribute("success", "编辑成功");
+		return "redirect:brokerages";
 	}
 	
 	@RequestMapping(value = "/parameters/bash", method = RequestMethod.POST)

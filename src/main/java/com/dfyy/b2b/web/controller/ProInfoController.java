@@ -1,5 +1,4 @@
 package com.dfyy.b2b.web.controller;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.dfyy.b2b.bussiness.Area;
 import com.dfyy.b2b.bussiness.User;
 import com.dfyy.b2b.bussiness.UserDoc;
 import com.dfyy.b2b.bussiness.UserReview;
@@ -33,7 +33,6 @@ import com.dfyy.b2b.service.ZoneService;
 import com.dfyy.b2b.util.PublicConfig;
 import com.dfyy.b2b.util.PublicHelper;
 import com.dfyy.b2b.web.form.UserForm;
-
 @Controller
 @RequestMapping("/provider")
 public class ProInfoController {
@@ -48,55 +47,68 @@ public class ProInfoController {
 	private ZoneService zoneService;
 	@Autowired
 	private UserReviewService reviewService;
-
-	@RequestMapping(value = "/proinfo/info", method = RequestMethod.GET)
-	public String index(Model model) {
+	
+	
+	@RequestMapping(value = "/proinfo/info",method=RequestMethod.GET)
+	public String index(Model model){
 		User user = userContext.getCurrentUser();
-		user = userService.getById(user.getId());
-		if (user.getStatus() != 1) {
+		user = userService.getById(user.getId());		
+		if(user.getType()==null){
 			return "redirect:perfect";
 		}
 		int size = 0;
-		if (user.getDocs() != null && user.getDocs().size() > 0) {
+		if(user.getDocs()!=null && user.getDocs().size()>0){
 			size = user.getDocs().size();
 		}
 		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "providers/small");
 		model.addAttribute("user", user);
 		model.addAttribute("size", size);
-		if (user.getStatus() == 2) {
+		if(user.getStatus()==2){
 			UserReview userReview = reviewService.getByUid(user.getId());
 			model.addAttribute("review", userReview);
 		}
-		return "proinfo/info";
+		if(user.getType().getId()==4){
+			return "proinfo/pinfo";
+		}
+		else{
+			return "proinfo/info";
+		}
 	}
-
-	@RequestMapping(value = "/proinfo/perfect", method = RequestMethod.GET)
-	public String perfect(Model model) {
+	
+	@RequestMapping(value = "/proinfo/perfect",method=RequestMethod.GET)
+	public String perfect(Model model){
 		User user = userContext.getCurrentUser();
 		user = userService.getById(user.getId());
-		List<UserType> types = typeService.getProvider();
+		List<UserType> types = typeService.getAll();
 		model.addAttribute("user", user);
 		model.addAttribute("types", types);
 		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "providers/small");
 		return "proinfo/perfect";
 	}
-
+	
 	@RequestMapping(value = "/proinfo/perfect", method = RequestMethod.POST)
 	public String perfectUser(@ModelAttribute("userform") UserForm userForm) {
 		if (userForm != null) {
 			User u = userService.getById(userForm.getId());
 			u.setAlias(userForm.getAlias());
-			u.setType(userForm.getType() == null ? null : typeService.geTypeById(userForm.getType().getId()));
+			u.setType(userForm.getType()==null?null:typeService.geTypeById(userForm.getType().getId()));
 			u.setAddress(userForm.getAddress());
 			u.setZipcode(userForm.getZipcode());
-			u.setContacts(userForm.getContacts());
-			u.setX(userForm.getX());
-			u.setY(userForm.getY());
-			u.setZone(userForm.getZone() == null ? null : userForm.getZone());
+			if(u.getType().getId()!=4){				
+				u.setContacts(userForm.getContacts());
+				u.setX(userForm.getX());
+				u.setY(userForm.getY());
+				Area zone = null;
+				if(userForm.getZone()!=0){
+					zone = new Area();
+					zone.setId(userForm.getZone());
+				}
+				u.setZone(zone);			
+			}
 			u.setTime(new Date());
 			u.setStatus(0);
 			userService.update(u);
-			if (userForm.getDocs() != null && userForm.getDocs().size() > 0) {
+			if(userForm.getDocs()!=null && userForm.getDocs().size()>0){
 				for (Iterator iterator = userForm.getDocs().iterator(); iterator.hasNext();) {
 					AttachmentDto dto = (AttachmentDto) iterator.next();
 					UserDoc doc = new UserDoc();
@@ -111,40 +123,52 @@ public class ProInfoController {
 			return "proinfo/perfect";
 		}
 	}
-
-	@RequestMapping(value = "/proinfo/edit", method = RequestMethod.GET)
-	public String edit(Model model) {
+	
+	@RequestMapping(value = "/proinfo/edit",method=RequestMethod.GET)
+	public String edit(Model model){
 		User user = userContext.getCurrentUser();
 		user = userService.getById(user.getId());
 		List<UserType> types = typeService.getProvider();
 		model.addAttribute("user", user);
 		model.addAttribute("types", types);
 		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "providers/small");
-		return "proinfo/edit";
+		if(user.getType().getId()==4){
+			return "proinfo/pedit";
+		}
+		else{
+			return "proinfo/edit";
+		}
 	}
-
+	
 	@RequestMapping(value = "/proinfo/edit", method = RequestMethod.POST)
 	public String editUser(@ModelAttribute("userform") UserForm userForm) {
 		if (userForm != null) {
 			User u = userService.getById(userForm.getId());
-			if (u.getDocs() != null && u.getDocs().size() > 0) {
+			if(u.getDocs()!=null && u.getDocs().size()>0){
 				for (Iterator iterator = u.getDocs().iterator(); iterator.hasNext();) {
 					UserDoc doc = (UserDoc) iterator.next();
 					userService.deleteDoc(doc.getId());
 				}
 			}
 			u.setAlias(userForm.getAlias());
-			u.setType(userForm.getType() == null ? null : typeService.geTypeById(userForm.getType().getId()));
 			u.setAddress(userForm.getAddress());
 			u.setZipcode(userForm.getZipcode());
-			u.setContacts(userForm.getContacts());
-			u.setX(userForm.getX());
-			u.setY(userForm.getY());
-			u.setZone(userForm.getZone() == null ? null : userForm.getZone());
+			if(u.getType().getId()!=4){			
+				u.setType(userForm.getType()==null?null:typeService.geTypeById(userForm.getType().getId()));
+				u.setContacts(userForm.getContacts());
+				u.setX(userForm.getX());
+				u.setY(userForm.getY());
+				Area zone = null;
+				if(userForm.getZone()!=0){
+					zone = new Area();
+					zone.setId(userForm.getZone());
+				}
+				u.setZone(zone);			
+			}
 			u.setTime(new Date());
 			u.setStatus(0);
 			userService.update(u);
-			if (userForm.getDocs() != null && userForm.getDocs().size() > 0) {
+			if(userForm.getDocs()!=null && userForm.getDocs().size()>0){
 				for (Iterator iterator = userForm.getDocs().iterator(); iterator.hasNext();) {
 					AttachmentDto dto = (AttachmentDto) iterator.next();
 					UserDoc doc = new UserDoc();
@@ -159,7 +183,7 @@ public class ProInfoController {
 			return "proinfo/edit";
 		}
 	}
-
+	
 	@RequestMapping(value = "/proinfo/bash", method = RequestMethod.POST)
 	@ResponseBody
 	public String proinfobashImport(HttpServletRequest request, HttpServletResponse response)
