@@ -1,8 +1,11 @@
 package com.dfyy.b2b.web.form;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+import com.dfyy.b2b.dto.AttachmentDto;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommodityForm implements Serializable {
@@ -10,11 +13,15 @@ public class CommodityForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
+	private int status;
+	private String userid;
 	private String name;
 	private String image;
 	private Integer exchange;
 	private Integer number;
 	private String description;
+	private List<AttachmentDto> docs;
+
 
 	public Integer getId() {
 		return id;
@@ -62,6 +69,30 @@ public class CommodityForm implements Serializable {
 
 	public void setExchange(Integer exchange) {
 		this.exchange = exchange;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public List<AttachmentDto> getDocs() {
+		return docs;
+	}
+
+	public void setDocs(List<AttachmentDto> docs) {
+		this.docs = docs;
+	}
+
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
 	}
 
 }

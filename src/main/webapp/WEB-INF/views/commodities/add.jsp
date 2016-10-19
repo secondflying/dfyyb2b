@@ -22,24 +22,8 @@
 					<span class="help-inline"></span>
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="point">购买类型</label>
-				<div class="controls">
-								<input type="radio" checked value="0" path="exchange" name="exchange" />
-								积分兑换 &nbsp;&nbsp;
-								<input type="radio" value="1" path="exchange" name="exchange" />
-								推荐币兑换 &nbsp;&nbsp;
-				</div>
-			</div>
-			<div class="control-group">
-			<label class="control-label" for="point">积分或推荐币个数</label>
-				<div class="controls">
-							<input path="number" name='number' id="number" class="input-xxlarge" placeholder="" onkeyup="clearNoNum(this)"
-								maxlength="20" />
-							<span class="help-inline"></span>
-					<span class="help-inline"></span>
-				</div>
-			</div>
+			
+			
 			<div class="control-group">
 				<label class="control-label" for="description">描述</label>
 				<div class="controls">
@@ -47,18 +31,7 @@
 					<span class="help-inline"></span>
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="description">可兑换用户级别</label>
-				<div class="controls">
-					<c:forEach items="${levels}" var="l" varStatus="loop">
-
-						<input type="checkbox" value="${l.id}" path="levels[${loop.index}].id" name="levels[${loop.index}].id"
-							id="levels[${loop.index}].id" />
-						<c:out value="${l.name}" /> &nbsp;&nbsp;
-							
-					</c:forEach>
-				</div>
-			</div>
+			
 			<br />
 			<input type="file" name="uploadify" id="multiple_file_upload" />
 			<p id="attachmenttip" class="text-error">请上传外包装正面、背面、内料；田间实验图片(最多3张)；相关证书图片(最多3张)否则审核不能通过</p>

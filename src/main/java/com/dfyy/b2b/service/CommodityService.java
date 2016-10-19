@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dfyy.b2b.bussiness.Commodity;
 import com.dfyy.b2b.bussiness.Commodity2;
+import com.dfyy.b2b.bussiness.CommodityAttachment;
 import com.dfyy.b2b.bussiness.CommodityTag;
 import com.dfyy.b2b.bussiness.CommodityType;
 import com.dfyy.b2b.bussiness.CommodityUnit;
@@ -20,6 +22,8 @@ import com.dfyy.b2b.dao.CommodityDao;
 import com.dfyy.b2b.dao.CommodityTagDao;
 import com.dfyy.b2b.dao.CommodityTypeDao;
 import com.dfyy.b2b.dao.CommodityUnitDao;
+import com.dfyy.b2b.dao.UserDao;
+import com.dfyy.b2b.dto.AttachmentDto;
 import com.dfyy.b2b.web.form.CommodityForm;
 
 @Service
@@ -43,6 +47,9 @@ public class CommodityService {
 
 	@Autowired
 	private CommodityAttachmentDao commodityAttachmentDao;
+	
+	@Autowired
+	private UserDao userDao;
 
 	public List<Commodity> getCommodityOfProvider(String userid, int page, int size) {
 		List<Commodity> list = commodityDao.getByUser(userid, new PageRequest(page, size));
@@ -64,8 +71,65 @@ public class CommodityService {
 		commodityDao.save(obj);
 	}
 
-	public Commodity saveCommodity(Commodity obj) {
-		return commodityDao.save(obj);
+	public Commodity createCommodity(CommodityForm obj) {
+		Commodity commodity = new Commodity();
+		commodity.setStatus(obj.getStatus());
+		commodity.setProvider(userDao.findOne(obj.getUserid()));
+
+		// 添加别的属性
+		commodity.setName(obj.getName());
+		commodityDao.save(commodity);
+
+		if (obj.getDocs() != null && obj.getDocs().size() > 0) {
+			String firsturl = null;
+
+			for (AttachmentDto att : obj.getDocs()) {
+				if (StringUtils.isNotBlank(att.getUrl())) {
+					CommodityAttachment qa = new CommodityAttachment();
+					qa.setCid(commodity.getId());
+					qa.setUrl(att.getUrl());
+					commodityAttachmentDao.save(qa);
+
+					if (StringUtils.isBlank(firsturl)) {
+						firsturl = att.getUrl();
+					}
+				}
+			}
+
+			commodity.setImage(firsturl);
+		}
+
+		return commodityDao.save(commodity);
+	}
+
+	public Commodity editCommodity(CommodityForm obj) {
+		Commodity commodity = commodityDao.findOne(obj.getId());
+
+		// 添加别的属性
+		commodity.setName(obj.getName());
+		commodityDao.save(commodity);
+
+		commodityAttachmentDao.deleteByCommodity(commodity.getId());
+		if (obj.getDocs() != null && obj.getDocs().size() > 0) {
+			String firsturl = null;
+
+			for (AttachmentDto att : obj.getDocs()) {
+				if (StringUtils.isNotBlank(att.getUrl())) {
+					CommodityAttachment qa = new CommodityAttachment();
+					qa.setCid(commodity.getId());
+					qa.setUrl(att.getUrl());
+					commodityAttachmentDao.save(qa);
+
+					if (StringUtils.isBlank(firsturl)) {
+						firsturl = att.getUrl();
+					}
+				}
+			}
+
+			commodity.setImage(firsturl);
+		}
+
+		return commodityDao.save(commodity);
 	}
 
 	/**

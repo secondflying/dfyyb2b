@@ -12,7 +12,7 @@
 			<c:url var="infoUrl" value="index" />
 			<li class="active"><a href="${infoUrl}">商品列表</a></li>
 			<c:url var="infoUrl2" value="orders" />
-			<li class=""><a href="${infoUrl2}">积分订单</a></li>
+			<li class=""><a href="${infoUrl2}">订单列表</a></li>
 		</ul>
 	</div>
 </div>

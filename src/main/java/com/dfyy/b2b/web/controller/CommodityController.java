@@ -72,14 +72,14 @@ public class CommodityController {
 		B2BUserDetails loginUser = LoginUtil.getLoginUser();
 
 		if (dto != null) {
-			Commodity commodity = new Commodity();
+			// 如果是经销商，初始状态为0，需要合伙人再审核一次
 			if (loginUser.getType().getId() == 1) {
-				commodity.setStatus(0);
+				dto.setStatus(0);
 			} else {
-				commodity.setStatus(1);
+				dto.setStatus(1);
 			}
-			commodity.setName(dto.getName());
-			commodityService.saveCommodity(commodity);
+			dto.setUserid(loginUser.getId());
+			commodityService.createCommodity(dto);
 			return "redirect:index";
 		} else {
 			return "commodities/add";
@@ -92,7 +92,7 @@ public class CommodityController {
 		B2BUserDetails loginUser = LoginUtil.getLoginUser();
 
 		if (dto != null) {
-			// commodityService.saveCommodity(dto);
+			commodityService.editCommodity(dto);
 			return "redirect:index";
 		} else {
 			return "commodities/edit";
