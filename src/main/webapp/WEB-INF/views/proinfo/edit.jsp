@@ -7,7 +7,7 @@
 <jsp:include page="../includes/proheader.jsp" />
 
 
-<section class="well shadow">
+<section class="well">
 	<c:url var="perfectUrl" value="edit" />
 	<form id="userform" action="${perfectUrl}" method="post">
 		<fieldset>
@@ -64,12 +64,13 @@
 					<span class="help-inline"></span>
 				</div>
 			</div>
+			
 			<div class="control-group">
 				<label class="control-label" for="zone.name">区域</label>
 				<div class="controls">
-					<input path="zone.name" name='zone.name' id="zonename" class="input-xxlarge" placeholder="区域" required value="${user.zone.name }"/>
+					<input path="zonename" name='zonename' id="zonename" class="input-xxlarge" placeholder="区域" required value="${user.zone.name }"/>
 					<span class="help-inline"></span>
-					<input id="zoneid" name="zone.id"type="hidden" value="${user.zone.id }"/>
+					<input id="zoneid" name="zone"type="hidden" value="${user.zone.id }"/>
 				</div>
 			</div>
 			<div class="control-group">
@@ -304,7 +305,7 @@ $(document).ready(function () {
 			$('#attachmenttip').html("请上传营业执照、组织机构代码、法人身份证等资料，否则审核不能通过");
 		}
 	}
-	function clickZoneNote(id,sname) {
+	function clickQuyuType(id,sname,level) {
 		$('#zonename').val(sname);
 		$('#zoneid').val(id);
 		$('#myModal').modal('hide');

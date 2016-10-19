@@ -3,14 +3,22 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<c:set var="pageTitle" value="用户管理" scope="request" />
+<c:set var="pageTitle" value="业务员管理" scope="request" />
 <jsp:include page="../includes/mheader.jsp" />
 
 <div class="navbar">
 	<div class="navbar-inner">
 		<ul class="nav">
-			<c:url var="infoUrl" value="formal" />
-			<li class="active"><a href="${infoUrl}">正式用户</a></li>
+			<c:url var="infoUrl" value="partners" />
+			<li class=""><a href="${infoUrl}">合伙人</a></li>
+			<c:url var="dealerUrl" value="dealers" />
+			<li class=""><a href="${dealerUrl}">经销商</a></li>
+			<c:url var="manuUrl" value="manufacturers" />
+			<li class=""><a href="${manuUrl}">厂家</a></li>
+			<c:url var="saleUrl" value="salesmans" />
+			<li class="active"><a href="${saleUrl}">业务员</a></li>
+			<c:url var="storeUrl" value="stores" />
+			<li class=""><a href="${storeUrl}">农资店</a></li>
 			<c:url var="infoUrl2" value="informal" />
 			<li class=""><a href="${infoUrl2}">待审核用户</a></li>
 		</ul>
@@ -41,26 +49,22 @@
 				<tr>
 					<th align="center">名称</th>
 					<th align="center">类别</th>
-					<th align="center">联系人</th>
 					<th align="center">地址</th>
-					<th align="center">区域</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:if test="${empty users}">
 					<tr>
-						<td colspan="5">空</td>
+						<td colspan="3">空</td>
 					</tr>
 	
 				</c:if>
 				<c:forEach items="${users}" var="user">
 					<tr class="${cssClass}">
-						<c:url var="infoUrl" value="info?id=${user.id}" />
-						<td style="width:120px;"><a href="${infoUrl }"><c:out value="${user.alias}" /></a></td>
-						<td style="width:80px;"><c:out value="${user.type.name}" /></td>
-						<td style="width:120px;"><c:out value="${user.contacts}" /></td>
-						<td style="width:160px;"><c:out value="${user.address}" /></td>
-						<td style="width:120px;"><c:out value='${user.zone==null ? "" : user.zone.name}' /></td>
+						<c:url var="infoUrl" value="salesmaninfo?id=${user.id}" />
+						<td style="width:200px;"><a href="${infoUrl }"><c:out value="${user.alias}" /></a></td>
+						<td style="width:200px;"><c:out value="${user.type.name}" /></td>
+						<td style="width:200px;"><c:out value="${user.address}" /></td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -103,7 +107,7 @@ $(document).ready(function() {
             onPageClicked: function (event, originalEvent, type, page) { 
             	var page = page-1; 
             	var text = $("#searchtxt").val();
-        		window.location.href = '<c:url value="formal" />?keyword='+ encodeURIComponent(text) + "&page=" + page + "&size=" + size;
+        		window.location.href = '<c:url value="salesmans" />?keyword='+ encodeURIComponent(text) + "&page=" + page + "&size=" + size;
             }
     };
     
@@ -114,7 +118,7 @@ $(document).ready(function() {
 
 function search(){
 	var text = $("#searchtxt").val();
-	window.location.href = '<c:url value="formal" />?keyword='+encodeURIComponent(text);
+	window.location.href = '<c:url value="salesmans" />?keyword='+encodeURIComponent(text);
 }
 </script>
 

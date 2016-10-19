@@ -22,7 +22,8 @@
 
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/provider/**" />
+			<mvc:mapping path="/manager/**" />
+			<mvc:mapping path="/apps/**" />
 			<bean class="com.dfyy.b2b.web.interceptor.LoginHandlerInterceptorAdapter" />
 		</mvc:interceptor>
 	</mvc:interceptors>

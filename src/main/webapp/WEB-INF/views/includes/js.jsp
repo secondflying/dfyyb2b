@@ -35,6 +35,72 @@
 
 
 <script>
+	function page() {
+		var currentPage;
+		var $table = $('table');
+		var hidden = $('#read').val();
+		//分页效果
+		if (hidden != null) {
+			if ($.cookie("current") != null) {
+				var p = $.cookie("current");
+
+				currentPage = parseInt(p);
+			} else {
+				currentPage = 0;
+				$.cookie("current", currentPage);
+			}
+		} else {
+			currentPage = 0;
+			$.cookie("current", currentPage);
+		}
+
+		var pageSize = 10; //每页行数（不包括表头）
+		//绑定分页事件
+		$table.bind('repaginate', function() {
+			$table.find('tbody tr').hide().slice(currentPage * pageSize, (currentPage + 1) * pageSize).show();
+		});
+
+		var numRows = $table.find('tbody tr').length; //记录宗条数
+		if (numRows <= 10) {
+			return;
+		}
+		var numPages = Math.ceil(numRows / pageSize); //总页数
+
+		var $pager = $('<div class="page"></div>'); //分页div
+
+		$pager.insertAfter($table);
+
+		var options = {
+			currentPage : currentPage + 1,
+			totalPages : numPages,
+			size : 'small',
+			alignment : 'center',
+			itemTexts : function(type, page, current) {
+				switch (type) {
+				case "first":
+					return "首页";
+				case "prev":
+					return "前一页";
+				case "next":
+					return "后一页";
+				case "last":
+					return "末页";
+				case "page":
+					return "" + page;
+				}
+			},
+			onPageChanged : function(e, oldPage, newPage) {
+				currentPage = newPage - 1;
+				$.cookie("current", currentPage);
+				$table.trigger("repaginate");
+			}
+		};
+
+		$pager.bootstrapPaginator(options);
+
+		$table.trigger("repaginate"); //初始化 
+	}
+
 	function setplaceholderSupport() {
 		if (!placeholderSupport()) { // 判断浏览器是否支持 placeholder
 			$('[placeholder]').focus(function() {
@@ -52,7 +118,6 @@
 			}).blur();
 		}
 	}
-	
 	function placeholderSupport() {
 		return 'placeholder' in document.createElement('input');
 	}
@@ -65,7 +130,7 @@
 			return decodeURIComponent(r[2]);
 		return null; //返回参数值
 	}
-
+	
 	function clearNoNum(obj) {
 		//先把非数字的都替换掉，除了数字和.
 		obj.value = obj.value.replace(/[^\d.]/g, "");

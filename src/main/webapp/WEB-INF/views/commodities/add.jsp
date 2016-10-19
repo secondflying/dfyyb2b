@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <c:set var="pageTitle" value="新增商品" scope="request" />
-<jsp:include page="../includes/proheader.jsp" />
+<jsp:include page="../includes/header.jsp" />
 
 <section class="well shadow">
 	<c:url var="addUrl" value="addone" />
@@ -61,7 +61,6 @@
 			</div>
 			<br />
 			<input type="file" name="uploadify" id="multiple_file_upload" />
-			<p id="attachmenttip" class="text-error">请上传外包装正面、背面、内料；田间实验图片(最多3张)；相关证书图片(最多3张)否则审核不能通过</p>
 			<div id="attachmentsdiv"></div>
 
 		</fieldset>
@@ -83,18 +82,10 @@
 $(document).ready(function () {
 	setplaceholderSupport();
 	addFormValidate();
-	
-	$('#starttime').datetimepicker({
-		language : 'zh-CN'
-	});
-	$('#endtime').datetimepicker({
-		language : 'zh-CN'
-	});
-	
-	
-	
+
 	$("#multiple_file_upload").uploadify({
 		'removeTimeOut' : 0,
+		'multi' : false,
 		'buttonText' : '上传图片...',
 		'swf' : '<c:url value="/assets/uploadify-v3.1/uploadify.swf"/>',
 		'uploader' : '<c:url value="bash;jsessionid=${pageContext.session.id}"/>',
@@ -115,11 +106,12 @@ $(document).ready(function () {
 					title : "提示",
 				});
 			} else {
+				$("#attachmentsdiv").html("");
 				var itemid = $("#attachmentsdiv").children('div').length;
-				var html = '<div id="panel' + itemid + '" style="width:150px;height:150px;display:inline-block;position: relative;margin: 0px 5px;border: solid 1px #ccc;">';
+				var html = '<div id="panel1" style="width:150px;height:150px;display:inline-block;position: relative;margin: 0px 5px;border: solid 1px #ccc;">';
 				html += '<img class="image" src="${imageUrl}/' + data + '" />';
-				html += '<a class="imageClose" href="javascript:deleteImagePanel(' + itemid + ')"></a>';
-                html += '<input type="hidden" path="docs[' + itemid + '].url" name="docs[' + itemid + '].url" id="docs[' + itemid + '].url" value="' + data + '" />';
+				html += '<a class="imageClose" href="javascript:deleteImagePanel(1)"></a>';
+				html += '<input type="hidden" path="image" name="image" id="image" value="' + data + '" />';
 				html += '</div>';
 
 				$("#attachmentsdiv").append(html);
@@ -130,6 +122,12 @@ $(document).ready(function () {
 			$("#saveform").attr("disabled", false);
 		}
 
+	});
+	$('#starttime').datetimepicker({
+		language : 'zh-CN'
+	});
+	$('#endtime').datetimepicker({
+		language : 'zh-CN'
 	});
 
 });
@@ -168,6 +166,17 @@ function addFormValidate() {
 			form.submit();
 		}
 	});
+}
+
+function clearNoNum(obj) {
+	//先把非数字的都替换掉，除了数字和.
+	obj.value = obj.value.replace(/[^\d.]/g, "");
+	//必须保证第一个为数字而不是.
+	obj.value = obj.value.replace(/^\./g, "");
+	//保证只有出现一个.而没有多个.
+	obj.value = obj.value.replace(/\.{2,}/g, ".");
+	//保证.只出现一次，而不能出现两次以上
+	obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
 }
 
 function deleteImagePanel(id) {

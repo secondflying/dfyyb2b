@@ -2,6 +2,8 @@ package com.dfyy.b2b.web.form;
 
 import java.io.Serializable;
 import java.util.List;
+
+import com.dfyy.b2b.bussiness.Area;
 import com.dfyy.b2b.bussiness.UserType;
 import com.dfyy.b2b.bussiness.Zone;
 import com.dfyy.b2b.dto.AttachmentDto;
@@ -30,7 +32,9 @@ public class UserForm implements Serializable {
 
 	private Double y;
 
-	private Zone zone;
+	private int zone;
+	
+	private String zonename;
 
 	private List<AttachmentDto> docs;
 
@@ -117,11 +121,11 @@ public class UserForm implements Serializable {
 		this.y = y;
 	}
 
-	public Zone getZone() {
+	public int getZone() {
 		return zone;
 	}
 
-	public void setZone(Zone zone) {
+	public void setZone(int zone) {
 		this.zone = zone;
 	}
 
@@ -131,6 +135,14 @@ public class UserForm implements Serializable {
 
 	public void setDocs(List<AttachmentDto> docs) {
 		this.docs = docs;
+	}
+
+	public String getZonename() {
+		return zonename;
+	}
+
+	public void setZonename(String zonename) {
+		this.zonename = zonename;
 	}
 	
 }

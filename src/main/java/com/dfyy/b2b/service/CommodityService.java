@@ -5,11 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dfyy.b2b.bussiness.Commodity;
 import com.dfyy.b2b.bussiness.Commodity2;
 import com.dfyy.b2b.bussiness.CommodityTag;
 import com.dfyy.b2b.bussiness.CommodityType;
@@ -20,7 +18,6 @@ import com.dfyy.b2b.dao.CommodityDao;
 import com.dfyy.b2b.dao.CommodityTagDao;
 import com.dfyy.b2b.dao.CommodityTypeDao;
 import com.dfyy.b2b.dao.CommodityUnitDao;
-import com.dfyy.b2b.web.form.CommodityForm;
 
 @Service
 @Transactional
@@ -43,30 +40,6 @@ public class CommodityService {
 
 	@Autowired
 	private CommodityAttachmentDao commodityAttachmentDao;
-
-	public List<Commodity> getCommodityOfProvider(String userid, int page, int size) {
-		List<Commodity> list = commodityDao.getByUser(userid, new PageRequest(page, size));
-		return list;
-	}
-
-	public int getCountCommodityOfProvider(String userid) {
-		return commodityDao.getCountByUser(userid);
-	}
-
-	public Commodity getCommodity(int id) {
-		Commodity obj = commodityDao.findOne(id);
-		return obj;
-	}
-
-	public void deleteCommodity(Integer id) {
-		Commodity obj = commodityDao.findOne(id);
-		obj.setStatus(-1);
-		commodityDao.save(obj);
-	}
-
-	public Commodity saveCommodity(Commodity obj) {
-		return commodityDao.save(obj);
-	}
 
 	/**
 	 * 获取商品类别，树状结构
@@ -95,7 +68,7 @@ public class CommodityService {
 	 * @param id
 	 * @return
 	 */
-	public CommodityType getCommodityType(int id) {
+	public CommodityType getById(int id) {
 		return commodityTypeDao.findOne(id);
 	}
 
@@ -104,7 +77,7 @@ public class CommodityService {
 	 * 
 	 * @param type
 	 */
-	public void saveCommodityType(CommodityType type) {
+	public void saveCrop(CommodityType type) {
 		commodityTypeDao.save(type);
 	}
 
@@ -113,7 +86,7 @@ public class CommodityService {
 	 * 
 	 * @param id
 	 */
-	public void deleteCommodityType(int id) {
+	public void deleteCrop(int id) {
 		commodityTypeDao.delete(id);
 	}
 
@@ -125,17 +98,6 @@ public class CommodityService {
 	public List<CommodityTag> getAllCommodityTags() {
 		List<CommodityTag> crops = commodityTagDao.getAll();
 		return crops;
-	}
-
-	/**
-	 * 获取某个商品的标签列表
-	 * 
-	 * @param cid
-	 * @return
-	 */
-	public List<CommodityTag> getTagsOfCommodity(int cid) {
-		Commodity2 commodity2 = commodity2Dao.findOne(cid);
-		return commodity2.getTags();
 	}
 
 	/**
@@ -174,6 +136,11 @@ public class CommodityService {
 	public List<CommodityUnit> getAllCommodityUnits() {
 		List<CommodityUnit> crops = commodityUnitDao.getAll();
 		return crops;
+	}
+
+	public List<CommodityTag> getTagsOfCommodity(int cid) {
+		Commodity2 commodity2 = commodity2Dao.findOne(cid);
+		return commodity2.getTags();
 	}
 
 	/**
@@ -234,5 +201,4 @@ public class CommodityService {
 		}
 		return childrens;
 	}
-
 }

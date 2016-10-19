@@ -26,6 +26,7 @@ public class B2BUserDetailsService implements UserDetailsService {
 		if (admin == null) {
 			throw new UsernameNotFoundException("用户不存在");
 		}
+
 		return new B2BUserDetails(admin);
 	}
 

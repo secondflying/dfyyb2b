@@ -37,7 +37,7 @@
 	});
 	
 	var wait=60; 
-	var time=1;
+	var time=0;
 	function settime(o) { 
 		if (wait == 0) { 
 			o.removeAttribute("disabled");	

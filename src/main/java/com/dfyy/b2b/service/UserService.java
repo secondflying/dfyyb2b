@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -131,6 +132,26 @@ public class UserService {
 	 */
 	public int getCountByStatus(int status,String key){
 		return userDao.getCountByStatus(status,key);
+	}
+	
+	/**
+	 * 获取不同类型的用户
+	 * @param type
+	 * @param key
+	 * @param pageable
+	 * @return
+	 */
+	public List<User> getByType(int type,String key,Pageable pageable){
+		return userDao.findByType(type, key, pageable);
+	}
+	
+	/**
+	 * 获取指定类型的用户个数
+	 * @param status
+	 * @return
+	 */
+	public int getCountByType(int type,String key){
+		return userDao.getCountByType(type, key);
 	}
 
 	/**

@@ -1,5 +1,8 @@
 package com.dfyy.b2b.dao;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,4 +18,10 @@ public interface SUserDao extends CrudRepository<SUser, String>, JpaSpecificatio
 
 	@Query("select u from SUser as u where u.tjcode = ?1")
 	public SUser getUserByTjCode(String tjcode);
+	
+	@Query("select u from SUser as u where u.levelID = 3 and (u.alias like %?1% or u.phone like %?1%) order by u.time")
+	public List<SUser> getAllNzd(String keyword, Pageable pageable);
+	
+	@Query("select count(u) from SUser as u where u.levelID = 3 and (u.alias like %?1% or u.phone like %?1%) ")
+	public int getAllNzdCount(String keyword);
 }

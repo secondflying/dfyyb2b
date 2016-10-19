@@ -5,9 +5,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.dfyy.b2b.bussiness.UserType;
-
+@Repository
 public interface UserTypeDao extends CrudRepository<UserType,Integer> , JpaSpecificationExecutor<UserType>{
 
 	@Query("select u from UserType u  where u.status = 0 order by seq ASC")

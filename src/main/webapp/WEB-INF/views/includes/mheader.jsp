@@ -43,7 +43,7 @@
 						<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/manager/users/')}">
 							<c:set var="cssClass" value="active" />
 						</c:if>
-						<c:url var="userUrl" value="/manager/users/formal" />
+						<c:url var="userUrl" value="/manager/users/partners" />
 						<li class="${cssClass}"><a id="userLink" href="${userUrl}">用户管理</a></li>
 						
 						<c:set var="cssClass" value=" " />

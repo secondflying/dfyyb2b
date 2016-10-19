@@ -7,7 +7,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.dfyy.b2b.bussiness.User;
-import com.dfyy.b2b.bussiness.UserType;
 
 public class B2BUserDetails implements UserDetails {
 
@@ -17,14 +16,12 @@ public class B2BUserDetails implements UserDetails {
 	private String name;
 	private String password;
 	private Integer status;
-	private UserType type;
 	
 	public B2BUserDetails(User admin) {
 		setId(admin.getId());
 		setName(admin.getPhone());
 		setPassword(admin.getPassword());
 		setStatus(admin.getStatus());
-		setType(admin.getType());
 	}
 
 	@Override
@@ -88,14 +85,6 @@ public class B2BUserDetails implements UserDetails {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
-
-	public UserType getType() {
-		return type;
-	}
-
-	public void setType(UserType userType) {
-		this.type = userType;
 	}
 
 

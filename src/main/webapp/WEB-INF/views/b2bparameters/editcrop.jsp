@@ -15,6 +15,8 @@
 			<li class=""><a href="${tagUrl2}">商品标签</a></li>
 			<c:url var="unitUrl2" value="units" />
 			<li class=""><a href="${unitUrl2}">商品单位</a></li>
+			<c:url var="brokerageUrl2" value="brokerages" />
+			<li class=""><a href="${brokerageUrl2}">佣金系数</a></li>
 		</ul>
 	</div>
 </div>

@@ -43,12 +43,14 @@ public class LoginHandlerInterceptorAdapter extends HandlerInterceptorAdapter {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 		if (modelAndView != null) {
-			Authentication login = SecurityContextHolder.getContext().getAuthentication();
-			if (login != null) {
-				B2BUserDetails user = (B2BUserDetails) login.getPrincipal();
-				String name = user.getName();
-				modelAndView.addObject("user", user);
-			}
+//			Authentication login = SecurityContextHolder.getContext().getAuthentication();
+//			if (login != null) {
+//				B2BUserDetails user = (B2BUserDetails) login.getPrincipal();
+//				String name = user.getName();
+//				List<Function> functions = name.equals("king") ? service.getAllFunctions() : user.getFunctions();
+//				modelAndView.addObject("functions", functions);
+//				modelAndView.addObject("zone", user.getZone());
+//			}
 		}
 
 	}

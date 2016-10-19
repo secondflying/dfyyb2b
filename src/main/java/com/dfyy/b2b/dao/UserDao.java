@@ -27,5 +27,11 @@ public interface UserDao extends CrudRepository<User, String>, JpaSpecificationE
 	
 	@Query("select count(u) from User u where u.status = ?1 and (u.alias like %?2% or u.phone like %?2%)")
 	public int getCountByStatus(int status,String keyword);
+	
+	@Query("select u from User u left join fetch u.type left join fetch u.zone where u.type.id = ?1 and u.status =1 and (u.alias like %?2% or u.phone like %?2%) order by time DESC")
+	public List<User> findByType(int type,String keyword,Pageable pageable);
+	
+	@Query("select count(u) from User u where u.type.id = ?1 and u.status = 1 and (u.alias like %?2% or u.phone like %?2%)")
+	public int getCountByType(int type,String keyword);
 
 }

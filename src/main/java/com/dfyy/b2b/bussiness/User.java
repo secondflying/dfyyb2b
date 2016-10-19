@@ -82,7 +82,7 @@ public class User implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "zone")
 	@XmlElement
-	private Zone zone;
+	private Area zone;
 	
 	@Column(name = "time")
 	@XmlJavaTypeAdapter(JaxbDateSerializer.class)
@@ -188,11 +188,11 @@ public class User implements Serializable {
 		this.y = y;
 	}
 
-	public Zone getZone() {
+	public Area getZone() {
 		return zone;
 	}
 
-	public void setZone(Zone zone) {
+	public void setZone(Area zone) {
 		this.zone = zone;
 	}
 

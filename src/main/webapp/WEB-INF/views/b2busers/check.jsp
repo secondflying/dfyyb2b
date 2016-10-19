@@ -8,8 +8,16 @@
 <div class="navbar">
 	<div class="navbar-inner">
 		<ul class="nav">
-			<c:url var="infoUrl" value="formal" />
-			<li class=""><a href="${infoUrl}">正式用户</a></li>
+			<c:url var="infoUrl" value="partners" />
+			<li class=""><a href="${infoUrl}">合伙人</a></li>
+			<c:url var="dealerUrl" value="dealers" />
+			<li class=""><a href="${dealerUrl}">经销商</a></li>
+			<c:url var="manuUrl" value="manufacturers" />
+			<li class=""><a href="${manuUrl}">厂家</a></li>
+			<c:url var="saleUrl" value="salesmans" />
+			<li class=""><a href="${saleUrl}">业务员</a></li>
+			<c:url var="storeUrl" value="stores" />
+			<li class=""><a href="${storeUrl}">农资店</a></li>
 			<c:url var="infoUrl2" value="informal" />
 			<li class="active"><a href="${infoUrl2}">待审核用户</a></li>
 		</ul>

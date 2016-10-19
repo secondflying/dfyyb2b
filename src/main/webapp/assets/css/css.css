@@ -6,7 +6,7 @@ body {
 	background-size:cover;
 	height:600px;
 	width:100%; 
-	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader（src='../img/bg.jpg',sizingMethod='scale'）;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader（src='../img/bg.jpg',sizingMethod='scale'）; */
 }
 
 h1{
@@ -82,19 +82,19 @@ div.bootbox.modal{
 	margin-left:-100px;
 }
 
-div.modal-body{
+/* div.modal-body{
 	text-align:center;
-}
+} */
 
 div.modal-footer{
 	text-align:center;
 }
 
-div.modal{
+/* div.modal{
 	width:404px;
 	background:#f9f9f9;
 	margin-left:-202px;
-}
+} */
 
 .modal-header h3{
 	color:#888888;
