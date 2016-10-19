@@ -47,8 +47,7 @@ public class LoginHandlerInterceptorAdapter extends HandlerInterceptorAdapter {
 			if (login != null) {
 				B2BUserDetails user = (B2BUserDetails) login.getPrincipal();
 				String name = user.getName();
-//				modelAndView.addObject("functions", functions);
-//				modelAndView.addObject("zone", user.getZone());
+				modelAndView.addObject("user", user);
 			}
 		}
 

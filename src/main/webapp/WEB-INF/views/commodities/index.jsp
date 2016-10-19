@@ -3,14 +3,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<c:set var="pageTitle" value="积分商品" scope="request" />
-<jsp:include page="../includes/header.jsp" />
+<c:set var="pageTitle" value="商品" scope="request" />
+<jsp:include page="../includes/proheader.jsp" />
 
 <div class="navbar">
 	<div class="navbar-inner">
 		<ul class="nav">
 			<c:url var="infoUrl" value="index" />
-			<li class="active"><a href="${infoUrl}">积分商品</a></li>
+			<li class="active"><a href="${infoUrl}">商品列表</a></li>
 			<c:url var="infoUrl2" value="orders" />
 			<li class=""><a href="${infoUrl2}">积分订单</a></li>
 		</ul>
@@ -20,7 +20,7 @@
 <section class="well shadow">
 	<fieldset>
 		<legend>
-			积分商品
+			商品
 			<c:url var="editUrl" value="edit" />
 			<a id="addone" class="btn btn-info pull-right" href="${editUrl}">
 				<i class="icon-plus icon-white"></i> 新增
@@ -39,46 +39,50 @@
 		<table id="objList" class="table  table-bordered table-hover table-striped" style="margin: 0;">
 			<thead>
 				<tr>
-					<th align="center">图片</th>
-					<th align="center">名称</th>
-					<th align="center">积分</th>
-					<th align="center">描述</th>
-					<th align="center">操作</th>
+					<th style="width: 120px;" align="center">名称</th>
+					<th style="width: 120px;" align="center">厂家</th>
+					<th style="width: 120px;" align="center">状态</th>
+					<th style="width: 120px;" align="center">操作</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:if test="${empty commodities}">
 					<tr>
-						<td colspan="5">空</td>
+						<td colspan="4">空</td>
 					</tr>
 
 				</c:if>
 				<c:forEach items="${commodities}" var="commodity">
-					<tr class="${cssClass}">
-						<td style="width:120px;"><img style="width:120px; height:90px;" src="${imageUrl}/${commodity.image}" /></td>
-						<td style="width:120px;"><c:out value="${commodity.name}" /></td>
-						<td  style="width:120px;">
-						<c:choose>
-							<c:when test="${commodity.exchange == 0}">
-								<c:out value="${commodity.point}" /> 积分
-							</c:when>
-							<c:otherwise>
-								<c:out value="${commodity.tjcoin}" /> 推荐币
-							</c:otherwise>
-						</c:choose>
-							
+					<tr>
+						<td><c:out value="${commodity.name}" /></td>
+						<td><c:out value="${commodity.factory}" /></td>
+						<td>
+							<c:choose>
+								<c:when test="${commodity.status == 0}">
+								等待合伙人审核	
+								</c:when>
+								<c:when test="${pointOrder.status==1}">
+								等待管理员审核
+								</c:when>
+								<c:when test="${pointOrder.status==2}">
+								合伙人审核不通过
+								</c:when>
+								<c:when test="${pointOrder.status==3}">
+								已上架
+								</c:when>
+								<c:when test="${pointOrder.status==4}">
+								管理员审核不通过
+								</c:when>
+							</c:choose>
 						</td>
-						<td style="height:50px; text-align:left;">
-						<div class="textdiv" style="width:300px;">
-							<c:out value="${commodity.description}" />
-						</div> 
-						</td>
-						<td  style="width:120px;">
-							<c:url var="eUrl" value="edit?id=${commodity.id}" />
-							<a id="editone" class="btn btn-small btn-warning" href="${eUrl}">
-								编辑
-							</a>
-							<button class="btn btn-small btn-danger" type="button" onclick="deleteOne(${commodity.id})">下架</button>
+						<td>
+							<c:choose>
+								<c:when test="${commodity.status == 0 || commodity.status == 2 || commodity.status == 4}">
+									<c:url var="eUrl" value="edit?id=${commodity.id}" /> 
+									<a id="editone"	class="btn btn-small btn-warning" href="${eUrl}"> 编辑 </a>
+									<button class="btn btn-small btn-danger" type="button" onclick="deleteOne(${commodity.id})">下架</button>
+								</c:when>
+							</c:choose>
 						</td>
 					</tr>
 				</c:forEach>
@@ -90,9 +94,43 @@
 <script>
 
 	$(document).ready(function() {
-		
-		page();						
-	
+		 var size = 20;
+			var sumcount = parseInt(${sumcount}); 
+			if(sumcount == 0){
+				return false;
+			}
+			
+		    var numPages = Math.ceil(sumcount/size);
+		    var currentPage = getUrlParam("page");
+		    currentPage = currentPage ? parseInt(currentPage) + 1 : 1;
+		    var options = {
+		            currentPage: currentPage,
+		            totalPages: numPages,
+		            size:'small',
+		            alignment:'center',
+		            itemTexts: function (type, page, current) {
+		                switch (type) {
+		                case "first":
+		                    return "首页";
+		                case "prev":
+		                    return "前一页";
+		                case "next":
+		                    return "后一页";
+		                case "last":
+		                    return "末页";
+		                case "page":
+		                    return ""+page;
+		                }
+		            },
+		            
+		            onPageClicked: function (event, originalEvent, type, page) { 
+		            	var page = page-1; 
+		        		window.location.href = '<c:url value="index" />?page=' + page + "&size=" + size;
+		            }
+		    };
+		    var $pager = $('<div class="page"></div>');  
+		    $pager.insertAfter($('table'));
+		    $pager.bootstrapPaginator(options);
 	});
 
 	function deleteOne(id) {

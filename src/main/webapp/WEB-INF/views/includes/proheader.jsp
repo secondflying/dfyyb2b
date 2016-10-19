@@ -40,11 +40,16 @@
 						<c:url var="infoUrl" value="/provider/proinfo/info" />
 						<li class="${cssClass}"><a id="infoLink" href="${infoUrl}">用户信息</a></li>
 
-						<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/commodity')}">
-							<c:set var="cssClass" value="active" />
-						</c:if>
-						<c:url var="infoUrl" value="/provider/commodity/index" />
-						<li class="${cssClass}"><a id="infoLink" href="${infoUrl}">商品管理</a></li>
+						<c:choose>
+							<c:when test="${user.status == 1}">
+								<c:set var="cssClass" value=" " />
+								<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/commodities')}">
+									<c:set var="cssClass" value="active" />
+								</c:if>
+								<c:url var="infoUrl" value="/provider/commodities/index" />
+								<li class="${cssClass}"><a id="infoLink" href="${infoUrl}">商品管理</a></li>
+							</c:when>
+						</c:choose>
 					</ul>
 				</div>
 				<div id="nav-account" class="nav-collapse pull-right">

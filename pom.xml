@@ -132,11 +132,11 @@
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hibernate</groupId> -->
-<!-- 			<artifactId>ejb3-persistence</artifactId> -->
-<!-- 			<version>3.3.2.Beta1</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.hibernate</groupId> -->
+		<!-- <artifactId>ejb3-persistence</artifactId> -->
+		<!-- <version>3.3.2.Beta1</version> -->
+		<!-- </dependency> -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.hibernate.javax.persistence</groupId> -->
 		<!-- <artifactId>hibernate-jpa-2.1-api</artifactId> -->
@@ -246,11 +246,11 @@
 			<version>4.3.4</version>
 		</dependency>
 
-	<dependency>
-		<groupId>com.google.code.gson</groupId>
-		<artifactId>gson</artifactId>
-		<version>2.2.4</version>
-	</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -304,7 +304,7 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
@@ -363,7 +363,7 @@
 				<version>2.2</version>
 				<configuration>
 					<port>8099</port>
-<!-- 					<useBodyEncodingForURI>true</useBodyEncodingForURI> -->
+					<!-- <useBodyEncodingForURI>true</useBodyEncodingForURI> -->
 				</configuration>
 			</plugin>
 
@@ -371,6 +371,21 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.4</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.zeroturnaround</groupId>
+				<artifactId>jrebel-maven-plugin</artifactId>
+				<version>1.1.6</version>
+				<executions>
+					<execution>
+						<id>generate-rebel-xml</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>

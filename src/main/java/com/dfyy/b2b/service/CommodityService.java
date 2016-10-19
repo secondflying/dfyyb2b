@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import com.dfyy.b2b.dao.CommodityDao;
 import com.dfyy.b2b.dao.CommodityTagDao;
 import com.dfyy.b2b.dao.CommodityTypeDao;
 import com.dfyy.b2b.dao.CommodityUnitDao;
+import com.dfyy.b2b.web.form.CommodityForm;
 
 @Service
 @Transactional
@@ -42,14 +44,28 @@ public class CommodityService {
 	@Autowired
 	private CommodityAttachmentDao commodityAttachmentDao;
 
-	public List<Commodity> getCommodityOfProvider(String userid) {
-		List<Commodity> list = commodityDao.getByUser(userid);
+	public List<Commodity> getCommodityOfProvider(String userid, int page, int size) {
+		List<Commodity> list = commodityDao.getByUser(userid, new PageRequest(page, size));
 		return list;
 	}
 
+	public int getCountCommodityOfProvider(String userid) {
+		return commodityDao.getCountByUser(userid);
+	}
+
 	public Commodity getCommodity(int id) {
-		Commodity list = commodityDao.findOne(id);
-		return list;
+		Commodity obj = commodityDao.findOne(id);
+		return obj;
+	}
+
+	public void deleteCommodity(Integer id) {
+		Commodity obj = commodityDao.findOne(id);
+		obj.setStatus(-1);
+		commodityDao.save(obj);
+	}
+
+	public Commodity saveCommodity(Commodity obj) {
+		return commodityDao.save(obj);
 	}
 
 	/**
@@ -218,4 +234,5 @@ public class CommodityService {
 		}
 		return childrens;
 	}
+
 }

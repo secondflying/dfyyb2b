@@ -49,6 +49,7 @@ public class LoginController {
 	@RequestMapping("/register")
 	public String register(Model model) {
 		return "register";
+		
 	}
 
 	@RequestMapping(value = "/checkcode", method = RequestMethod.POST)
@@ -98,6 +99,14 @@ public class LoginController {
 	@RequestMapping("/errors/403")
 	public String error() {
 		return "errors/403";
+	}
+	
+	
+	
+	@RequestMapping(value = "/checkcode2", method = RequestMethod.GET)
+	@ResponseBody
+	public CheckResult confirmOrder1() {
+		return new CheckResult(false);
 	}
 
 }
