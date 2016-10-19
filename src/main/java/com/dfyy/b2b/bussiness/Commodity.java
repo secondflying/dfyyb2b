@@ -39,7 +39,7 @@ public class Commodity implements Serializable {
 	private User provider;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "tid")
+	@JoinColumn(name = "type")
 	@XmlElement
 	private CommodityType type;
 
