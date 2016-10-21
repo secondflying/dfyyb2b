@@ -50,6 +50,16 @@
 								<li class="${cssClass}"><a id="infoLink" href="${infoUrl}">商品管理</a></li>
 							</c:when>
 						</c:choose>
+						<c:choose>
+							<c:when test="${loginuser.type.id == 2}">
+								<c:set var="cssClass" value=" " />
+								<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/dealers')}">
+									<c:set var="cssClass" value="active" />
+								</c:if>
+								<c:url var="infoUrl" value="/provider/dealers/informal" />
+								<li class="${cssClass}"><a id="infoLink" href="${infoUrl}">经销商</a></li>
+							</c:when>
+						</c:choose>
 					</ul>
 				</div>
 				<div id="nav-account" class="nav-collapse pull-right">

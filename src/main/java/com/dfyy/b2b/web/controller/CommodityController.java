@@ -22,6 +22,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dfyy.b2b.bussiness.Commodity;
+import com.dfyy.b2b.bussiness.CommodityAttachment;
+import com.dfyy.b2b.bussiness.CommodityGradualprice;
+import com.dfyy.b2b.bussiness.CommodityGradualrebate;
+import com.dfyy.b2b.bussiness.CommodityReview;
+import com.dfyy.b2b.bussiness.CommodityUnit;
+import com.dfyy.b2b.bussiness.SalesmanBrokerage;
+import com.dfyy.b2b.service.BrokerageService;
 import com.dfyy.b2b.service.CommodityService;
 import com.dfyy.b2b.service.UserService;
 import com.dfyy.b2b.util.PublicConfig;
@@ -39,6 +46,9 @@ public class CommodityController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private BrokerageService brokerageService;
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index(Model model, @RequestParam(required = false, defaultValue = "0") int page,
@@ -56,10 +66,30 @@ public class CommodityController {
 
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String edit(@RequestParam(required = false) String id, Model model) {
+		SalesmanBrokerage salesmanBrokerage = brokerageService.getSalesmanBrokerage();
+		String strbrokerage = "";
+		if(salesmanBrokerage!=null){
+			model.addAttribute("min",salesmanBrokerage.getMin());
+			model.addAttribute("max",salesmanBrokerage.getMax());
+			strbrokerage=salesmanBrokerage.getMin()+"--"+salesmanBrokerage.getMax();
+		}
+		model.addAttribute("strbrokerage", strbrokerage);
+		List<CommodityUnit> units = commodityService.getAllCommodityUnits();
+		model.addAttribute("units", units);
 		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "b2bcommodity/small");
 		if (!StringUtils.isBlank(id)) {
 			Commodity commodity = commodityService.getCommodity(Integer.parseInt(id));
+			List<CommodityAttachment> docs = commodityService.getdocByCommodity(commodity.getId());
+			List<CommodityGradualprice> gradualprices = commodityService.getGradualprices(commodity.getId());
+			List<CommodityGradualrebate> gradualrebates = commodityService.getGradualrebates(commodity.getId());
+			if(commodity.getStatus()==2 || commodity.getStatus()==4){
+				CommodityReview review = commodityService.getReviews(commodity.getId());
+				model.addAttribute("review", review);
+			}
 			model.addAttribute("commodity", commodity);
+			model.addAttribute("docs", docs);
+			model.addAttribute("gprices", gradualprices);
+			model.addAttribute("grebates", gradualrebates);
 			return "commodities/edit";
 		} else {
 			return "commodities/add";
@@ -92,6 +122,12 @@ public class CommodityController {
 		B2BUserDetails loginUser = LoginUtil.getLoginUser();
 
 		if (dto != null) {
+			// 如果是经销商，初始状态为0，需要合伙人再审核一次
+			if (loginUser.getType().getId() == 1) {
+				dto.setStatus(0);
+			} else {
+				dto.setStatus(1);
+			}
 			commodityService.editCommodity(dto);
 			return "redirect:index";
 		} else {

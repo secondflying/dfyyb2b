@@ -47,6 +47,13 @@
 						<li class="${cssClass}"><a id="userLink" href="${userUrl}">用户管理</a></li>
 						
 						<c:set var="cssClass" value=" " />
+						<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/manager/commodities/')}">
+							<c:set var="cssClass" value="active" />
+						</c:if>
+						<c:url var="commUrl" value="/manager/commodities/informal" />
+						<li class="${cssClass}"><a id="commLink" href="${commUrl}">商品管理</a></li>
+						
+						<c:set var="cssClass" value=" " />
 						<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/manager/parameters/')}">
 							<c:set var="cssClass" value="active" />
 						</c:if>

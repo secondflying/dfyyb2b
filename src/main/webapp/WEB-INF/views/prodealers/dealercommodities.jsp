@@ -9,10 +9,10 @@
 <div class="navbar">
 	<div class="navbar-inner">
 		<ul class="nav">
-			<c:url var="infoUrl" value="index" />
-			<li class="active"><a href="${infoUrl}">商品列表</a></li>
-			<c:url var="infoUrl2" value="orders" />
-			<li class=""><a href="${infoUrl2}">订单列表</a></li>
+			<c:url var="infoUrl" value="informal" />
+			<li class=""><a href="${infoUrl}">待审核商品</a></li>
+			<c:url var="infoUrl2" value="subordinates" />
+			<li class="active"><a href="${infoUrl2}">经销商</a></li>
 		</ul>
 	</div>
 </div>
@@ -20,11 +20,7 @@
 <section class="well">
 	<fieldset>
 		<legend>
-			商品
-			<c:url var="editUrl" value="edit" />
-			<a id="addone" class="btn btn-info pull-right" href="${editUrl}">
-				<i class="icon-plus icon-white"></i> 新增
-			</a>
+			经销商商品
 		</legend>
 		<div class="divnull">&nbsp;&nbsp;</div>
 		<c:if test="${success != null}">
@@ -93,60 +89,46 @@
 
 <script>
 
-	$(document).ready(function() {
-		 var size = 20;
-			var sumcount = parseInt(${sumcount}); 
-			if(sumcount == 0){
-				return false;
-			}
-			
-		    var numPages = Math.ceil(sumcount/size);
-		    var currentPage = getUrlParam("page");
-		    currentPage = currentPage ? parseInt(currentPage) + 1 : 1;
-		    var options = {
-		            currentPage: currentPage,
-		            totalPages: numPages,
-		            size:'small',
-		            alignment:'center',
-		            itemTexts: function (type, page, current) {
-		                switch (type) {
-		                case "first":
-		                    return "首页";
-		                case "prev":
-		                    return "前一页";
-		                case "next":
-		                    return "后一页";
-		                case "last":
-		                    return "末页";
-		                case "page":
-		                    return ""+page;
-		                }
-		            },
-		            
-		            onPageClicked: function (event, originalEvent, type, page) { 
-		            	var page = page-1; 
-		        		window.location.href = '<c:url value="index" />?page=' + page + "&size=" + size;
-		            }
-		    };
-		    var $pager = $('<div class="page"></div>');  
-		    $pager.insertAfter($('table'));
-		    $pager.bootstrapPaginator(options);
-	});
+$(document).ready(function() {
+	 var size = 20;
+		var sumcount = parseInt(${sumcount}); 
+		if(sumcount == 0){
+			return false;
+		}
+		
+	    var numPages = Math.ceil(sumcount/size);
+	    var currentPage = getUrlParam("page");
+	    currentPage = currentPage ? parseInt(currentPage) + 1 : 1;
+	    var options = {
+	            currentPage: currentPage,
+	            totalPages: numPages,
+	            size:'small',
+	            alignment:'center',
+	            itemTexts: function (type, page, current) {
+	                switch (type) {
+	                case "first":
+	                    return "首页";
+	                case "prev":
+	                    return "前一页";
+	                case "next":
+	                    return "后一页";
+	                case "last":
+	                    return "末页";
+	                case "page":
+	                    return ""+page;
+	                }
+	            },
+	            
+	            onPageClicked: function (event, originalEvent, type, page) { 
+	            	var page = page-1; 
+	        		window.location.href = '<c:url value="dealercommodities" />?page=' + page + "&size=" + size;
+	            }
+	    };
+	    var $pager = $('<div class="page"></div>');  
+	    $pager.insertAfter($('table'));
+	    $pager.bootstrapPaginator(options);
+});
 
-	function deleteOne(id) {
-		bootbox.confirm("确定要删除吗？", "取消", "确定", function(isOk) {
-			if (!isOk) {
-				return;
-			}
-	
-			$.post('<c:url value="delete" />', {
-				id : id
-			}).done(function(data) {
-				window.location.href = window.location.href;
-			}).fail(function() {
-			});
-		});
-	}
 </script>
 
 

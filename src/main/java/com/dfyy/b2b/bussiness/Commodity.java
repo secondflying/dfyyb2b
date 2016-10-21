@@ -1,6 +1,7 @@
 package com.dfyy.b2b.bussiness;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -86,7 +87,7 @@ public class Commodity implements Serializable {
 
 	@Column(name = "time")
 	@XmlElement
-	private DateTime time;
+	private Date time;
 
 	@Column(name = "price")
 	@XmlElement
@@ -94,7 +95,7 @@ public class Commodity implements Serializable {
 
 	@Column(name = "pricetime")
 	@XmlElement
-	private DateTime pricetime;
+	private Date pricetime;
 
 	@Column(name = "status")
 	@XmlElement
@@ -208,11 +209,11 @@ public class Commodity implements Serializable {
 		this.brokerage = brokerage;
 	}
 
-	public DateTime getTime() {
+	public Date getTime() {
 		return time;
 	}
 
-	public void setTime(DateTime time) {
+	public void setTime(Date time) {
 		this.time = time;
 	}
 
@@ -224,11 +225,11 @@ public class Commodity implements Serializable {
 		this.price = price;
 	}
 
-	public DateTime getPricetime() {
+	public Date getPricetime() {
 		return pricetime;
 	}
 
-	public void setPricetime(DateTime pricetime) {
+	public void setPricetime(Date pricetime) {
 		this.pricetime = pricetime;
 	}
 

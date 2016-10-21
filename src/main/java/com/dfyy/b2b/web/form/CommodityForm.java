@@ -5,23 +5,33 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import com.dfyy.b2b.bussiness.CommodityGradualprice;
+import com.dfyy.b2b.bussiness.CommodityGradualrebate;
 import com.dfyy.b2b.dto.AttachmentDto;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommodityForm implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	private Integer id;
-	private int status;
 	private String userid;
+	private Integer id;
 	private String name;
-	private String image;
-	private Integer exchange;
-	private Integer number;
-	private String description;
-	private List<AttachmentDto> docs;
+	private String cname;
+	private Integer cid;
+	private Integer unit;
+	private Double price;
+	private String factory;
+	private String code;
+	private String standard;
+	private String composition;
+	private Double number;
+	private Double step;
+	private Double brokerage;
+	private Integer status;
 
+	private List<AttachmentDto> docs;
+	private List<CommodityGradualprice> gprices;
+	private List<CommodityGradualrebate> grebates;
 
 	public Integer getId() {
 		return id;
@@ -39,44 +49,92 @@ public class CommodityForm implements Serializable {
 		this.name = name;
 	}
 
-	public String getImage() {
-		return image;
+	public String getCname() {
+		return cname;
 	}
 
-	public void setImage(String image) {
-		this.image = image;
+	public void setCname(String cname) {
+		this.cname = cname;
 	}
 
-	public String getDescription() {
-		return description;
+	public Integer getCid() {
+		return cid;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setCid(Integer cid) {
+		this.cid = cid;
 	}
 
-	public Integer getNumber() {
+	public Integer getUnit() {
+		return unit;
+	}
+
+	public void setUnit(Integer unit) {
+		this.unit = unit;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getFactory() {
+		return factory;
+	}
+
+	public void setFactory(String factory) {
+		this.factory = factory;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getStandard() {
+		return standard;
+	}
+
+	public void setStandard(String standard) {
+		this.standard = standard;
+	}
+
+	public String getComposition() {
+		return composition;
+	}
+
+	public void setComposition(String composition) {
+		this.composition = composition;
+	}
+
+	public Double getNumber() {
 		return number;
 	}
 
-	public void setNumber(Integer number) {
+	public void setNumber(Double number) {
 		this.number = number;
 	}
 
-	public Integer getExchange() {
-		return exchange;
+	public Double getStep() {
+		return step;
 	}
 
-	public void setExchange(Integer exchange) {
-		this.exchange = exchange;
+	public void setStep(Double step) {
+		this.step = step;
 	}
 
-	public int getStatus() {
-		return status;
+	public Double getBrokerage() {
+		return brokerage;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
+	public void setBrokerage(Double brokerage) {
+		this.brokerage = brokerage;
 	}
 
 	public List<AttachmentDto> getDocs() {
@@ -87,12 +145,36 @@ public class CommodityForm implements Serializable {
 		this.docs = docs;
 	}
 
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	public String getUserid() {
 		return userid;
 	}
 
 	public void setUserid(String userid) {
 		this.userid = userid;
+	}
+
+	public List<CommodityGradualprice> getGprices() {
+		return gprices;
+	}
+
+	public void setGprices(List<CommodityGradualprice> gprices) {
+		this.gprices = gprices;
+	}
+
+	public List<CommodityGradualrebate> getGrebates() {
+		return grebates;
+	}
+
+	public void setGrebates(List<CommodityGradualrebate> grebates) {
+		this.grebates = grebates;
 	}
 
 }

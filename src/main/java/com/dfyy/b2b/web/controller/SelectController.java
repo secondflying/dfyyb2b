@@ -44,6 +44,13 @@ public class SelectController {
 		return "select/crops";
 	}
 	
+	@RequestMapping(value = "/select/commoditytypes",method=RequestMethod.GET)
+	public String commoditytypes(Model model){
+		List<CommodityType> crops = commodityService.getTreeCommodityType();
+		model.addAttribute("crops", crops);
+		return "select/commoditytypes";
+	}
+	
 	@RequestMapping(value = "/select/salesmans",method=RequestMethod.GET)
 	public String salesmans(Model model){
 		List<User> users = userService.getByType(4, "", new PageRequest(0, 10000));
