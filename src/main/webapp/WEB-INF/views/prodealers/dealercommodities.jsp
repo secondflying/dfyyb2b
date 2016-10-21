@@ -79,6 +79,10 @@
 									<button class="btn btn-small btn-danger" type="button" onclick="deleteOne(${commodity.id})">下架</button>
 								</c:when>
 							</c:choose>
+							<c:if test="${commodity.status==3 }">
+								<c:url var="infoUrl" value="/provider/commodities/info?id=${commodity.id}" /> 
+								<a id="infoa"	class="btn btn-small btn-info" href="${infoUrl}" target="_Blank"> 查看 </a>
+							</c:if>
 						</td>
 					</tr>
 				</c:forEach>

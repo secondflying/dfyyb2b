@@ -1,6 +1,7 @@
 package com.dfyy.b2b.web.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import com.dfyy.b2b.bussiness.Commodity;
 import com.dfyy.b2b.bussiness.CommodityAttachment;
 import com.dfyy.b2b.bussiness.CommodityGradualprice;
 import com.dfyy.b2b.bussiness.CommodityGradualrebate;
+import com.dfyy.b2b.bussiness.CommodityProtective;
 import com.dfyy.b2b.bussiness.CommodityReview;
 import com.dfyy.b2b.bussiness.CommodityUnit;
 import com.dfyy.b2b.bussiness.SalesmanBrokerage;
@@ -36,6 +38,7 @@ import com.dfyy.b2b.util.PublicHelper;
 import com.dfyy.b2b.web.authentication.B2BUserDetails;
 import com.dfyy.b2b.web.authentication.LoginUtil;
 import com.dfyy.b2b.web.form.CommodityForm;
+import com.dfyy.b2b.web.form.ProtectiveForm;
 
 @Controller
 @RequestMapping("/provider/commodities")
@@ -62,6 +65,27 @@ public class CommodityController {
 		model.addAttribute("commodities", commodities);
 		model.addAttribute("sumcount", sumcount);
 		return "commodities/index";
+	}
+	
+	@RequestMapping(value = "/info", method = RequestMethod.GET)
+	public String edit(@RequestParam(required = true) int id, Model model) {
+		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "b2bcommodity/small");
+		Commodity commodity = commodityService.getCommodity(id);
+		List<CommodityAttachment> docs = commodityService.getdocByCommodity(commodity.getId());
+		List<CommodityGradualprice> gradualprices = commodityService.getGradualprices(commodity.getId());
+		List<CommodityGradualrebate> gradualrebates = commodityService.getGradualrebates(commodity.getId());
+		List<CommodityProtective> protectives = commodityService.getProtectives(commodity.getId());
+		int size = 0;
+		if(docs!=null && docs.size()>0){
+			size = docs.size();
+		}
+		model.addAttribute("commodity", commodity);
+		model.addAttribute("docs", docs);
+		model.addAttribute("size", size);
+		model.addAttribute("gprices", gradualprices);
+		model.addAttribute("grebates", gradualrebates);
+		model.addAttribute("protectives", protectives);
+		return "commodities/info";
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
@@ -134,6 +158,42 @@ public class CommodityController {
 			return "commodities/edit";
 		}
 
+	}
+	
+	@RequestMapping(value = "/editprotective", method = RequestMethod.POST)
+	public String addOne(@ModelAttribute("protective") ProtectiveForm dto) {
+		B2BUserDetails loginUser = LoginUtil.getLoginUser();
+
+		if (dto != null) {
+			CommodityProtective commodityProtective;
+			if(dto.getId()!=null){
+				commodityProtective = commodityService.getProtective(dto.getId());
+			}
+			else{
+				commodityProtective = new CommodityProtective();
+			}
+			commodityProtective.setCid(dto.getCid());
+			commodityProtective.setDays(dto.getDays());
+			commodityProtective.setMaxnumber(dto.getMaxnumber());
+			commodityProtective.setMinnumber(dto.getMinnumber());
+			commodityProtective.setRadius(dto.getRadius());
+			commodityProtective.setTime(new Date());
+			commodityProtective.setStatus(0);
+			commodityService.saveOrUpdate(commodityProtective);
+			return "redirect:info?id="+dto.getCid();
+		} else {
+			return "commodities/info";
+		}
+
+	}
+	
+	@RequestMapping(value = "/deleteprotective", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteprotective(@RequestParam(required = true) Integer id) {
+		CommodityProtective commodityProtective = commodityService.getProtective(id);
+		commodityProtective.setStatus(-1);
+		commodityService.saveOrUpdate(commodityProtective);
+		return "true";
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)

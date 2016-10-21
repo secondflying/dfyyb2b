@@ -17,6 +17,7 @@ import com.dfyy.b2b.bussiness.CommodityAttachment;
 import com.dfyy.b2b.bussiness.CommodityGradualprice;
 import com.dfyy.b2b.bussiness.CommodityGradualrebate;
 import com.dfyy.b2b.bussiness.CommodityPrice;
+import com.dfyy.b2b.bussiness.CommodityProtective;
 import com.dfyy.b2b.bussiness.CommodityReview;
 import com.dfyy.b2b.bussiness.CommodityTag;
 import com.dfyy.b2b.bussiness.CommodityType;
@@ -28,6 +29,7 @@ import com.dfyy.b2b.dao.CommodityDao;
 import com.dfyy.b2b.dao.CommodityGradualpriceDao;
 import com.dfyy.b2b.dao.CommodityGradualrebateDao;
 import com.dfyy.b2b.dao.CommodityPriceDao;
+import com.dfyy.b2b.dao.CommodityProtectiveDao;
 import com.dfyy.b2b.dao.CommodityReviewDao;
 import com.dfyy.b2b.dao.CommodityTagDao;
 import com.dfyy.b2b.dao.CommodityTypeDao;
@@ -70,6 +72,9 @@ public class CommodityService {
 	
 	@Autowired
 	private CommodityGradualrebateDao commodityGradualrebateDao;
+	
+	@Autowired
+	private CommodityProtectiveDao commodityProtectiveDao;
 	
 	@Autowired
 	private UserDao userDao;
@@ -383,7 +388,34 @@ public class CommodityService {
 	public List<CommodityGradualrebate> getGradualrebates(int cid){
 		return commodityGradualrebateDao.getByCommodity(cid);
 	}
-
+	
+	/**
+	 * 获取商品的保护条件
+	 * @param cid
+	 * @return
+	 */
+	public List<CommodityProtective> getProtectives(int cid){
+		return commodityProtectiveDao.getByCommodity(cid);
+	}
+	
+	/**
+	 * 新增编辑保护条件
+	 * @param commodityProtective
+	 * @return
+	 */
+	public CommodityProtective saveOrUpdate(CommodityProtective commodityProtective){
+		return commodityProtectiveDao.save(commodityProtective);
+	}
+	
+	/**
+	 * 获取保护条件
+	 * @param id
+	 * @return
+	 */
+	public CommodityProtective getProtective(int id){
+		return commodityProtectiveDao.findOne(id);
+	}
+ 
 	/**
 	 * 获取商品类别，树状结构
 	 * 
