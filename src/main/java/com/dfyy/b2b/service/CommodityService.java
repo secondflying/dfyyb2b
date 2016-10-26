@@ -37,6 +37,7 @@ import com.dfyy.b2b.dao.CommodityUnitDao;
 import com.dfyy.b2b.dao.PartnerDealerDao;
 import com.dfyy.b2b.dao.UserDao;
 import com.dfyy.b2b.dto.AttachmentDto;
+import com.dfyy.b2b.dto.CommoditiesResult;
 import com.dfyy.b2b.web.form.CommodityForm;
 
 @Service
@@ -60,30 +61,54 @@ public class CommodityService {
 
 	@Autowired
 	private CommodityAttachmentDao commodityAttachmentDao;
-	
+
 	@Autowired
 	private CommodityReviewDao commodityReviewDao;
-	
+
 	@Autowired
 	private CommodityPriceDao commodityPriceDao;
-	
+
 	@Autowired
 	private CommodityGradualpriceDao commodityGradualpriceDao;
-	
+
 	@Autowired
 	private CommodityGradualrebateDao commodityGradualrebateDao;
-	
+
 	@Autowired
 	private CommodityProtectiveDao commodityProtectiveDao;
-	
+
 	@Autowired
 	private UserDao userDao;
-	
+
 	@Autowired
 	private PartnerDealerDao pDealerDao;
 
 	/**
+	 * 获取某个农资店能看到的在线商品列表
+	 * 
+	 * @param userid
+	 * @param page
+	 * @param size
+	 * @return
+	 */
+	public CommoditiesResult getOnlineCommodity(String nzd, int page, long time) {
+		CommoditiesResult result = new CommoditiesResult();
+		if (page == 0) {
+			List<Commodity> list = commodityDao.getOnline(new PageRequest(page, 20));
+			result.setResults(list);
+
+			result.setLastTime(new Date().getTime());
+		} else {
+			List<Commodity> list = commodityDao.getOnline(new Date(time), new PageRequest(page, 20));
+			result.setResults(list);
+			result.setLastTime(time);
+		}
+		return result;
+	}
+
+	/**
 	 * 获取某供应商的商品
+	 * 
 	 * @param userid
 	 * @param page
 	 * @param size
@@ -96,43 +121,47 @@ public class CommodityService {
 
 	/**
 	 * 获取某供应商的商品个数
+	 * 
 	 * @param userid
 	 * @return
 	 */
 	public int getCountCommodityOfProvider(String userid) {
 		return commodityDao.getCountByUser(userid);
 	}
-	
+
 	/**
 	 * 按状态获取商品
+	 * 
 	 * @param status
 	 * @param page
 	 * @param size
 	 * @return
 	 */
-	public List<Commodity> getCommoditiesByStatus(int status,int page,int size){
-		return commodityDao.getByStatus(status,new PageRequest(page, size));
+	public List<Commodity> getCommoditiesByStatus(int status, int page, int size) {
+		return commodityDao.getByStatus(status, new PageRequest(page, size));
 	}
-	
+
 	/**
 	 * 获取某状态商品个数
+	 * 
 	 * @param status
 	 * @return
 	 */
-	public int getCommoditiesCountByStatus(int status){
+	public int getCommoditiesCountByStatus(int status) {
 		return commodityDao.getCountByStatus(status);
 	}
-	
+
 	/**
 	 * 获取合伙人待审核的商品
+	 * 
 	 * @param uid
 	 * @param page
 	 * @param size
 	 * @return
 	 */
-	public List<Commodity> getInformalByPartner(String uid,int page,int size){
+	public List<Commodity> getInformalByPartner(String uid, int page, int size) {
 		List<PartnerDealer> partnerDealers = pDealerDao.getByPid(uid);
-		if(partnerDealers==null || partnerDealers.size()==0){
+		if (partnerDealers == null || partnerDealers.size() == 0) {
 			return null;
 		}
 		List<String> uids = new ArrayList<String>();
@@ -143,10 +172,10 @@ public class CommodityService {
 		List<Commodity> commodities = commodityDao.getInformalByDealers(uids, new PageRequest(page, size));
 		return commodities;
 	}
-	
-	public int getInformalCountByPartner(String uid){
+
+	public int getInformalCountByPartner(String uid) {
 		List<PartnerDealer> partnerDealers = pDealerDao.getByPid(uid);
-		if(partnerDealers==null || partnerDealers.size()==0){
+		if (partnerDealers == null || partnerDealers.size() == 0) {
 			return 0;
 		}
 		List<String> uids = new ArrayList<String>();
@@ -160,6 +189,7 @@ public class CommodityService {
 
 	/**
 	 * 根据id获取商品
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -170,6 +200,7 @@ public class CommodityService {
 
 	/**
 	 * 删除商品
+	 * 
 	 * @param id
 	 */
 	public void deleteCommodity(Integer id) {
@@ -180,6 +211,7 @@ public class CommodityService {
 
 	/**
 	 * 新增商品
+	 * 
 	 * @param obj
 	 * @return
 	 */
@@ -224,8 +256,8 @@ public class CommodityService {
 
 			commodity.setImage(firsturl);
 		}
-		
-		if(obj.getGprices()!=null && obj.getGprices().size()>0){
+
+		if (obj.getGprices() != null && obj.getGprices().size() > 0) {
 			for (Iterator iterator = obj.getGprices().iterator(); iterator.hasNext();) {
 				CommodityGradualprice priceobj = (CommodityGradualprice) iterator.next();
 				priceobj.setCid(commodity.getId());
@@ -235,7 +267,7 @@ public class CommodityService {
 				commodityGradualpriceDao.save(priceobj);
 			}
 		}
-		if(obj.getGrebates()!=null && obj.getGrebates().size()>0){
+		if (obj.getGrebates() != null && obj.getGrebates().size() > 0) {
 			for (Iterator iterator = obj.getGrebates().iterator(); iterator.hasNext();) {
 				CommodityGradualrebate rebateobj = (CommodityGradualrebate) iterator.next();
 				rebateobj.setCid(commodity.getId());
@@ -250,6 +282,7 @@ public class CommodityService {
 
 	/**
 	 * 编辑商品
+	 * 
 	 * @param obj
 	 * @return
 	 */
@@ -257,14 +290,14 @@ public class CommodityService {
 		Commodity commodity = commodityDao.findOne(obj.getId());
 		commodity.setStatus(obj.getStatus());
 		List<CommodityAttachment> docs = commodityAttachmentDao.getByCommodity(commodity.getId());
-		if(docs!=null && docs.size()>0){
+		if (docs != null && docs.size() > 0) {
 			for (Iterator iterator = docs.iterator(); iterator.hasNext();) {
 				CommodityAttachment commodityAttachment = (CommodityAttachment) iterator.next();
 				commodityAttachmentDao.delete(commodityAttachment);
 			}
 		}
 		List<CommodityGradualprice> gradualprices = getGradualprices(commodity.getId());
-		if(gradualprices!=null && gradualprices.size()>0){
+		if (gradualprices != null && gradualprices.size() > 0) {
 			for (Iterator iterator = gradualprices.iterator(); iterator.hasNext();) {
 				CommodityGradualprice commodityGradualprice = (CommodityGradualprice) iterator.next();
 				commodityGradualprice.setStatus(-1);
@@ -272,7 +305,7 @@ public class CommodityService {
 			}
 		}
 		List<CommodityGradualrebate> gradualrebates = getGradualrebates(commodity.getId());
-		if(gradualrebates!=null && gradualrebates.size()>0){
+		if (gradualrebates != null && gradualrebates.size() > 0) {
 			for (Iterator iterator = gradualrebates.iterator(); iterator.hasNext();) {
 				CommodityGradualrebate commodityGradualrebate = (CommodityGradualrebate) iterator.next();
 				commodityGradualrebate.setStatus(-1);
@@ -316,7 +349,7 @@ public class CommodityService {
 
 			commodity.setImage(firsturl);
 		}
-		if(obj.getGprices()!=null && obj.getGprices().size()>0){
+		if (obj.getGprices() != null && obj.getGprices().size() > 0) {
 			for (Iterator iterator = obj.getGprices().iterator(); iterator.hasNext();) {
 				CommodityGradualprice priceobj = (CommodityGradualprice) iterator.next();
 				priceobj.setCid(commodity.getId());
@@ -326,7 +359,7 @@ public class CommodityService {
 				commodityGradualpriceDao.save(priceobj);
 			}
 		}
-		if(obj.getGrebates()!=null && obj.getGrebates().size()>0){
+		if (obj.getGrebates() != null && obj.getGrebates().size() > 0) {
 			for (Iterator iterator = obj.getGrebates().iterator(); iterator.hasNext();) {
 				CommodityGradualrebate rebateobj = (CommodityGradualrebate) iterator.next();
 				rebateobj.setCid(commodity.getId());
@@ -337,18 +370,19 @@ public class CommodityService {
 		}
 		return commodityDao.save(commodity);
 	}
-	
+
 	/**
 	 * 审核商品
+	 * 
 	 * @param status
 	 * @param commodity
 	 * @return
 	 */
-	public void checkCommodity(Commodity commodity,CommodityReview review){
+	public void checkCommodity(Commodity commodity, CommodityReview review) {
 		commodityDao.save(commodity);
 		commodityReviewDao.save(review);
-		if(commodity.getStatus()==3){
-			//存储价格更新记录
+		if (commodity.getStatus() == 3) {
+			// 存储价格更新记录
 			CommodityPrice commodityPrice = new CommodityPrice();
 			commodityPrice.setCid(commodity.getId());
 			commodityPrice.setPrice(commodity.getPrice());
@@ -358,64 +392,71 @@ public class CommodityService {
 			commodityPriceDao.save(commodityPrice);
 		}
 	}
-	
+
 	/**
 	 * 获取最新的审核意见
+	 * 
 	 * @param cid
 	 * @return
 	 */
-	public CommodityReview getReviews(int cid){
+	public CommodityReview getReviews(int cid) {
 		List<CommodityReview> reviews = commodityReviewDao.getByCid(cid);
-		if(reviews==null || reviews.size()==0){
+		if (reviews == null || reviews.size() == 0) {
 			return null;
 		}
 		return reviews.get(0);
 	}
-	
+
 	/**
 	 * 获取商品的阶梯价格
+	 * 
 	 * @param cid
 	 * @return
 	 */
-	public List<CommodityGradualprice> getGradualprices(int cid){
+	public List<CommodityGradualprice> getGradualprices(int cid) {
 		return commodityGradualpriceDao.getByCommodity(cid);
 	}
+
 	/**
 	 * 获取商品的阶梯返利
+	 * 
 	 * @param cid
 	 * @return
 	 */
-	public List<CommodityGradualrebate> getGradualrebates(int cid){
+	public List<CommodityGradualrebate> getGradualrebates(int cid) {
 		return commodityGradualrebateDao.getByCommodity(cid);
 	}
-	
+
 	/**
 	 * 获取商品的保护条件
+	 * 
 	 * @param cid
 	 * @return
 	 */
-	public List<CommodityProtective> getProtectives(int cid){
+	public List<CommodityProtective> getProtectives(int cid) {
 		return commodityProtectiveDao.getByCommodity(cid);
 	}
-	
+
 	/**
 	 * 新增编辑保护条件
+	 * 
 	 * @param commodityProtective
 	 * @return
 	 */
-	public CommodityProtective saveOrUpdate(CommodityProtective commodityProtective){
+	public CommodityProtective saveOrUpdate(CommodityProtective commodityProtective) {
 		return commodityProtectiveDao.save(commodityProtective);
 	}
-	
+
 	/**
 	 * 获取保护条件
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public CommodityProtective getProtective(int id){
+	public CommodityProtective getProtective(int id) {
 		return commodityProtectiveDao.findOne(id);
 	}
- 
+
 	/**
 	 * 获取商品类别，树状结构
 	 * 
@@ -523,13 +564,14 @@ public class CommodityService {
 		List<CommodityUnit> crops = commodityUnitDao.getAll();
 		return crops;
 	}
-	
+
 	/**
 	 * 获取某商品的图片
+	 * 
 	 * @param cid
 	 * @return
 	 */
-	public List<CommodityAttachment> getdocByCommodity(int cid){
+	public List<CommodityAttachment> getdocByCommodity(int cid) {
 		return commodityAttachmentDao.getByCommodity(cid);
 	}
 

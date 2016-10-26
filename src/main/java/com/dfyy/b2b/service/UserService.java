@@ -44,6 +44,8 @@ public class UserService {
 	@Autowired
 	private RegisterCodeService codeService;
 
+	
+	
 	/**
 	 * 用户注册
 	 * @param form

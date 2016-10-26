@@ -2,6 +2,10 @@ package com.dfyy.b2b.util;
 
 import java.text.SimpleDateFormat;
 
+import com.easemob.server.example.comm.Constants;
+import com.easemob.server.example.comm.Roles;
+import com.easemob.server.example.httpclient.vo.ClientSecretCredential;
+import com.easemob.server.example.httpclient.vo.Credential;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 
@@ -12,6 +16,10 @@ public class MyConstants {
 	public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss"); 
 	
 	public static JsonNodeFactory factory = new JsonNodeFactory(false);
+	
+	 // 通过app的client_id和client_secret来获取app管理员token
+    public static Credential credential = new ClientSecretCredential(Constants.APP_CLIENT_ID,
+            Constants.APP_CLIENT_SECRET, Roles.USER_ROLE_APPADMIN);
 
     public static final String RESPONSE="response";
     

@@ -1,5 +1,6 @@
 package com.dfyy.b2b.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -12,9 +13,11 @@ import com.dfyy.b2b.bussiness.Commodity;
 
 @Repository
 public interface CommodityDao extends CrudRepository<Commodity, Integer>, JpaSpecificationExecutor<Commodity> {
-	@Query("select u from Commodity as u left join fetch u.provider left join fetch u.type left join fetch u.unit where u.status=?1 order by u.time desc ")
-	public List<Commodity> getByStatus(int status);
 	
+	@Query("select u from Commodity as u left join fetch u.provider left join fetch u.type left join fetch u.unit where u.status = 3 order by u.time desc ")
+	public List<Commodity> getOnline(Pageable page);
+	@Query("select u from Commodity as u left join fetch u.provider left join fetch u.type left join fetch u.unit where u.status = 3 and u.time <= ?1  order by u.time desc ")
+	public List<Commodity> getOnline(Date lasttime,Pageable page);	
 	
 	@Query("select u from Commodity as u left join fetch u.provider left join fetch u.type left join fetch u.unit where u.provider.id=?1 and u.status <> -1 order by u.time desc ")
 	public List<Commodity> getByUser(String userid,Pageable page);

@@ -39,6 +39,9 @@ public class SUser implements Serializable {
 	@Column(name = "phone")
 	@XmlElement
 	private String phone;
+	
+	@Column(name = "password")
+	private String password;
 
 	@Column(name = "alias")
 	@XmlElement
@@ -300,5 +303,13 @@ public class SUser implements Serializable {
 
 	public void setAcceptCoupon(boolean acceptCoupon) {
 		this.acceptCoupon = acceptCoupon;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

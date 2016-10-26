@@ -24,4 +24,7 @@ public interface SUserDao extends CrudRepository<SUser, String>, JpaSpecificatio
 	
 	@Query("select count(u) from SUser as u where u.levelID = 3 and (u.alias like %?1% or u.phone like %?1%) ")
 	public int getAllNzdCount(String keyword);
+	
+	@Query("select u from SUser as u where u.levelID = 3 and u.phone = ?1 and u.password = ?2 ")
+	public SUser getNzdByPhoneAndPassword(String phone, String password);
 }
