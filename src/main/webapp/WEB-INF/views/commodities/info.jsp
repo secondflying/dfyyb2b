@@ -76,7 +76,7 @@
 					 	<thead>
 							<tr>
 								<td align="center">最小数量</td>
-								<td align="center">最大数量</td>
+<!-- 								<td align="center">最大数量</td> -->
 								<td align="center">价格</td>
 							</tr>
 						</thead>
@@ -84,7 +84,7 @@
 							<c:forEach items="${gprices}" var="gprice">
 								<tr>
 									<td>${gprice.minnumber }</td>
-									<td>${gprice.maxnumber }</td>
+<%-- 									<td>${gprice.maxnumber }</td> --%>
 									<td>${gprice.price }</td>
 								</tr>
 							</c:forEach>
@@ -102,7 +102,7 @@
 					 	<thead>
 							<tr>
 								<td align="center">最小数量</td>
-								<td align="center">最大数量</td>
+<!-- 								<td align="center">最大数量</td> -->
 								<td align="center">返利</td>
 							</tr>
 						</thead>
@@ -110,7 +110,7 @@
 							<c:forEach items="${grebates}" var="grebate">
 								<tr>
 									<td>${grebate.minnumber }</td>
-									<td>${grebate.maxnumber }</td>
+<%-- 									<td>${grebate.maxnumber }</td> --%>
 									<td>${grebate.rebate }</td>
 								</tr>
 							</c:forEach>
@@ -135,7 +135,7 @@
 					 	<thead>
 							<tr>
 								<td align="center">最小进货数量</td>
-								<td align="center">最大进货数量</td>
+<!-- 								<td align="center">最大进货数量</td> -->
 								<td align="center">保护天数</td>
 								<td align="center">保护半径</td>
 								<td align="center">操作</td>
@@ -145,7 +145,7 @@
 							<c:forEach items="${protectives}" var="protective">
 								<tr>
 									<td>${protective.minnumber }</td>
-									<td>${protective.maxnumber }</td>
+<%-- 									<td>${protective.maxnumber }</td> --%>
 									<td>${protective.days }</td>
 									<td>${protective.radius }</td>
 									<td>
@@ -184,13 +184,13 @@
 					<span class="help-inline"></span>
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="code">最大数量</label>
-				<div class="controls">
-					<input type="text" id="maxnumber" name="maxnumber" class="span4" placeholder="最大数量" required onkeyup="clearNoNum(this)" />
-					<span class="help-inline"></span>
-				</div>
-			</div>
+<!-- 			<div class="control-group"> -->
+<!-- 				<label class="control-label" for="code">最大数量</label> -->
+<!-- 				<div class="controls"> -->
+<!-- 					<input type="text" id="maxnumber" name="maxnumber" class="span4" placeholder="最大数量" required onkeyup="clearNoNum(this)" /> -->
+<!-- 					<span class="help-inline"></span> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
 			<div class="control-group">
 				<label class="control-label" for="days">保护天数</label>
 				<div class="controls">
@@ -233,7 +233,7 @@ function addpop(cid){
 	$("#id").val("");
 	$("#cid").val(cid);
 	$("#minnumber").val("");
-	$("#maxnumber").val("");
+// 	$("#maxnumber").val("");
 	$("#days").val("");
 	$("#radius").val("");
 	$("#editOne-modal").modal( {
@@ -244,7 +244,7 @@ function editpop(id,cid,min,max,days,radius){
 	$("#id").val(id);
 	$("#cid").val(cid);
 	$("#minnumber").val(min);
-	$("#maxnumber").val(max);
+// 	$("#maxnumber").val(max);
 	$("#days").val(days);
 	$("#radius").val(radius);
 	$("#editOne-modal").modal( {

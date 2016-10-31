@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -195,6 +196,17 @@ public class CommodityService {
 	 */
 	public Commodity getCommodity(int id) {
 		Commodity obj = commodityDao.findOne(id);
+		return obj;
+	}
+	
+	
+	public Commodity getCommodityFull(int id) {
+		Commodity obj = commodityDao.findOne(id);
+		obj.setTags(getTagsOfCommodity(id));
+		obj.setAttachments(commodityAttachmentDao.getByCommodity(id));
+		obj.setGradualprices(commodityGradualpriceDao.getByCommodity(id));
+		obj.setGradualrebates(commodityGradualrebateDao.getByCommodity(id));
+		obj.setProtectives(commodityProtectiveDao.getByCommodity(id));
 		return obj;
 	}
 
@@ -524,6 +536,7 @@ public class CommodityService {
 	 */
 	public List<CommodityTag> getTagsOfCommodity(int cid) {
 		Commodity2 commodity2 = commodity2Dao.findOne(cid);
+		Hibernate.initialize(commodity2.getTags());
 		return commodity2.getTags();
 	}
 

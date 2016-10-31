@@ -13,6 +13,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.dfyy.b2b.util.JaxbDateSerializer;
 
 @Entity
 @Table(name = "b2b_commodity_protective")
@@ -53,6 +56,7 @@ public class CommodityProtective implements Serializable {
 	
 	@Column(name = "time")
 	@XmlElement
+	@XmlJavaTypeAdapter(JaxbDateSerializer.class)
 	private Date time;
 
 	@Column(name = "status")

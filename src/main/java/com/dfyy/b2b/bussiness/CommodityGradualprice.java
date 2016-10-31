@@ -13,6 +13,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.dfyy.b2b.util.JaxbDateSerializer;
 
 @Entity
 @Table(name = "b2b_commodity_gradualprice")
@@ -44,14 +47,15 @@ public class CommodityGradualprice implements Serializable {
 	
 	@Column(name = "minNumber")
 	@XmlElement
-	private Double minnumber;
+	private Integer minnumber;
 	
-	@Column(name = "maxNumber")
-	@XmlElement
-	private Double maxnumber;
+//	@Column(name = "maxNumber")
+//	@XmlElement
+//	private Integer maxnumber;
 	
 	@Column(name = "time")
 	@XmlElement
+	@XmlJavaTypeAdapter(JaxbDateSerializer.class)
 	private Date time;
 
 	@Column(name = "status")
@@ -89,21 +93,21 @@ public class CommodityGradualprice implements Serializable {
 		this.price = price;
 	}
 
-	public Double getMinnumber() {
+	public Integer getMinnumber() {
 		return minnumber;
 	}
 
-	public void setMinnumber(Double minnumber) {
+	public void setMinnumber(Integer minnumber) {
 		this.minnumber = minnumber;
 	}
 
-	public Double getMaxnumber() {
-		return maxnumber;
-	}
-
-	public void setMaxnumber(Double maxnumber) {
-		this.maxnumber = maxnumber;
-	}
+//	public Integer getMaxnumber() {
+//		return maxnumber;
+//	}
+//
+//	public void setMaxnumber(Integer maxnumber) {
+//		this.maxnumber = maxnumber;
+//	}
 
 	public Date getTime() {
 		return time;

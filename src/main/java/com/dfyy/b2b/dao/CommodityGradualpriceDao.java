@@ -15,4 +15,8 @@ JpaSpecificationExecutor<CommodityGradualprice>  {
 
 	@Query("select u from CommodityGradualprice u where u.cid=?1 and u.status=0")
 	public List<CommodityGradualprice> getByCommodity(Integer aid);
+	
+	
+	@Query("select u from CommodityGradualprice u where u.cid=?1 and u.status=0 and u.minnumber<= ?2  order by u.minnumber desc")
+	public List<CommodityGradualprice> getByCommodityAndCount(Integer cid,int count);
 }

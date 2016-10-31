@@ -1,7 +1,5 @@
 package com.dfyy.b2b.resource;
 
-import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -20,7 +18,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dfyy.b2b.bussiness.Shopcart;
+import com.dfyy.b2b.dto.CheckResult;
+import com.dfyy.b2b.dto.ShopcartResult;
+import com.dfyy.b2b.dto.TotalOrders;
 import com.dfyy.b2b.service.ShopcartService;
 import com.dfyy.b2b.service.TokenService;
 import com.dfyy.b2b.util.TokenHelper;
@@ -48,7 +48,7 @@ public class ShopcartResource {
 		TokenHelper.verifyToken(tokenService, userid, token);
 
 		try {
-			List<Shopcart> result = shopcartService.getList(userid);
+			ShopcartResult result = shopcartService.getList(userid);
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			logger.error("获取购物车列表", e);
@@ -70,7 +70,7 @@ public class ShopcartResource {
 
 		try {
 
-			List<Shopcart> result = shopcartService.addCommodity(userid, cid, count);
+			ShopcartResult result = shopcartService.addCommodity(userid, cid, count);
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 
 		} catch (Exception e) {
@@ -92,11 +92,32 @@ public class ShopcartResource {
 		TokenHelper.verifyToken(tokenService, userid, token);
 
 		try {
-			List<Shopcart> result = shopcartService.deleteCommodity(userid, cid);
+			ShopcartResult result = shopcartService.deleteCommodity(userid, cid);
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 
 		} catch (Exception e) {
 			logger.error("获取购物车列表", e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path("/submit")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("application/json;charset=UTF-8")
+	public Response submit(@FormParam("nzd") String userid, @HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+
+		TokenHelper.verifyToken(tokenService, userid, token);
+
+		try {
+			TotalOrders totalOrders = shopcartService.submit(userid);
+			return Response.status(Status.OK).entity(totalOrders).type(MediaType.APPLICATION_JSON).build();
+
+		} catch (Exception e) {
+			logger.error("提交购物车", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 	}

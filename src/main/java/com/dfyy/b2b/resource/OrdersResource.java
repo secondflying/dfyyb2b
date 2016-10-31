@@ -18,16 +18,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dfyy.b2b.bussiness.Commodity;
-import com.dfyy.b2b.dto.CommoditiesResult;
-import com.dfyy.b2b.service.CommodityService;
+import com.dfyy.b2b.bussiness.Orders;
+import com.dfyy.b2b.dto.OrdersResult;
+import com.dfyy.b2b.service.OrdersService;
 import com.dfyy.b2b.service.TokenService;
 import com.dfyy.b2b.util.TokenHelper;
 import com.sun.jersey.api.core.ResourceContext;
 
 @Component
-@Path("/commodity")
-public class CommodityResource {
+@Path("/orders")
+public class OrdersResource {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -35,13 +35,13 @@ public class CommodityResource {
 	private ResourceContext resourceContext;
 
 	@Autowired
-	private CommodityService commodityService;
+	private OrdersService ordersService;
 
 	@Autowired
 	private TokenService tokenService;
 
 	@GET
-	@Path("/online")
+	@Path("/my")
 	@Produces("application/json;charset=UTF-8")
 	public Response online(@QueryParam("nzd") String userid, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("time") @DefaultValue("0") long time, @HeaderParam("X-Token") String token) {
@@ -52,7 +52,7 @@ public class CommodityResource {
 		TokenHelper.verifyToken(tokenService, userid, token);
 
 		try {
-			CommoditiesResult result = commodityService.getOnlineCommodity(userid, page, time);
+			OrdersResult result = ordersService.getMyOrders(userid, page, time);
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -60,11 +60,11 @@ public class CommodityResource {
 	}
 
 	@GET
-	@Path("/{cid}")
+	@Path("/{oid}")
 	@Produces("application/json;charset=UTF-8")
-	public Response single(@PathParam("cid") int cid) {
+	public Response single(@PathParam("oid") int oid) {
 		try {
-			Commodity result = commodityService.getCommodityFull(cid);
+			Orders result = ordersService.getSingle(oid);
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

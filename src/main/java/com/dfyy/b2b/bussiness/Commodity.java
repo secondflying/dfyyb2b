@@ -2,6 +2,7 @@ package com.dfyy.b2b.bussiness;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,13 +13,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.joda.time.DateTime;
+
+import com.dfyy.b2b.util.JaxbDateSerializer;
 
 @Entity
 @Table(name = "b2b_commodity")
@@ -70,7 +77,7 @@ public class Commodity implements Serializable {
 	private String standard;
 
 	@Column(name = "composition")
-	@XmlTransient
+	@XmlElement
 	private String composition;
 
 	@Column(name = "number")
@@ -87,6 +94,7 @@ public class Commodity implements Serializable {
 
 	@Column(name = "time")
 	@XmlElement
+	@XmlJavaTypeAdapter(JaxbDateSerializer.class)
 	private Date time;
 
 	@Column(name = "price")
@@ -95,11 +103,40 @@ public class Commodity implements Serializable {
 
 	@Column(name = "pricetime")
 	@XmlElement
+	@XmlJavaTypeAdapter(JaxbDateSerializer.class)
 	private Date pricetime;
 
 	@Column(name = "status")
 	@XmlElement
 	private Integer status;
+	
+	
+	@Transient
+	@XmlElementWrapper
+	@XmlElementRef
+	private List<CommodityAttachment> attachments;
+	
+	@Transient
+	@XmlElementWrapper
+	@XmlElementRef
+	private List<CommodityTag> tags;	
+	
+	@Transient
+	@XmlElementWrapper
+	@XmlElementRef	
+	private List<CommodityGradualprice> gradualprices;
+	
+	
+	@Transient
+	@XmlElementWrapper
+	@XmlElementRef	
+	private List<CommodityGradualrebate> gradualrebates;
+	
+	@Transient
+	@XmlElementWrapper
+	@XmlElementRef	
+	private List<CommodityProtective> protectives;
+	
 
 	public Commodity() {
 
@@ -239,5 +276,45 @@ public class Commodity implements Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public List<CommodityAttachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<CommodityAttachment> attachments) {
+		this.attachments = attachments;
+	}
+
+	public List<CommodityTag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<CommodityTag> tags) {
+		this.tags = tags;
+	}
+
+	public List<CommodityGradualprice> getGradualprices() {
+		return gradualprices;
+	}
+
+	public void setGradualprices(List<CommodityGradualprice> gradualprices) {
+		this.gradualprices = gradualprices;
+	}
+
+	public List<CommodityGradualrebate> getGradualrebates() {
+		return gradualrebates;
+	}
+
+	public void setGradualrebates(List<CommodityGradualrebate> gradualrebates) {
+		this.gradualrebates = gradualrebates;
+	}
+
+	public List<CommodityProtective> getProtectives() {
+		return protectives;
+	}
+
+	public void setProtectives(List<CommodityProtective> protectives) {
+		this.protectives = protectives;
 	}
 }

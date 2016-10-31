@@ -138,7 +138,7 @@
 						 	<thead>
 								<tr>
 									<td align="center">最小数量</td>
-									<td align="center">最大数量</td>
+<!-- 									<td align="center">最大数量</td> -->
 									<td align="center">价格</td>
 									<td align="center">操作</td>
 								</tr>
@@ -148,7 +148,7 @@
 								<c:forEach items="${gprices}" var="gprice">
 									<tr>
 										<td><input class='transinput' id='gprices[${i }].minnumber' name='gprices[${i }].minnumber' readonly='readonly' type='text' value='${gprice.minnumber }' onkeyup='clearNoNum(this)'/></td>
-										<td><input class='transinput' id='gprices[${i }].maxnumber' name='gprices[${i }].maxnumber' readonly='readonly' type='text' value='${gprice.maxnumber }' onkeyup='clearNoNum(this)'/></td>
+<%-- 										<td><input class='transinput' id='gprices[${i }].maxnumber' name='gprices[${i }].maxnumber' readonly='readonly' type='text' value='${gprice.maxnumber }' onkeyup='clearNoNum(this)'/></td> --%>
 										<td><input class='transinput' id='gprices[${i }].price' name='gprices[${i }].price' readonly='readonly' type='text' value='${gprice.price }' onkeyup='clearNoNum(this)'/></td>
 										<td><a id='pages${i }' class='icon pull-right' href='javascript:delprice(${i })'><i class='icon-remove'></i></a></td>
 									</tr>
@@ -171,7 +171,7 @@
 						 	<thead>
 								<tr>
 									<td align="center">最小数量</td>
-									<td align="center">最大数量</td>
+<!-- 									<td align="center">最大数量</td> -->
 									<td align="center">返利</td>
 									<td align="center">操作</td>
 								</tr>
@@ -181,7 +181,7 @@
 								<c:forEach items="${grebates}" var="grebate">
 									<tr>
 										<td><input class='transinput' id='grebates[${j }].minnumber' name='grebates[${j }].minnumber' readonly='readonly' type='text' value='${grebate.minnumber }' onkeyup='clearNoNum(this)'/></td>
-										<td><input class='transinput' id='grebates[${j }].maxnumber' name='grebates[${j }].maxnumber' readonly='readonly' type='text' value='${grebate.maxnumber }' onkeyup='clearNoNum(this)'/></td>
+<%-- 										<td><input class='transinput' id='grebates[${j }].maxnumber' name='grebates[${j }].maxnumber' readonly='readonly' type='text' value='${grebate.maxnumber }' onkeyup='clearNoNum(this)'/></td> --%>
 										<td><input class='transinput' id='grebates[${j }].rebate' name='grebates[${i }].rebate' readonly='readonly' type='text' value='${grebate.rebate }' onkeyup='clearNoNum(this)'/></td>
 										<td><a id='rebates${i }' class='icon pull-right' href='javascript:delrebate(${i })'><i class='icon-remove'></i></a></td>
 									</tr>
@@ -255,13 +255,13 @@
 					<span class="help-inline"></span>
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="code">最大数量</label>
-				<div class="controls">
-					<input type="text" id="gmax1" name="gmax1" class="span4" placeholder="最大数量" required onkeyup="clearNoNum(this)" />
-					<span class="help-inline"></span>
-				</div>
-			</div>
+<!-- 			<div class="control-group"> -->
+<!-- 				<label class="control-label" for="code">最大数量</label> -->
+<!-- 				<div class="controls"> -->
+<!-- 					<input type="text" id="gmax1" name="gmax1" class="span4" placeholder="最大数量" required onkeyup="clearNoNum(this)" /> -->
+<!-- 					<span class="help-inline"></span> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
 			<div class="control-group">
 				<label class="control-label" for="code">价格</label>
 				<div class="controls">
@@ -291,13 +291,13 @@
 					<span class="help-inline"></span>
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="code">最大数量</label>
-				<div class="controls">
-					<input type="text" id="gmax2" name="gmax2" class="span4" placeholder="最大数量" required onkeyup="clearNoNum(this)" />
-					<span class="help-inline"></span>
-				</div>
-			</div>
+<!-- 			<div class="control-group"> -->
+<!-- 				<label class="control-label" for="code">最大数量</label> -->
+<!-- 				<div class="controls"> -->
+<!-- 					<input type="text" id="gmax2" name="gmax2" class="span4" placeholder="最大数量" required onkeyup="clearNoNum(this)" /> -->
+<!-- 					<span class="help-inline"></span> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
 			<div class="control-group">
 				<label class="control-label" for="code">返利比例</label>
 				<div class="controls">
@@ -506,11 +506,11 @@ function gpriceclick(){
 		all = false;
 		$('#gmin1').nextAll(".help-inline").html("必填");
 	}
-	var max = $('#gmax1').val();
-	if(max==""||max==null){
-		all = false;
-		$('#gmax1').nextAll(".help-inline").html("必填");
-	}
+// 	var max = $('#gmax1').val();
+// 	if(max==""||max==null){
+// 		all = false;
+// 		$('#gmax1').nextAll(".help-inline").html("必填");
+// 	}
 	var price = $('#gprice').val();
 	if(price==""||price==null){
 		all = false;
@@ -527,9 +527,9 @@ function gpriceclick(){
 	var td = $("<td></td>"); 
 	td.append($("<input class='transinput' id='gprices["+firstTr.length+"].minnumber' name='gprices["+firstTr.length+"].minnumber' readonly='readonly' type='text' value='"+min+"' onkeyup='clearNoNum(this)'/>"));
 	row.append(td);
-	var td1 = $("<td></td>"); 
-	td1.append($("<input class='transinput' id='gprices["+firstTr.length+"].maxnumber' name='gprices["+firstTr.length+"].maxnumber' readonly='readonly' type='text' value='"+max+"' onkeyup='clearNoNum(this)'/>") ); 
-	row.append(td1);
+// 	var td1 = $("<td></td>"); 
+// 	td1.append($("<input class='transinput' id='gprices["+firstTr.length+"].maxnumber' name='gprices["+firstTr.length+"].maxnumber' readonly='readonly' type='text' value='"+max+"' onkeyup='clearNoNum(this)'/>") ); 
+// 	row.append(td1);
 	var td11 = $("<td></td>"); 
 	td11.append($("<input class='transinput' id='gprices["+firstTr.length+"].price' name='gprices["+firstTr.length+"].price' readonly='readonly' type='text' value='"+price+"' onkeyup='clearNoNum(this)'/>") ); 
 	row.append(td11);
@@ -541,8 +541,8 @@ function gpriceclick(){
 	$('#jgModal').modal('hide');
 	$('#gmin1').val("");
 	$('#gmin1').nextAll(".help-inline").html("");
-	$('#gmax1').val("");
-	$('#gmax1').nextAll(".help-inline").html("");
+// 	$('#gmax1').val("");
+// 	$('#gmax1').nextAll(".help-inline").html("");
 	$('#gprice').val("");
 	$('#gprice').nextAll(".help-inline").html("");
 }
@@ -556,11 +556,11 @@ function grebateclick(){
 		all = false;
 		$('#gmin2').nextAll(".help-inline").html("必填");
 	}
-	var max = $('#gmax2').val();
-	if(max==""||max==null){
-		all = false;
-		$('#gmax2').nextAll(".help-inline").html("必填");
-	}
+// 	var max = $('#gmax2').val();
+// 	if(max==""||max==null){
+// 		all = false;
+// 		$('#gmax2').nextAll(".help-inline").html("必填");
+// 	}
 	var rebate = $('#grebate').val();
 	if(rebate==""||rebate==null){
 		all = false;
@@ -577,9 +577,9 @@ function grebateclick(){
 	var td = $("<td></td>"); 
 	td.append($("<input class='transinput' id='grebates["+firstTr.length+"].minnumber' name='grebates["+firstTr.length+"].minnumber' readonly='readonly' type='text' value='"+min+"' onkeyup='clearNoNum(this)'/>"));
 	row.append(td);
-	var td1 = $("<td></td>"); 
-	td1.append($("<input class='transinput' id='grebates["+firstTr.length+"].maxnumber' name='grebates["+firstTr.length+"].maxnumber' readonly='readonly' type='text' value='"+max+"' onkeyup='clearNoNum(this)'/>") ); 
-	row.append(td1);
+// 	var td1 = $("<td></td>"); 
+// 	td1.append($("<input class='transinput' id='grebates["+firstTr.length+"].maxnumber' name='grebates["+firstTr.length+"].maxnumber' readonly='readonly' type='text' value='"+max+"' onkeyup='clearNoNum(this)'/>") ); 
+// 	row.append(td1);
 	var td11 = $("<td></td>"); 
 	td11.append($("<input class='transinput' id='grebates["+firstTr.length+"].rebate' name='grebates["+firstTr.length+"].rebate' readonly='readonly' type='text' value='"+rebate+"' onkeyup='clearNoNum(this)'/>") ); 
 	row.append(td11);
@@ -591,8 +591,8 @@ function grebateclick(){
 	$('#flModal').modal('hide');
 	$('#gmin2').val("");
 	$('#gmin2').nextAll(".help-inline").html("");
-	$('#gmax2').val("");
-	$('#gmax2').nextAll(".help-inline").html("");
+// 	$('#gmax2').val("");
+// 	$('#gmax2').nextAll(".help-inline").html("");
 	$('#grebate').val("");
 	$('#grebate').nextAll(".help-inline").html("");
 }
