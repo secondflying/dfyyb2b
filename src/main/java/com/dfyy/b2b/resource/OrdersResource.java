@@ -1,8 +1,11 @@
 package com.dfyy.b2b.resource;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -19,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dfyy.b2b.bussiness.Orders;
+import com.dfyy.b2b.dto.CheckResult;
+import com.dfyy.b2b.dto.CommodityOfNzdResult;
 import com.dfyy.b2b.dto.OrdersResult;
 import com.dfyy.b2b.service.OrdersService;
 import com.dfyy.b2b.service.TokenService;
@@ -39,6 +44,25 @@ public class OrdersResource {
 
 	@Autowired
 	private TokenService tokenService;
+
+	@GET
+	@Path("/buyedCommodity")
+	@Produces("application/json;charset=UTF-8")
+	public Response buyedCommodity(@QueryParam("nzd") String userid, @QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("time") @DefaultValue("0") long time, @HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+
+//		TokenHelper.verifyToken(tokenService, userid, token);
+
+		try {
+			CommodityOfNzdResult result = ordersService.getMyBuyedCommodity(userid, page, time);
+			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
 
 	@GET
 	@Path("/my")
@@ -66,6 +90,63 @@ public class OrdersResource {
 		try {
 			Orders result = ordersService.getSingle(oid);
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path("/cancel")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("application/json;charset=UTF-8")
+	public Response cancel(@FormParam("nzd") String userid, @FormParam("oid") int oid,
+			@HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+
+		TokenHelper.verifyToken(tokenService, userid, token);
+		try {
+			ordersService.cancel(oid, userid);
+			return Response.status(Status.OK).entity(new CheckResult(true)).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path("/confirm")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("application/json;charset=UTF-8")
+	public Response confirm(@FormParam("nzd") String userid, @FormParam("oid") int oid,
+			@HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+
+		TokenHelper.verifyToken(tokenService, userid, token);
+		try {
+			ordersService.confirm(oid, userid);
+			return Response.status(Status.OK).entity(new CheckResult(true)).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path("/back")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("application/json;charset=UTF-8")
+	public Response back(@FormParam("nzd") String userid, @FormParam("oid") int oid,
+			@HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+
+		TokenHelper.verifyToken(tokenService, userid, token);
+		try {
+			ordersService.back(oid, userid);
+			return Response.status(Status.OK).entity(new CheckResult(true)).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}

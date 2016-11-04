@@ -44,7 +44,7 @@ public class ProkerageDto implements Serializable {
 		id = (int)o[0];
 		name = String.valueOf(o[1]);
 		category = (int)o[2];
-		status = (int)o[3];
+//		status = (int)o[3];
 		image = o[4]==null?null:String.valueOf(o[4]);
 		platform = o[5]==null?0:(double)o[5];
 		partner = o[6]==null?0:(double)o[6];

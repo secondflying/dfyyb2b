@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dfyy.b2b.dto.CheckResult;
 import com.dfyy.b2b.dto.ShopcartResult;
 import com.dfyy.b2b.dto.TotalOrders;
 import com.dfyy.b2b.service.ShopcartService;
