@@ -25,11 +25,11 @@
 					<th style="width: 120px;" align="center">商品名称</th>
 					<th style="width: 120px;" align="center">供应商</th>
 					<th style="width: 120px;" align="center">订购农资店</th>
-					<th style="width: 120px;" align="center">订购数量</th>
 					<th style="width: 120px;" align="center">下单时间</th>
+					<th style="width: 120px;" align="center">订购数量</th>
 					<th style="width: 120px;" align="center">状态</th>
 					<th style="width: 120px;" align="center">操作</th>
-					<th style="width: 120px;" align="center">操作</th>
+					<th style="width: 120px;" align="center">收益查看</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -99,10 +99,10 @@
 						<c:if test="${loginUser.type.id==2 ||loginUser.type.id==3  }">
 								<c:choose>
 									<c:when test="${ord.status == 0}">
-									<button class="btn btn-small btn-danger" type="button" onclick="alert(${commodity.id})">确定发货</button>
+									<button class="btn btn-small btn-danger" type="button" onclick="alert(${ord.id})">确定发货</button>
 								</c:when>
 									<c:when test="${ord.status==1}">
-									<button class="btn btn-small btn-danger" type="button" onclick="alert(${commodity.id})">确定送达</button>
+									<button class="btn btn-small btn-danger" type="button" onclick="alert(${ord.id})">确定送达</button>
 								</c:when>
 									<c:when test="${ord.status==2}">
 								
@@ -111,7 +111,7 @@
 								
 								</c:when>
 									<c:when test="${ord.status==4}">
-								<button class="btn btn-small btn-danger" type="button" onclick="alert(${commodity.id})">审核退货申请</button>
+								<button class="btn btn-small btn-danger" type="button" onclick="alert(${ord.id})">审核退货申请</button>
 
 								</c:when>
 									<c:when test="${ord.status==10}">
@@ -122,6 +122,9 @@
 								</c:when>
 								</c:choose>
 							</c:if>	
+							</td>
+							<td>
+							<button class="btn btn-small btn-success" type="button" onclick="alert(${ord.id})">查看</button>
 							</td>
 					</tr>
 				</c:forEach>
