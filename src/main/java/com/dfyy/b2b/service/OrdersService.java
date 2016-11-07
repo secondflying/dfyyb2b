@@ -10,18 +10,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dfyy.b2b.bussiness.CommodityOfNzd;
+import com.dfyy.b2b.bussiness.OrderBrokerage;
 import com.dfyy.b2b.bussiness.Orders;
 import com.dfyy.b2b.bussiness.PartnerDealer;
+import com.dfyy.b2b.bussiness.PpBrokerage;
+import com.dfyy.b2b.bussiness.SUser;
+import com.dfyy.b2b.bussiness.SalesmanStore;
 import com.dfyy.b2b.bussiness.User;
 import com.dfyy.b2b.dao.CommodityDao;
 import com.dfyy.b2b.dao.CommodityGradualpriceDao;
 import com.dfyy.b2b.dao.CommodityOfNzdDao;
+import com.dfyy.b2b.dao.OrderBrokerageDao;
 import com.dfyy.b2b.dao.OrdersDao;
 import com.dfyy.b2b.dao.PartnerDealerDao;
+import com.dfyy.b2b.dao.PpBrokerageDao;
 import com.dfyy.b2b.dao.SUserDao;
+import com.dfyy.b2b.dao.SalesmanStoreDao;
 import com.dfyy.b2b.dao.UserDao;
 import com.dfyy.b2b.dto.CommodityOfNzdResult;
 import com.dfyy.b2b.dto.OrdersResult;
+import com.dfyy.b2b.util.PublicHelper;
 
 @Service
 @Transactional
@@ -47,6 +55,15 @@ public class OrdersService {
 
 	@Autowired
 	private PartnerDealerDao dealerDao;
+	
+	@Autowired
+	private OrderBrokerageDao orderBrokerageDao;
+	
+	@Autowired
+	private PpBrokerageDao ppBrokerageDao;
+	
+	@Autowired
+	private SalesmanStoreDao salesmanStoreDao;
 
 	/**
 	 * 获取某个农资店购买的所有订单列表
@@ -124,6 +141,58 @@ public class OrdersService {
 		orderDao.save(order);
 		return true;
 	}
+	
+	/**
+	 * 确定发货
+	 * 
+	 * @param oid
+	 * @return
+	 */
+	public boolean confirmSend(int oid) {
+		Orders order = orderDao.findOne(oid);
+		order.setStatus(1);
+		orderDao.save(order);
+		return true;
+	}
+	
+	/**
+	 * 确定订单送达
+	 * 
+	 * @param oid
+	 * @return
+	 */
+	public boolean confirmArrival(int oid) {
+		Orders order = orderDao.findOne(oid);
+		order.setStatus(2);
+		orderDao.save(order);
+		return true;
+	}
+	
+	/**
+	 * 拒绝订单退货
+	 * 
+	 * @param oid
+	 * @return
+	 */
+	public boolean backStop(int oid) {
+		Orders order = orderDao.findOne(oid);
+		order.setStatus(2);
+		orderDao.save(order);
+		return true;
+	}
+	
+	/**
+	 * 同意订单退货
+	 * 
+	 * @param oid
+	 * @return
+	 */
+	public boolean backPass(int oid) {
+		Orders order = orderDao.findOne(oid);
+		order.setStatus(11);
+		orderDao.save(order);
+		return true;
+	}
 
 	/**
 	 * 确定收货
@@ -139,10 +208,38 @@ public class OrdersService {
 		if (order.getStatus() != 2) {
 			throw new RuntimeException("订单未送达，不能确定收货");
 		}
-
 		order.setStatus(3);
 		orderDao.save(order);
+		
+		OrderBrokerage orderbro = new OrderBrokerage();
+		orderbro.setOid(order.getId());
+		PpBrokerage ppBrokerage = ppBrokerageDao.getByCid(order.getCommodity().getType().getId());
+		PartnerDealer partnerDealer = dealerDao.getByDid(order.getCommodity().getProvider().getId());
+		if(partnerDealer!=null){
+			orderbro.setBpartner(PublicHelper.correctTo(order.getPrice()*order.getCount()*ppBrokerage.getPartner()));
+			orderbro.setPid(partnerDealer.getPid());
+		}
+		SalesmanStore salesmanStore = salesmanStoreDao.getBySid(nzd);
+		if(salesmanStore!=null){
+			orderbro.setBsalesman(PublicHelper.correctTo(order.getPrice()*order.getCount()*order.getCommodity().getBrokerage()));
+			orderbro.setSid(salesmanStore.getUid());
+		}	
+		orderbro.setBplatform(PublicHelper.correctTo(order.getPrice()*order.getCount()*ppBrokerage.getPlatform()));		
+		orderbro.setStatus(0);
+		orderbro.setTime(order.getTime());
+		
+		orderBrokerageDao.save(orderbro);
+		
 		return true;
+	}
+	
+	/**
+	 * 获取订单佣金
+	 * @param oid
+	 * @return
+	 */
+	public OrderBrokerage getBrokerageByOid(int oid){
+		return orderBrokerageDao.getByOid(oid);
 	}
 
 	/**

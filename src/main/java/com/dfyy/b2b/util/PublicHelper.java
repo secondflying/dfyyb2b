@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -297,5 +298,10 @@ public class PublicHelper {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	public static double correctTo(double d){
+		BigDecimal b = new BigDecimal(d);  
+		return b.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 }

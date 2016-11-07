@@ -99,10 +99,10 @@
 						<c:if test="${loginUser.type.id==2 ||loginUser.type.id==3  }">
 								<c:choose>
 									<c:when test="${ord.status == 0}">
-									<button class="btn btn-small btn-danger" type="button" onclick="alert(${ord.id})">确定发货</button>
+									<button class="btn btn-small btn-danger" type="button" onclick="confirmSend(${ord.id})">确定发货</button>
 								</c:when>
 									<c:when test="${ord.status==1}">
-									<button class="btn btn-small btn-danger" type="button" onclick="alert(${ord.id})">确定送达</button>
+									<button class="btn btn-small btn-danger" type="button" onclick="confirmArrival(${ord.id})">确定送达</button>
 								</c:when>
 									<c:when test="${ord.status==2}">
 								
@@ -111,7 +111,7 @@
 								
 								</c:when>
 									<c:when test="${ord.status==4}">
-								<button class="btn btn-small btn-danger" type="button" onclick="alert(${ord.id})">审核退货申请</button>
+								<button class="btn btn-small btn-danger" type="button" onclick="checkBack(${ord.id})">审核退货申请</button>
 
 								</c:when>
 									<c:when test="${ord.status==10}">
@@ -124,7 +124,8 @@
 							</c:if>	
 							</td>
 							<td>
-							<button class="btn btn-small btn-success" type="button" onclick="alert(${ord.id})">查看</button>
+							<c:url var="infoUrl" value="info?id=${ord.id}" /> 
+							<a class="btn btn-small btn-success" href="${infoUrl}">查看</a>
 							</td>
 					</tr>
 				</c:forEach>
@@ -174,6 +175,59 @@
 		    $pager.insertAfter($('table'));
 		    $pager.bootstrapPaginator(options);
 	});
+
+	function confirmSend(id) {
+		bootbox.confirm("确定货物发出了吗？", "取消", "确定", function(isOk) {
+			if (!isOk) {
+				return;
+			}
+
+			$.post('<c:url value="confirmsend" />', {
+				id : id
+			}).done(function(data) {
+				window.location.href = window.location.href;
+			}).fail(function() {
+			});
+		});
+	}
+	
+	function confirmArrival(id) {
+		bootbox.confirm("确定货物送达了吗？", "取消", "确定", function(isOk) {
+			if (!isOk) {
+				return;
+			}
+
+			$.post('<c:url value="confirmarrival" />', {
+				id : id
+			}).done(function(data) {
+				window.location.href = window.location.href;
+			}).fail(function() {
+			});
+		});
+	}
+	
+	function checkBack(id) {
+		bootbox.confirm("请您在查看过订单详情及与客户沟通后给出意见。", "拒绝退货", "同意退货", function(isOk) {
+			if (!isOk) {
+				$.post('<c:url value="backstop" />', {
+					id : id
+				}).done(function(data) {
+					window.location.href = window.location.href;
+				}).fail(function() {
+				});
+			}
+			else{
+				
+				$.post('<c:url value="backpass" />', {
+					id : id
+				}).done(function(data) {
+					window.location.href = window.location.href;
+				}).fail(function() {
+				});
+				
+			}
+		});
+	}
 </script>
 
 
