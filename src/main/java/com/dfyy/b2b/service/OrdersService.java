@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dfyy.b2b.bussiness.CommodityOfNzd;
 import com.dfyy.b2b.bussiness.OrderBrokerage;
 import com.dfyy.b2b.bussiness.Orders;
+import com.dfyy.b2b.bussiness.OrdersInventory;
 import com.dfyy.b2b.bussiness.PartnerDealer;
 import com.dfyy.b2b.bussiness.PpBrokerage;
-import com.dfyy.b2b.bussiness.SUser;
 import com.dfyy.b2b.bussiness.SalesmanStore;
 import com.dfyy.b2b.bussiness.User;
 import com.dfyy.b2b.dao.CommodityDao;
@@ -22,6 +22,7 @@ import com.dfyy.b2b.dao.CommodityGradualpriceDao;
 import com.dfyy.b2b.dao.CommodityOfNzdDao;
 import com.dfyy.b2b.dao.OrderBrokerageDao;
 import com.dfyy.b2b.dao.OrdersDao;
+import com.dfyy.b2b.dao.OrdersInventoryDao;
 import com.dfyy.b2b.dao.PartnerDealerDao;
 import com.dfyy.b2b.dao.PpBrokerageDao;
 import com.dfyy.b2b.dao.SUserDao;
@@ -55,15 +56,18 @@ public class OrdersService {
 
 	@Autowired
 	private PartnerDealerDao dealerDao;
-	
+
 	@Autowired
 	private OrderBrokerageDao orderBrokerageDao;
-	
+
 	@Autowired
 	private PpBrokerageDao ppBrokerageDao;
-	
+
 	@Autowired
 	private SalesmanStoreDao salesmanStoreDao;
+
+	@Autowired
+	private OrdersInventoryDao inventoryDao;
 
 	/**
 	 * 获取某个农资店购买的所有订单列表
@@ -82,6 +86,29 @@ public class OrdersService {
 			result.setLastTime(new Date().getTime());
 		} else {
 			List<Orders> list = orderDao.getByNzd(nzd, new Date(time), new PageRequest(page, 20));
+			result.setResults(list);
+			result.setLastTime(time);
+		}
+		return result;
+	}
+
+	/**
+	 * 获取某个农资店购买的所有订单列表
+	 * 
+	 * @param nzd
+	 * @param page
+	 * @param time
+	 * @return
+	 */
+	public OrdersResult getBuyHistory(String nzd, int cid, int page, long time) {
+		OrdersResult result = new OrdersResult();
+		if (page == 0) {
+			List<Orders> list = orderDao.getNzdBuyCommodity(nzd, cid, new PageRequest(page, 20));
+
+			result.setResults(list);
+			result.setLastTime(new Date().getTime());
+		} else {
+			List<Orders> list = orderDao.getNzdBuyCommodity(nzd, cid, new Date(time), new PageRequest(page, 20));
 			result.setResults(list);
 			result.setLastTime(time);
 		}
@@ -141,7 +168,7 @@ public class OrdersService {
 		orderDao.save(order);
 		return true;
 	}
-	
+
 	/**
 	 * 确定发货
 	 * 
@@ -154,7 +181,7 @@ public class OrdersService {
 		orderDao.save(order);
 		return true;
 	}
-	
+
 	/**
 	 * 确定订单送达
 	 * 
@@ -167,7 +194,7 @@ public class OrdersService {
 		orderDao.save(order);
 		return true;
 	}
-	
+
 	/**
 	 * 拒绝订单退货
 	 * 
@@ -180,7 +207,7 @@ public class OrdersService {
 		orderDao.save(order);
 		return true;
 	}
-	
+
 	/**
 	 * 同意订单退货
 	 * 
@@ -210,35 +237,51 @@ public class OrdersService {
 		}
 		order.setStatus(3);
 		orderDao.save(order);
-		
+
+		// 确认收货，增加库存
+		OrdersInventory inventory = inventoryDao.getCommodityInventory(nzd, order.getCommodity().getId());
+		if (inventory == null) {
+			inventory = new OrdersInventory();
+			inventory.setNzd(nzd);
+			inventory.setCid(order.getCommodity().getId());
+			inventory.setCount(order.getCount());
+			inventory.setTime(new Date());
+		} else {
+			inventory.setCount(inventory.getCount() + order.getCount());
+			inventory.setTime(new Date());
+		}
+		inventoryDao.save(inventory);
+
 		OrderBrokerage orderbro = new OrderBrokerage();
 		orderbro.setOid(order.getId());
 		PpBrokerage ppBrokerage = ppBrokerageDao.getByCid(order.getCommodity().getType().getId());
 		PartnerDealer partnerDealer = dealerDao.getByDid(order.getCommodity().getProvider().getId());
-		if(partnerDealer!=null){
-			orderbro.setBpartner(PublicHelper.correctTo(order.getPrice()*order.getCount()*ppBrokerage.getPartner()));
+		if (partnerDealer != null) {
+			orderbro.setBpartner(PublicHelper.correctTo(order.getPrice() * order.getCount() * ppBrokerage.getPartner()));
 			orderbro.setPid(partnerDealer.getPid());
 		}
 		SalesmanStore salesmanStore = salesmanStoreDao.getBySid(nzd);
-		if(salesmanStore!=null){
-			orderbro.setBsalesman(PublicHelper.correctTo(order.getPrice()*order.getCount()*order.getCommodity().getBrokerage()));
+		if (salesmanStore != null) {
+			orderbro.setBsalesman(PublicHelper.correctTo(order.getPrice() * order.getCount()
+					* order.getCommodity().getBrokerage()));
 			orderbro.setSid(salesmanStore.getUid());
-		}	
-		orderbro.setBplatform(PublicHelper.correctTo(order.getPrice()*order.getCount()*ppBrokerage.getPlatform()));		
+		}
+		orderbro.setBplatform(PublicHelper.correctTo(order.getPrice() * order.getCount() * ppBrokerage.getPlatform()));
 		orderbro.setStatus(0);
 		orderbro.setTime(order.getTime());
-		
+
 		orderBrokerageDao.save(orderbro);
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * 获取订单佣金
+	 * 
 	 * @param oid
 	 * @return
 	 */
-	public OrderBrokerage getBrokerageByOid(int oid){
+	public OrderBrokerage getBrokerageByOid(int oid) {
 		return orderBrokerageDao.getByOid(oid);
 	}
 

@@ -87,7 +87,7 @@
 					 	<thead>
 							<tr>
 								<td align="center">最小数量</td>
-								<td align="center">最大数量</td>
+<!-- 								<td align="center">最大数量</td> -->
 								<td align="center">价格</td>
 							</tr>
 						</thead>
@@ -95,7 +95,7 @@
 							<c:forEach items="${gprices}" var="gprice">
 								<tr>
 									<td>${gprice.minnumber }</td>
-									<td>${gprice.maxnumber }</td>
+<%-- 									<td>${gprice.maxnumber }</td> --%>
 									<td>${gprice.price }</td>
 								</tr>
 							</c:forEach>
@@ -113,7 +113,7 @@
 					 	<thead>
 							<tr>
 								<td align="center">最小数量</td>
-								<td align="center">最大数量</td>
+<!-- 								<td align="center">最大数量</td> -->
 								<td align="center">返利</td>
 							</tr>
 						</thead>
@@ -121,7 +121,7 @@
 							<c:forEach items="${grebates}" var="grebate">
 								<tr>
 									<td>${grebate.minnumber }</td>
-									<td>${grebate.maxnumber }</td>
+<%-- 									<td>${grebate.maxnumber }</td> --%>
 									<td>${grebate.rebate }</td>
 								</tr>
 							</c:forEach>
