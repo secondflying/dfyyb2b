@@ -19,6 +19,7 @@ import com.dfyy.b2b.bussiness.Commodity;
 import com.dfyy.b2b.bussiness.CommodityAttachment;
 import com.dfyy.b2b.bussiness.Orders;
 import com.dfyy.b2b.bussiness.OrdersInventory;
+import com.dfyy.b2b.bussiness.OrdersSecond;
 import com.dfyy.b2b.bussiness.SUser;
 import com.dfyy.b2b.bussiness.Second;
 import com.dfyy.b2b.bussiness.SecondAttachment;
@@ -27,6 +28,7 @@ import com.dfyy.b2b.dao.CommodityAttachmentDao;
 import com.dfyy.b2b.dao.CommodityDao;
 import com.dfyy.b2b.dao.OrdersDao;
 import com.dfyy.b2b.dao.OrdersInventoryDao;
+import com.dfyy.b2b.dao.OrdersSecondDao;
 import com.dfyy.b2b.dao.SUserDao;
 import com.dfyy.b2b.dao.SecondAttachmentDao;
 import com.dfyy.b2b.dao.SecondDao;
@@ -56,6 +58,9 @@ public class ZfbtService {
 	private OrdersInventoryDao inventoryDao;
 
 	@Autowired
+	private OrdersSecondDao ordersSecondDao;
+
+	@Autowired
 	private SecondDao secondDao;
 
 	@Autowired
@@ -63,6 +68,11 @@ public class ZfbtService {
 
 	@Autowired
 	private UserSecondDao userSecondDao;
+
+	@Autowired
+	private AccountService accountService;
+
+	public String UserPT = "zhdtd";
 
 	/**
 	 * 上架B端商品到超实惠
@@ -84,6 +94,11 @@ public class ZfbtService {
 		List<Orders> orders = orderDao.getNzdBuyCommodity(nzd.getId(), dto.getCid(), null);
 		if (orders == null || orders.size() == 0) {
 			throw new RuntimeException("农资店没有进货该商品");
+		}
+
+		OrdersSecond onlineSecond = ordersSecondDao.getCommoditySecond(nzd.getId(), dto.getCid());
+		if (onlineSecond != null) {
+			throw new RuntimeException("该商品已有上架的超实惠商品");
 		}
 
 		OrdersInventory inventory = inventoryDao.getCommodityInventory(nzd.getId(), dto.getCid());
@@ -128,6 +143,14 @@ public class ZfbtService {
 		second.setImage(commodity.getImage());
 		secondDao.save(second);
 
+		OrdersSecond onlineSecond1 = new OrdersSecond();
+		onlineSecond1.setCid(commodity.getId());
+		onlineSecond1.setNzd(nzd.getId());
+		onlineSecond1.setSecond(second);
+		onlineSecond1.setStatus(0);
+		onlineSecond1.setTime(new Date());
+		ordersSecondDao.save(onlineSecond1);
+
 		List<CommodityAttachment> atts = commodityAttachmentDao.getByCommodity(commodity.getId());
 		for (CommodityAttachment att : atts) {
 			if (StringUtils.isNotBlank(att.getUrl())) {
@@ -170,6 +193,12 @@ public class ZfbtService {
 			throw new RuntimeException("农资店无该商品");
 		}
 
+		OrdersSecond second = ordersSecondDao.getCommoditySecond(nzd, cid);
+		if (second == null) {
+			throw new RuntimeException("农资店无该商品");
+		}
+
+		inventory.setInventory(inventory.getCount() + second.getSecond().getCount());
 		return inventory;
 	}
 
@@ -184,16 +213,58 @@ public class ZfbtService {
 	public SecondsResult getMySeconds(String nzd, int page, long time) {
 		SecondsResult result = new SecondsResult();
 		if (page == 0) {
-			List<Second> list = secondDao.getOfNzd(nzd, new PageRequest(page, 20));
+			List<OrdersSecond> list = ordersSecondDao.getCommoditySecond(nzd, new PageRequest(page, 20));
 
 			result.setResults(list);
 			result.setLastTime(new Date().getTime());
 		} else {
-			List<Second> list = secondDao.getOfNzd(nzd, new Date(time), new PageRequest(page, 20));
+			List<OrdersSecond> list = ordersSecondDao
+					.getCommoditySecond(nzd, new Date(time), new PageRequest(page, 20));
 			result.setResults(list);
 			result.setLastTime(time);
 		}
 		return result;
+	}
+
+	/**
+	 * 农资店根据商品ID上架的超实惠
+	 * 
+	 * @param nzd
+	 * @param page
+	 * @param time
+	 * @return
+	 */
+	public OrdersSecond getSingleSecond(String nzd, int cid) {
+		OrdersSecond second = ordersSecondDao.getCommoditySecond(nzd, cid);
+		if (second == null) {
+			throw new RuntimeException("该商品没有上架超实惠");
+		}
+
+		return second;
+	}
+
+	public OrdersSecond offShelf(String nzd, int cid) {
+		OrdersInventory inventory = inventoryDao.getCommodityInventory(nzd, cid);
+		if (inventory == null) {
+			throw new RuntimeException("农资店无该商品");
+		}
+
+		OrdersSecond second = ordersSecondDao.getCommoditySecond(nzd, cid);
+		if (second == null) {
+			throw new RuntimeException("该商品没有上架超实惠");
+		}
+
+		second.setStatus(-1);
+		second.setTime(new Date());
+		ordersSecondDao.save(second);
+
+		second.getSecond().setStatus(-1);
+		secondDao.save(second.getSecond());
+
+		inventory.setCount(inventory.getCount() + second.getSecond().getCount());
+		inventoryDao.save(inventory);
+
+		return second;
 	}
 
 	/**
@@ -240,5 +311,34 @@ public class ZfbtService {
 			result.setLastTime(time);
 		}
 		return result;
+	}
+
+	public UserSecond getSellOrderDetail(String nzd, int oid) {
+		UserSecond list = userSecondDao.getSellOrder(nzd, oid);
+
+		return list;
+	}
+
+	public boolean conformUserOrder2(String nzdid, int oid) {
+		UserSecond userSecond = userSecondDao.findOne(oid);
+		if (userSecond != null && userSecond.getSecond().getType() == 2) {
+
+			SUser nzd = sUserDao.findOne(nzdid);
+
+			if (!userSecond.getNzd().getId().equals(nzd.getId())) {
+				throw new RuntimeException("只能由发货农资店扫码确认订单");
+			}
+
+			// 如果是优惠币购买，将优惠币给种好地团队
+			if (userSecond.getCoupon() != null && userSecond.getCoupon() > 0) {
+				accountService.payTransform(UserPT, nzdid, userSecond.getCoupon());
+			}
+
+			userSecond.setStatus(1);
+			userSecondDao.save(userSecond);
+			return true;
+		} else {
+			throw new RuntimeException("该政府补贴订单不存在或错误");
+		}
 	}
 }

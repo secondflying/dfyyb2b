@@ -255,20 +255,25 @@ public class OrdersService {
 		OrderBrokerage orderbro = new OrderBrokerage();
 		orderbro.setOid(order.getId());
 		PpBrokerage ppBrokerage = ppBrokerageDao.getByCid(order.getCommodity().getType().getId());
+		double parter = ppBrokerage == null ? 0 : ppBrokerage.getPartner();
+
 		PartnerDealer partnerDealer = dealerDao.getByDid(order.getCommodity().getProvider().getId());
 		if (partnerDealer != null) {
-			orderbro.setBpartner(PublicHelper.correctTo(order.getPrice() * order.getCount() * ppBrokerage.getPartner()));
+			orderbro.setBpartner(PublicHelper.correctTo(order.getPrice() * order.getCount() * parter));
 			orderbro.setPid(partnerDealer.getPid());
 		}
+
+		double platform = ppBrokerage == null ? 0 : ppBrokerage.getPlatform();
+		orderbro.setBplatform(PublicHelper.correctTo(order.getPrice() * order.getCount() * platform));
+		orderbro.setStatus(0);
+		orderbro.setTime(order.getTime());
+
 		SalesmanStore salesmanStore = salesmanStoreDao.getBySid(nzd);
 		if (salesmanStore != null) {
 			orderbro.setBsalesman(PublicHelper.correctTo(order.getPrice() * order.getCount()
 					* order.getCommodity().getBrokerage()));
 			orderbro.setSid(salesmanStore.getUid());
 		}
-		orderbro.setBplatform(PublicHelper.correctTo(order.getPrice() * order.getCount() * ppBrokerage.getPlatform()));
-		orderbro.setStatus(0);
-		orderbro.setTime(order.getTime());
 
 		orderBrokerageDao.save(orderbro);
 

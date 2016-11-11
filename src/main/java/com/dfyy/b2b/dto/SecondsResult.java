@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.dfyy.b2b.bussiness.Second;
+import com.dfyy.b2b.bussiness.OrdersSecond;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -21,16 +21,16 @@ public class SecondsResult implements Serializable {
 
 	@XmlElementWrapper
 	@XmlElementRef
-	private List<Second> results;
+	private List<OrdersSecond> results;
 
 	public SecondsResult() {
 	}
 
-	public List<Second> getResults() {
+	public List<OrdersSecond> getResults() {
 		return results;
 	}
 
-	public void setResults(List<Second> results) {
+	public void setResults(List<OrdersSecond> results) {
 		this.results = results;
 	}
 

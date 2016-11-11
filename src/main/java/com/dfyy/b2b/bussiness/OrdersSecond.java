@@ -5,11 +5,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,10 +21,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.dfyy.b2b.util.JaxbDateSerializer;
 
 @Entity
-@Table(name = "b2b_orders_inventory")
+@Table(name = "b2b_orders_second")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class OrdersInventory implements Serializable {
+public class OrdersSecond implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -40,20 +42,21 @@ public class OrdersInventory implements Serializable {
 	@XmlElement
 	private int cid;
 
-	@Column(name = "count")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "sid")
 	@XmlElement
-	private int count;
+	private Second second;
+
+	@Column(name = "status")
+	@XmlElement
+	private int status;
 
 	@Column(name = "time")
 	@XmlElement
 	@XmlJavaTypeAdapter(JaxbDateSerializer.class)
 	private Date time;
-	
-	@Transient
-	@XmlElement
-	private int inventory;
 
-	public OrdersInventory() {
+	public OrdersSecond() {
 
 	}
 
@@ -81,14 +84,6 @@ public class OrdersInventory implements Serializable {
 		this.cid = cid;
 	}
 
-	public int getCount() {
-		return count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
-	}
-
 	public Date getTime() {
 		return time;
 	}
@@ -97,12 +92,20 @@ public class OrdersInventory implements Serializable {
 		this.time = time;
 	}
 
-	public int getInventory() {
-		return inventory;
+	public int getStatus() {
+		return status;
 	}
 
-	public void setInventory(int inventory) {
-		this.inventory = inventory;
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public Second getSecond() {
+		return second;
+	}
+
+	public void setSecond(Second second) {
+		this.second = second;
 	}
 
 }
