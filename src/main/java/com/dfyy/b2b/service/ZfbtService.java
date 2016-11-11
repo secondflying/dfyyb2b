@@ -332,7 +332,7 @@ public class ZfbtService {
 
 		int[] sids = new int[seconds.size()];
 		for (int i = 0; i < sids.length; i++) {
-			sids[i] = seconds.get(i).getId();
+			sids[i] = seconds.get(i).getSecond().getId();
 		}
 
 		if (page == 0) {
