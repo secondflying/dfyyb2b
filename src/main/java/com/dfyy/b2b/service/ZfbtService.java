@@ -313,6 +313,41 @@ public class ZfbtService {
 		return result;
 	}
 
+	/**
+	 * 农资店单个商品对应的超实惠售卖历史
+	 * 
+	 * @param nzd
+	 * @param page
+	 * @param time
+	 * @return
+	 */
+	public UserSecondsResult getCommoditySell(String nzd, int cid, int page, long time) {
+		UserSecondsResult result = new UserSecondsResult();
+
+		List<OrdersSecond> seconds = ordersSecondDao.getCommoditySeconds(nzd, cid);
+		if (seconds == null || seconds.size() == 0) {
+			result.setLastTime(new Date().getTime());
+			return result;
+		}
+
+		int[] sids = new int[seconds.size()];
+		for (int i = 0; i < sids.length; i++) {
+			sids[i] = seconds.get(i).getId();
+		}
+
+		if (page == 0) {
+			List<UserSecond> list = userSecondDao.getSellHistory(nzd, sids, new PageRequest(page, 20));
+
+			result.setResults(list);
+			result.setLastTime(new Date().getTime());
+		} else {
+			List<UserSecond> list = userSecondDao.getSellHistory(nzd, sids, new Date(time), new PageRequest(page, 20));
+			result.setResults(list);
+			result.setLastTime(time);
+		}
+		return result;
+	}
+
 	public UserSecond getSellOrderDetail(String nzd, int oid) {
 		UserSecond list = userSecondDao.getSellOrder(nzd, oid);
 

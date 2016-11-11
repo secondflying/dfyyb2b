@@ -170,11 +170,29 @@ public class ZfbtResource {
 		if (StringUtils.isBlank(userid)) {
 			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
 		}
-
 		TokenHelper.verifyToken(tokenService, userid, token);
 
 		try {
 			UserSecondsResult result = zfbtService.getSellHistory(userid, sid, page, time);
+			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path("/commoditysell")
+	@Produces("application/json;charset=UTF-8")
+	public Response commoditysell(@QueryParam("nzd") String userid, @QueryParam("cid") int cid,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("time") @DefaultValue("0") long time,
+			@HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+		TokenHelper.verifyToken(tokenService, userid, token);
+
+		try {
+			UserSecondsResult result = zfbtService.getCommoditySell(userid, cid, page, time);
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

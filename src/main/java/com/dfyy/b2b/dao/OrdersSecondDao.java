@@ -16,6 +16,10 @@ public interface OrdersSecondDao extends CrudRepository<OrdersSecond, Integer>, 
 
 	@Query("select u from OrdersSecond as u left join fetch u.second where u.nzd = ?1 and u.cid = ?2 and u.status=0")
 	public OrdersSecond getCommoditySecond(String nzd, int cid);
+	
+	@Query("select u from OrdersSecond as u left join fetch u.second where u.nzd = ?1 and u.cid = ?2")
+	public List<OrdersSecond> getCommoditySeconds(String nzd, int cid);
+
 
 	@Query("select u from OrdersSecond as u left join fetch u.second where u.nzd = ?1 and u.status=0")
 	public List<OrdersSecond> getCommoditySecond(String nzd, Pageable page);
