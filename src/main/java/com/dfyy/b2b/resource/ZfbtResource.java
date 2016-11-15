@@ -217,6 +217,26 @@ public class ZfbtResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 	}
+	
+	
+	@GET
+	@Path("/ordercode")
+	@Produces("application/json;charset=UTF-8")
+	public Response orderCode(@QueryParam("nzd") String userid, @QueryParam("code") String code,
+			@HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+
+		TokenHelper.verifyToken(tokenService, userid, token);
+
+		try {
+			UserSecond result = zfbtService.getSellOrderByCode(userid, code);
+			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
 
 	@POST
 	@Path("/orderconfirm")

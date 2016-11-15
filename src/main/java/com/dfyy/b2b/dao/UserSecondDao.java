@@ -35,4 +35,7 @@ public interface UserSecondDao extends CrudRepository<UserSecond, Integer>, JpaS
 
 	@Query("select u from UserSecond as u left join fetch u.user left join fetch u.second left join fetch u.nzd left join fetch u.contact where u.second.nzd.id = ?1 and u.id = ?2 and u.second.type = 2")
 	public UserSecond getSellOrder(String nzd, int oid);
+	
+	@Query("select u from UserSecond as u left join fetch u.user left join fetch u.second left join fetch u.nzd left join fetch u.contact where u.second.nzd.id = ?1 and u.usid = ?2 and u.second.type = 2")
+	public UserSecond getSellOrderByCode(String nzd, String code);
 }

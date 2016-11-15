@@ -96,14 +96,14 @@ public class OrdersController {
 	@RequestMapping(value = "/backstop", method = RequestMethod.POST)
 	@ResponseBody
 	public String backstop(@RequestParam(required = true) Integer id) {
-		ordersService.confirmArrival(id);
+		ordersService.backStop(id);
 		return "true";
 	}
 	
 	@RequestMapping(value = "/backpass", method = RequestMethod.POST)
 	@ResponseBody
 	public String backpass(@RequestParam(required = true) Integer id) {
-		ordersService.confirmArrival(id);
+		ordersService.backPass(id);
 		return "true";
 	}
 

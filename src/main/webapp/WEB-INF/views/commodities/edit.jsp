@@ -27,7 +27,7 @@
 		<fieldset>
 			<legend>
 				商品
-				<input id="saveform" type="submit" class="btn btn-info pull-right" value="保存" />
+				<input id="saveform" type="submit" class="btn btn-info pull-right" value="保存并提交" />
 			</legend>
 			<div class="divnull">&nbsp;&nbsp;</div>
 			<div class="row">

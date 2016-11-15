@@ -353,6 +353,12 @@ public class ZfbtService {
 
 		return list;
 	}
+	
+	
+	public UserSecond getSellOrderByCode(String nzd, String code) {
+		UserSecond list = userSecondDao.getSellOrderByCode(nzd, code);
+		return list;
+	}
 
 	public boolean conformUserOrder2(String nzdid, int oid) {
 		UserSecond userSecond = userSecondDao.findOne(oid);
