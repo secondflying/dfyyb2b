@@ -1,7 +1,6 @@
 package com.dfyy.b2b.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -11,8 +10,7 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.dfyy.b2b.bussiness.Commodity;
-import com.dfyy.b2b.bussiness.Zone;
+import com.dfyy.b2b.bussiness.CommodityOfPro;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -23,16 +21,16 @@ public class CommoditiesResult implements Serializable {
 
 	@XmlElementWrapper
 	@XmlElementRef
-	private List<Commodity> results;
+	private List<CommodityOfPro> results;
 
 	public CommoditiesResult() {
 	}
 
-	public List<Commodity> getResults() {
+	public List<CommodityOfPro> getResults() {
 		return results;
 	}
 
-	public void setResults(List<Commodity> results) {
+	public void setResults(List<CommodityOfPro> results) {
 		this.results = results;
 	}
 

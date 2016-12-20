@@ -17,6 +17,7 @@ import com.dfyy.b2b.bussiness.Commodity2;
 import com.dfyy.b2b.bussiness.CommodityAttachment;
 import com.dfyy.b2b.bussiness.CommodityGradualprice;
 import com.dfyy.b2b.bussiness.CommodityGradualrebate;
+import com.dfyy.b2b.bussiness.CommodityOfPro;
 import com.dfyy.b2b.bussiness.CommodityPrice;
 import com.dfyy.b2b.bussiness.CommodityProtective;
 import com.dfyy.b2b.bussiness.CommodityReview;
@@ -24,11 +25,13 @@ import com.dfyy.b2b.bussiness.CommodityTag;
 import com.dfyy.b2b.bussiness.CommodityType;
 import com.dfyy.b2b.bussiness.CommodityUnit;
 import com.dfyy.b2b.bussiness.PartnerDealer;
+import com.dfyy.b2b.bussiness.SUser;
 import com.dfyy.b2b.dao.Commodity2Dao;
 import com.dfyy.b2b.dao.CommodityAttachmentDao;
 import com.dfyy.b2b.dao.CommodityDao;
 import com.dfyy.b2b.dao.CommodityGradualpriceDao;
 import com.dfyy.b2b.dao.CommodityGradualrebateDao;
+import com.dfyy.b2b.dao.CommodityOfProDao;
 import com.dfyy.b2b.dao.CommodityPriceDao;
 import com.dfyy.b2b.dao.CommodityProtectiveDao;
 import com.dfyy.b2b.dao.CommodityReviewDao;
@@ -36,6 +39,7 @@ import com.dfyy.b2b.dao.CommodityTagDao;
 import com.dfyy.b2b.dao.CommodityTypeDao;
 import com.dfyy.b2b.dao.CommodityUnitDao;
 import com.dfyy.b2b.dao.PartnerDealerDao;
+import com.dfyy.b2b.dao.SUserDao;
 import com.dfyy.b2b.dao.UserDao;
 import com.dfyy.b2b.dto.AttachmentDto;
 import com.dfyy.b2b.dto.CommoditiesResult;
@@ -47,6 +51,9 @@ public class CommodityService {
 
 	@Autowired
 	private CommodityDao commodityDao;
+
+	@Autowired
+	private CommodityOfProDao commodityOfProDao;
 
 	@Autowired
 	private Commodity2Dao commodity2Dao;
@@ -84,6 +91,9 @@ public class CommodityService {
 	@Autowired
 	private PartnerDealerDao pDealerDao;
 
+	@Autowired
+	private SUserDao sUserDao;
+
 	/**
 	 * 获取某个农资店能看到的在线商品列表
 	 * 
@@ -94,13 +104,14 @@ public class CommodityService {
 	 */
 	public CommoditiesResult getOnlineCommodity(String nzd, int page, long time) {
 		CommoditiesResult result = new CommoditiesResult();
+		SUser user = sUserDao.findOne(nzd);
 		if (page == 0) {
-			List<Commodity> list = commodityDao.getOnline(new PageRequest(page, 20));
+			List<CommodityOfPro> list = commodityOfProDao.getOnline(nzd,user.getY(),user.getX(), new PageRequest(page, 20));
 			result.setResults(list);
 
 			result.setLastTime(new Date().getTime());
 		} else {
-			List<Commodity> list = commodityDao.getOnline(new Date(time), new PageRequest(page, 20));
+			List<CommodityOfPro> list = commodityOfProDao.getOnline(nzd,user.getY(),user.getX(), new Date(time), new PageRequest(page, 20));
 			result.setResults(list);
 			result.setLastTime(time);
 		}
@@ -198,8 +209,7 @@ public class CommodityService {
 		Commodity obj = commodityDao.findOne(id);
 		return obj;
 	}
-	
-	
+
 	public Commodity getCommodityFull(int id) {
 		Commodity obj = commodityDao.findOne(id);
 		obj.setTags(getTagsOfCommodity(id));

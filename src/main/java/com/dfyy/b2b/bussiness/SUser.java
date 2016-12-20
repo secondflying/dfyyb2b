@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NotFound;
 
 import com.dfyy.b2b.util.JaxbDateSerializer;
 
