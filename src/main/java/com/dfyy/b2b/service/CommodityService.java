@@ -162,6 +162,24 @@ public class CommodityService {
 	public int getCommoditiesCountByStatus(int status) {
 		return commodityDao.getCountByStatus(status);
 	}
+	
+	/**
+	 * 按状态和名称查找商品
+	 * 
+	 * @return
+	 */
+	public List<Commodity> findCommoditiesByStatus(String key,int status, int page, int size) {
+		return commodityDao.searchByStatus(key, status, new PageRequest(page, size));
+	}
+
+	/**
+	 * 按状态和名称获取商品个数
+	 * 
+	 * @return
+	 */
+	public int findCommoditiesCountByStatus(String key,int status) {
+		return commodityDao.searchCountByStatus(key, status);
+	}
 
 	/**
 	 * 获取合伙人待审核的商品
@@ -251,9 +269,13 @@ public class CommodityService {
 		commodity.setNumber(obj.getNumber());
 		commodity.setPrice(obj.getPrice());
 		commodity.setPricetime(new Date());
+		commodity.setOprice(obj.getOprice());
+		commodity.setRetail(obj.getRetail());
+		commodity.setMaxcount(obj.getMaxcount());
 		commodity.setStandard(obj.getStandard());
 		commodity.setStep(obj.getStep());
 		commodity.setTime(new Date());
+		commodity.setZone(obj.getZone());
 		CommodityType type = commodityTypeDao.findOne(obj.getCid());
 		commodity.setType(type);
 		CommodityUnit unit = commodityUnitDao.findOne(obj.getUnit());
@@ -343,6 +365,9 @@ public class CommodityService {
 		commodity.setFactory(obj.getFactory());
 		commodity.setNumber(obj.getNumber());
 		commodity.setPrice(obj.getPrice());
+		commodity.setOprice(obj.getOprice());
+		commodity.setMaxcount(obj.getMaxcount());
+		commodity.setRetail(obj.getRetail());
 		commodity.setPricetime(new Date());
 		commodity.setStandard(obj.getStandard());
 		commodity.setStep(obj.getStep());
@@ -350,6 +375,7 @@ public class CommodityService {
 		commodity.setType(type);
 		CommodityUnit unit = commodityUnitDao.findOne(obj.getUnit());
 		commodity.setUnit(unit);
+		commodity.setZone(obj.getZone());
 		commodityDao.save(commodity);
 
 		commodityAttachmentDao.deleteByCommodity(commodity.getId());

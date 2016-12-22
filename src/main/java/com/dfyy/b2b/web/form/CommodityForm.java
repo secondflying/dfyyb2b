@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import com.dfyy.b2b.bussiness.Area;
 import com.dfyy.b2b.bussiness.CommodityGradualprice;
 import com.dfyy.b2b.bussiness.CommodityGradualrebate;
 import com.dfyy.b2b.dto.AttachmentDto;
@@ -20,6 +21,10 @@ public class CommodityForm implements Serializable {
 	private Integer cid;
 	private Integer unit;
 	private Double price;
+	private Double oprice;
+	private Double maxcount;
+	private Double retail;
+	private Area zone;
 	private String factory;
 	private String code;
 	private String standard;
@@ -177,4 +182,36 @@ public class CommodityForm implements Serializable {
 		this.grebates = grebates;
 	}
 
+	public Double getOprice() {
+		return oprice;
+	}
+
+	public void setOprice(Double oprice) {
+		this.oprice = oprice;
+	}
+
+	public Double getMaxcount() {
+		return maxcount;
+	}
+
+	public void setMaxcount(Double maxcount) {
+		this.maxcount = maxcount;
+	}
+
+	public Double getRetail() {
+		return retail;
+	}
+
+	public void setRetail(Double retail) {
+		this.retail = retail;
+	}
+
+	public Area getZone() {
+		return zone;
+	}
+
+	public void setZone(Area zone) {
+		this.zone = zone;
+	}
+	
 }

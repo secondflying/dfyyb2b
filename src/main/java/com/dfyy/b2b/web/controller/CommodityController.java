@@ -28,6 +28,7 @@ import com.dfyy.b2b.bussiness.CommodityGradualprice;
 import com.dfyy.b2b.bussiness.CommodityGradualrebate;
 import com.dfyy.b2b.bussiness.CommodityProtective;
 import com.dfyy.b2b.bussiness.CommodityReview;
+import com.dfyy.b2b.bussiness.CommodityTag;
 import com.dfyy.b2b.bussiness.CommodityUnit;
 import com.dfyy.b2b.bussiness.SalesmanBrokerage;
 import com.dfyy.b2b.service.BrokerageService;
@@ -70,11 +71,12 @@ public class CommodityController {
 	@RequestMapping(value = "/info", method = RequestMethod.GET)
 	public String edit(@RequestParam(required = true) int id, Model model) {
 		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "b2bcommodity/small");
-		Commodity commodity = commodityService.getCommodity(id);
-		List<CommodityAttachment> docs = commodityService.getdocByCommodity(commodity.getId());
-		List<CommodityGradualprice> gradualprices = commodityService.getGradualprices(commodity.getId());
-		List<CommodityGradualrebate> gradualrebates = commodityService.getGradualrebates(commodity.getId());
-		List<CommodityProtective> protectives = commodityService.getProtectives(commodity.getId());
+		Commodity commodity = commodityService.getCommodityFull(id);
+		List<CommodityAttachment> docs = commodity.getAttachments();
+		List<CommodityGradualprice> gradualprices = commodity.getGradualprices();
+		List<CommodityGradualrebate> gradualrebates = commodity.getGradualrebates();
+		List<CommodityProtective> protectives = commodity.getProtectives();
+		List<CommodityTag> tags = commodity.getTags();
 		int size = 0;
 		if(docs!=null && docs.size()>0){
 			size = docs.size();
@@ -85,6 +87,7 @@ public class CommodityController {
 		model.addAttribute("gprices", gradualprices);
 		model.addAttribute("grebates", gradualrebates);
 		model.addAttribute("protectives", protectives);
+		model.addAttribute("tags", tags);
 		return "commodities/info";
 	}
 

@@ -3,16 +3,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<c:set var="pageTitle" value="待审核商品" scope="request" />
+<c:set var="pageTitle" value="已上架商品" scope="request" />
 <jsp:include page="../includes/mheader.jsp" />
 
 <div class="navbar">
 	<div class="navbar-inner">
 		<ul class="nav">
 			<c:url var="infUrl" value="informal" />
-			<li class="active"><a href="${infUrl}">待审核商品</a></li>
+			<li><a href="${infUrl}">待审核商品</a></li>
 			<c:url var="cheUrl" value="checked" />
-			<li><a href="${cheUrl}">已上架商品</a></li>
+			<li class="active"><a href="${cheUrl}">已上架商品</a></li>
 		</ul>
 	</div>
 </div>
@@ -21,6 +21,10 @@
 	<fieldset>
 		<legend>
 			商品列表
+			<div class="input-append pull-right">
+				<input id="searchtxt" cssClass="input-xlarge" style="line-height: 24px;" placeholder="产品名称" />
+				<button id="locationBtn" class="btn btn-info" type="button" onclick="search()">查找</button>
+			</div>
 		</legend>
 		<div class="divnull">&nbsp;&nbsp;</div>
 		<c:if test="${success != null}">
@@ -56,9 +60,9 @@
 						<td style="width:120px;"><c:out value="${commodity.factory}" /></td>
 						<td style="width:120px;"><c:out value="${commodity.provider.alias}" /></td>
 						<td style="width:80px;">
-							<c:url var="cUrl" value="check?id=${commodity.id}" />
-							<a id="checkone" class="btn btn-small btn-warning" href="${cUrl}">
-								审查
+							<c:url var="cUrl" value="info?id=${commodity.id}" />
+							<a id="info" class="btn btn-small btn-info" href="${cUrl}">
+								管理
 							</a>
 						</td>
 					</tr>
@@ -71,7 +75,7 @@
 <script>
 
 $(document).ready(function() {
-	
+	$("#searchtxt").val(getUrlParam("keyword"));
     var size = 20;
 	var sumcount = parseInt(${sumcount}); 
 	if(sumcount ==0){return false}
@@ -101,7 +105,8 @@ $(document).ready(function() {
             
             onPageClicked: function (event, originalEvent, type, page) { 
             	var page = page-1; 
-        		window.location.href = '<c:url value="informal" />?page=' + page + "&size=" + size;
+            	var text = $("#searchtxt").val();
+        		window.location.href = '<c:url value="checked" />?keyword='+encodeURIComponent(text)+'&page=' + page + "&size=" + size;
             }
     };
     
@@ -109,6 +114,11 @@ $(document).ready(function() {
     $pager.insertAfter($('table'));
     $pager.bootstrapPaginator(options);
 });
+
+function search(){
+	var text = $("#searchtxt").val();
+	window.location.href = '<c:url value="checked" />?keyword='+encodeURIComponent(text);
+}
 
 </script>
 

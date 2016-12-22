@@ -110,6 +110,23 @@ public class Commodity implements Serializable {
 	@XmlElement
 	private Integer status;
 	
+	@Column(name = "oprice")
+	@XmlElement
+	private Double oprice;
+	
+	@Column(name = "maxcount")
+	@XmlElement
+	private Double maxcount;
+	
+	@Column(name = "retail")
+	@XmlElement
+	private Double retail;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "zone")
+	@XmlElement
+	private Area zone;
+	
 	
 	@Transient
 	@XmlElementWrapper
@@ -276,6 +293,38 @@ public class Commodity implements Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Double getOprice() {
+		return oprice;
+	}
+
+	public void setOprice(Double oprice) {
+		this.oprice = oprice;
+	}
+
+	public Double getMaxcount() {
+		return maxcount;
+	}
+
+	public void setMaxcount(Double maxcount) {
+		this.maxcount = maxcount;
+	}
+
+	public Double getRetail() {
+		return retail;
+	}
+
+	public void setRetail(Double retail) {
+		this.retail = retail;
+	}
+
+	public Area getZone() {
+		return zone;
+	}
+
+	public void setZone(Area zone) {
+		this.zone = zone;
 	}
 
 	public List<CommodityAttachment> getAttachments() {

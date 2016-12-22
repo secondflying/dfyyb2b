@@ -68,12 +68,26 @@
 					</select>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="price">价格</label>
+						<label class="control-label" for="oprice">原价</label>
+						<div class="controls">
+							<input path="oprice" name='oprice' id="oprice" class="span5" placeholder="原价" required onkeyup="clearNoNum(this)" value="${commodity.oprice }"/>
+							<span class="help-inline"></span>
+						</div>
+					</div>
+				<div class="control-group">
+					<label class="control-label" for="price">现价</label>
 					<div class="controls">
-						<input path="price" name='price' id="price" class="span5" placeholder="价格" required onkeyup="clearNoNum(this)" value="${commodity.price }" />
+						<input path="price" name='price' id="price" class="span5" placeholder="现价" required onkeyup="clearNoNum(this)" value="${commodity.price }" />
 						<span class="help-inline"></span>
 					</div>
 				</div>
+				<div class="control-group">
+						<label class="control-label" for="retail">零售价</label>
+						<div class="controls">
+							<input path="retail" name='retail' id="retail" class="span5" placeholder="零售价" required onkeyup="clearNoNum(this)"  value="${commodity.retail }"/>
+							<span class="help-inline"></span>
+						</div>
+					</div>
 				<div class="control-group">
 					<label class="control-label" for="factory">厂家</label>
 					<div class="controls">
@@ -110,6 +124,13 @@
 					</div>
 				</div>
 				<div class="control-group">
+						<label class="control-label" for="maxcount">限量</label>
+						<div class="controls">
+							<input path="maxcount" name='maxcount' id="maxcount" class="span5" placeholder="限量" required onkeyup="clearNoNum(this)" value="${commodity.maxcount }"/>
+							<span class="help-inline"></span>
+						</div>
+					</div>
+				<div class="control-group">
 					<label class="control-label" for="step">增减阶梯步长</label>
 					<div class="controls">
 						<input path="step" name='step' id="step" class="span5" placeholder="增减阶梯步长" required onkeyup="clearNoNum(this)" value="${commodity.step }"/>
@@ -121,6 +142,14 @@
 					<div class="controls">
 						<input path="brokerage" name='brokerage' id="brokerage" class="span5" placeholder="${strbrokerage }" required onkeyup="clearNoNum(this)" value="${commodity.brokerage }"/>
 						<span class="help-inline"></span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="zonename">区域</label>
+					<div class="controls">
+						<input path="zonename" name='zonename' id="zonename" class="input-xxlarge" placeholder="区域" required value="${commodity.zone.name }"/>
+						<span class="help-inline"></span>
+						<input id="zoneid" name="zone.id"type="hidden" value="${commodity.zone.id }"/>
 					</div>
 				</div>
 			</div>
@@ -182,8 +211,8 @@
 									<tr>
 										<td><input class='transinput' id='grebates[${j }].minnumber' name='grebates[${j }].minnumber' readonly='readonly' type='text' value='${grebate.minnumber }' onkeyup='clearNoNum(this)'/></td>
 <%-- 										<td><input class='transinput' id='grebates[${j }].maxnumber' name='grebates[${j }].maxnumber' readonly='readonly' type='text' value='${grebate.maxnumber }' onkeyup='clearNoNum(this)'/></td> --%>
-										<td><input class='transinput' id='grebates[${j }].rebate' name='grebates[${i }].rebate' readonly='readonly' type='text' value='${grebate.rebate }' onkeyup='clearNoNum(this)'/></td>
-										<td><a id='rebates${i }' class='icon pull-right' href='javascript:delrebate(${i })'><i class='icon-remove'></i></a></td>
+										<td><input class='transinput' id='grebates[${j }].rebate' name='grebates[${j }].rebate' readonly='readonly' type='text' value='${grebate.rebate }' onkeyup='clearNoNum(this)'/></td>
+										<td><a id='rebates${j }' class='icon pull-right' href='javascript:delrebate(${j })'><i class='icon-remove'></i></a></td>
 									</tr>
 									<c:set var="j" value="${j+1 }"></c:set>
 								</c:forEach>
@@ -195,7 +224,7 @@
 			<div class="row">
 				<div class="column span11">
 					<input type="file" name="uploadify" id="multiple_file_upload" />
-					<p id="attachmenttip" class="text-error">请上传外包装正面、背面、内料；田间实验图片(最多3张)；相关证书图片(最多3张)否则审核不能通过</p>
+					<p id="attachmenttip" class="text-error">请上传包装、内料、产品说明、田间实验图片(最多3张)；相关证书图片(最多3张)否则审核不能通过</p>
 					<div id="attachmentsdiv">
 						<c:set value="0" var="sum" />
 						<c:forEach items="${docs}" var="doc">
@@ -312,6 +341,31 @@
 		<button class="btn btn-primary" id="btnConfirm" onclick="grebateclick();">确定</button>
 	</div>
 </div>
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					选择区域
+				</h4>
+			</div>
+			<div class="modal-body" id="treeChooseZoneId1">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					关闭
+				</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
 <c:url var="cssUrl" value="/assets/uploadify-v3.1/uploadify.css" />
 <link rel="stylesheet" href="${cssUrl}" type="text/css"></link>
 <c:url var="cssUrl1" value="/assets/bootstrap/css/bootstrap-datetimepicker.min.css" />
@@ -370,6 +424,13 @@ $(document).ready(function () {
 	$('#treeChooseZoneId').load('<c:url value="/utils/select/commoditytypes" />');
 	$('#cname').bind('click', function() {
 		$('#myModal').modal( {
+			keyboard : false
+		})
+	});
+	
+	$('#treeChooseZoneId1').load('<c:url value="/utils/select/zones" />');
+	$('#zonename').bind('click', function() {
+		$('#myModal1').modal( {
 			keyboard : false
 		})
 	});
@@ -484,6 +545,14 @@ function clickCommodityType(id,sname,level) {
 	$('#cid').val(id);
 	$('#myModal').modal('hide');
 
+} 
+
+function clickQuyuType(id,sname,level) {
+	if(level==3){
+		$('#zonename').val(sname);
+		$('#zoneid').val(id);
+		$('#myModal1').modal('hide');
+	}
 } 
 
 function deleteImagePanel(id) {

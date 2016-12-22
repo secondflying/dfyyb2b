@@ -3,20 +3,37 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<c:set var="pageTitle" value="审核商品" scope="request" />
+<c:set var="pageTitle" value="商品管理" scope="request" />
 <jsp:include page="../includes/mheader.jsp" />
 
 <div class="navbar">
 	<div class="navbar-inner">
 		<ul class="nav">
 			<c:url var="infUrl" value="informal" />
-			<li class="active"><a href="${infUrl}">待审核商品</a></li>
+			<li><a href="${infUrl}">待审核商品</a></li>
+			<c:url var="cheUrl" value="checked" />
+			<li class="active"><a href="${cheUrl}">已上架商品</a></li>
 		</ul>
 	</div>
 </div>
 
 <section class="content-wrap">
 	<div class="container">
+		<div class="row">
+			<div class="column span12">
+				<div class="well">
+					<legend>
+						商品标签
+						<c:url var="tagUrl" value="tagsmanager?cid=${commodity.id }" />
+						<a class="btn btn-success pull-right" href="${tagUrl }"> 编辑 </a>
+					</legend>
+					<p class="muted"></p>
+					<c:forEach items="${tags}" var="tag">
+						<span class="label label-important">${tag.name }</span>
+					</c:forEach>
+				</div>
+			</div>
+		</div>
 		<div class="row">
 			<div class="column span8">
 				<div class="well" style="height:440px;">
@@ -132,66 +149,43 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="column span12">
-				<div class="well" style="height:220px;">
-					<legend>
-						审查
-					</legend>
-					<div class="control-group">
-						<label class="control-label" for="opinion"></label>
-						<div class="controls">
-							<textarea rows="5" path="opinion" name='opinion' id="opinion" class="span8" placeholder="输入审查意见" maxlength="100"></textarea>
-							<span class="help-inline"></span>
-						</div>
+		<c:if test="${protectives!=null}">
+			<div class="row">
+				<div class="column span12">
+					<div class="well" style="height:220px;">
+						<legend>
+							保护条件
+						</legend>
+						<div class="divnull">&nbsp;&nbsp;</div>
+						<table id="protectivetable" class="table table-bordered">
+						 	<thead>
+								<tr>
+									<td align="center">最小进货数量</td>
+	<!-- 								<td align="center">最大进货数量</td> -->
+									<td align="center">保护天数</td>
+									<td align="center">保护半径</td>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach items="${protectives}" var="protective">
+									<tr>
+										<td>${protective.minnumber }</td>
+	<%-- 									<td>${protective.maxnumber }</td> --%>
+										<td>${protective.days }</td>
+										<td>${protective.radius }</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
 					</div>
-					<a class="btn btn-success pull-right" href="javascript:verify('${commodity.id}');"> 通过 </a>
-					<label class="pull-right" style="width: 10px;"> </label>
-					<a class="btn btn-danger pull-right" href="javascript:notverify('${commodity.id}');"> 拒绝 </a>
-					
 				</div>
 			</div>
-		</div>
+		</c:if>
 	</div>
-	
 </section>
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
 <script>
-function verify(id) {
-	bootbox.confirm("确定审查合格了吗？", "取消", "确定", function(isOk) {
-		if (!isOk) {
-			return;
-		}
-		var opinion = $("#opinion").val();
-		$.post('<c:url value="verify" />', {
-			id : id,
-			opinion:opinion
-		}).done(function(data) {
-			window.location.href = '<c:url value="informal" />';
-		}).fail(function() {
-		});
-	}); 
-}
 
-function notverify(id) {
-	bootbox.confirm("确定要拒绝吗？", "取消", "确定", function(isOk) {
-		if (!isOk) {
-			return;
-		}
-		var opinion = $("#opinion").val();
-		if(opinion==null || opinion==""){
-			bootbox.alert("请填写拒绝的理由");
-			return;
-		}
-		$.post('<c:url value="notverify" />', {
-			id : id,
-			opinion:opinion
-		}).done(function(data) {
-			window.location.href = '<c:url value="informal" />';
-		}).fail(function() {
-		});
-	});
-}
 $(document).ready(function () {
 
 });	
