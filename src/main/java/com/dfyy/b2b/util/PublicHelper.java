@@ -304,4 +304,12 @@ public class PublicHelper {
 		BigDecimal b = new BigDecimal(d);  
 		return b.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
+	
+	/**
+	 * 获取后n天
+	 * @return
+	 */
+	public static Date getNextday(Date d,int n){ 
+	    return new Date(d.getTime() +n * 24 * 60 * 60 * 1000);
+	}
 }

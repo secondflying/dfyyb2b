@@ -56,7 +56,14 @@
 					<p class="muted">地址：${user.address }</p>
 					<p class="muted">邮编：${user.zipcode }</p>
 					<p class="muted">区域：${user.zone.name }</p>
-					<p class="text-success">审核通过</p>
+					<p class="muted">合伙人：
+						<c:if test="${partner!=null}">
+							${partner.alias }
+						</c:if>
+						<a id="editone" class="btn btn-small btn-success" href="#myModal1" data-toggle="modal">
+							设置
+						</a>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -166,10 +173,36 @@
 	</div>
 	<!-- /.modal-dialog -->
 </div>
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel1" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel1">
+					选择合伙人
+				</h4>
+			</div>
+			<div class="modal-body" id="treeChooseZoneId1">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					关闭
+				</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
 <script>
 $(document).ready(function () {
 	$('#treeChooseZoneId').load('<c:url value="/utils/select/zones" />');
+	$('#treeChooseZoneId1').load('<c:url value="/utils/select/partners" />');
 	var map = new BMap.Map("mapContainer");
 	var point = new BMap.Point(${user.x}, ${user.y}); // 创建点坐标
 	map.centerAndZoom(point, 10);
@@ -207,6 +240,7 @@ function clickQuyuType(id,sname,level) {
 	}).fail(function() {
 	});
 } 
+
 function deletezone(id){
 	bootbox.confirm("确定删除该区域吗？", "取消", "确定", function(isOk) {
 		if (!isOk) {
@@ -219,6 +253,23 @@ function deletezone(id){
 		}).fail(function() {
 		});
 	}); 
+}
+
+function clickPartnerNote(id,name){
+	$('#myModal1').modal('hide');
+	var did = $('#userid').val();
+	$.post('<c:url value="setpartner" />', {
+		pid : id,
+		did : did
+	}).done(function(data) {
+		if(data=="true"){
+			window.location.href = window.location.href;
+		}
+		else{
+			
+		}
+	}).fail(function() {
+	});
 }
 </script>
 <jsp:include page="../includes/footer.jsp" />

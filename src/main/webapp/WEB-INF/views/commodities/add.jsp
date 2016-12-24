@@ -130,9 +130,16 @@
 						</div>
 					</div>
 					<div class="control-group">
+						<label class="control-label" for="rebatedays">返利期限</label>
+						<div class="controls">
+							<input path="rebatedays" name='rebatedays' id="rebatedays" class="span5" placeholder="天数" required onkeyup="clearNoNum(this)" />
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="control-group">
 						<label class="control-label" for="zonename">区域</label>
 						<div class="controls">
-							<input path="zonename" name='zonename' id="zonename" class="input-xxlarge" placeholder="区域" required/>
+							<input path="zonename" name='zonename' id="zonename" class="span5" placeholder="区域" required/>
 							<span class="help-inline"></span>
 							<input id="zoneid" name="zone.id"type="hidden" value=""/>
 						</div>
@@ -404,7 +411,16 @@ function addFormValidate() {
 			unit : {
 				required : true
 			},
+			oprice : {
+				required : true
+			},
 			price : {
+				required : true
+			},
+			maxcount : {
+				required : true
+			},
+			retail : {
 				required : true
 			},
 			factory : {
@@ -426,6 +442,9 @@ function addFormValidate() {
 				required : true
 			},
 			brokerage : {
+				required : true
+			},
+			zonename : {
 				required : true
 			}
 		},
@@ -440,7 +459,16 @@ function addFormValidate() {
 			unit : {
 				required : "必填"
 			},
+			oprice : {
+				required : "必填"
+			},
 			price : {
+				required : "必填"
+			},
+			maxcount : {
+				required : "必填"
+			},
+			retail : {
 				required : "必填"
 			},
 			factory : {
@@ -462,6 +490,9 @@ function addFormValidate() {
 				required : "必填"
 			},
 			brokerage : {
+				required : "必填"
+			},
+			zonename : {
 				required : "必填"
 			}
 		},

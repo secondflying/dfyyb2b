@@ -127,6 +127,10 @@ public class Commodity implements Serializable {
 	@XmlElement
 	private Area zone;
 	
+	@Column(name = "rebatedays")
+	@XmlElement
+	private Integer rebatedays;
+	
 	
 	@Transient
 	@XmlElementWrapper
@@ -325,6 +329,14 @@ public class Commodity implements Serializable {
 
 	public void setZone(Area zone) {
 		this.zone = zone;
+	}
+
+	public Integer getRebatedays() {
+		return rebatedays;
+	}
+
+	public void setRebatedays(Integer rebatedays) {
+		this.rebatedays = rebatedays;
 	}
 
 	public List<CommodityAttachment> getAttachments() {

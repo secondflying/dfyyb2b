@@ -276,6 +276,7 @@ public class CommodityService {
 		commodity.setStep(obj.getStep());
 		commodity.setTime(new Date());
 		commodity.setZone(obj.getZone());
+		commodity.setRebatedays(obj.getRebatedays());
 		CommodityType type = commodityTypeDao.findOne(obj.getCid());
 		commodity.setType(type);
 		CommodityUnit unit = commodityUnitDao.findOne(obj.getUnit());
@@ -376,6 +377,7 @@ public class CommodityService {
 		CommodityUnit unit = commodityUnitDao.findOne(obj.getUnit());
 		commodity.setUnit(unit);
 		commodity.setZone(obj.getZone());
+		commodity.setRebatedays(obj.getRebatedays());
 		commodityDao.save(commodity);
 
 		commodityAttachmentDao.deleteByCommodity(commodity.getId());

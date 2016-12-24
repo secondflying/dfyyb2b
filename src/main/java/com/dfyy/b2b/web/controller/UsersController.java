@@ -142,6 +142,11 @@ public class UsersController {
 		if(user.getDocs()!=null && user.getDocs().size()>0){
 			size = user.getDocs().size();
 		}
+		PartnerDealer partnerDealer = pdealerService.getByDid(user.getId());
+		if(partnerDealer!=null){
+			User user2 = userService.getById(partnerDealer.getPid());
+			model.addAttribute("partner", user2);
+		}
 		List<ProviderZone> zones = pzoneService.getByUid(user.getId());
 		model.addAttribute("user", user);
 		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "providers/small");

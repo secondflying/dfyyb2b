@@ -60,7 +60,7 @@ public class OrdersController {
 		B2BUserDetails loginUser = LoginUtil.getLoginUser();
 		Orders orders = ordersService.getSingle(id);
 		double totalprice = 0;
-		totalprice = PublicHelper.correctTo(orders.getCount()*orders.getCount());
+		totalprice = PublicHelper.correctTo(orders.getCount()*orders.getPrice());
 		List<CommodityAttachment> docs = commodityService.getdocByCommodity(orders.getCommodity().getId());
 		int size = 0;
 		if(docs!=null && docs.size()>0){

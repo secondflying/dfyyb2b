@@ -3,12 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<c:set var="pageTitle" value="订单管理" scope="request" />
+<c:set var="pageTitle" value="订单返利" scope="request" />
 <jsp:include page="../includes/proheader.jsp" />
 
 <section class="well">
 	<fieldset>
-		<legend> 订单管理 </legend>
+		<legend> 订单返利 </legend>
 		<div class="divnull">&nbsp;&nbsp;</div>
 		<c:if test="${success != null}">
 			<div class="alert alert-success" id="successMessage">
@@ -23,110 +23,45 @@
 			<thead>
 				<tr>
 					<th style="width: 120px;" align="center">商品名称</th>
-					<th style="width: 120px;" align="center">供应商</th>
 					<th style="width: 120px;" align="center">订购农资店</th>
-					<th style="width: 120px;" align="center">下单时间</th>
-					<th style="width: 120px;" align="center">订购数量</th>
-					<th style="width: 120px;" align="center">状态</th>
+					<th style="width: 120px;" align="center">订购总数</th>
+					<th style="width: 120px;" align="center">返利比例</th>
+					<th style="width: 120px;" align="center">返利金额</th>
+					<th style="width: 120px;" align="center">起始时间</th>
+					<th style="width: 120px;" align="center">截止时间</th>
+					<th style="width: 120px;" align="center">结算状态</th>
 					<th style="width: 120px;" align="center">操作</th>
-					<th style="width: 120px;" align="center">收益查看</th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:if test="${empty orders}">
+				<c:if test="${empty rebates}">
 					<tr>
-						<td colspan="7">空</td>
+						<td colspan="9">空</td>
 					</tr>
 
 				</c:if>
-				<c:forEach items="${orders}" var="ord">
+				<c:forEach items="${rebates}" var="rebate">
 					<tr>
-						<td><c:out value="${ord.commodity.name}" /></td>
-						<td><c:out value="${ord.commodity.provider.alias}" /></td>
-						<td><c:out value="${ord.nzd.alias}" /></td>
-						<td><fmt:formatDate value='${ord.time}' type='date' pattern='yyyy-MM-dd HH:mm:ss' /></td>
-						<td><c:out value="${ord.count}" /></td>
+						<td><c:out value="${rebate.commodity.name}" /></td>
+						<td><c:out value="${rebate.nzd.alias}" /></td>
+						<td><c:out value="${rebate.count}" /></td>
+						<td><c:out value="${rebate.rate}" /></td>
+						<td><c:out value="${rebate.amount}" /></td>
+						<td><fmt:formatDate value='${rebate.starttime}' type='date' pattern='yyyy-MM-dd HH:mm:ss' /></td>
+						<td><fmt:formatDate value='${rebate.endtime}' type='date' pattern='yyyy-MM-dd HH:mm:ss' /></td>
 						<td><c:choose>
-								<c:when test="${ord.status == 0}">
-								未发货	
+								<c:when test="${rebate.rstatus == 0}">
+								未结	
 								</c:when>
-								<c:when test="${ord.status==1}">
-								已发货
-								</c:when>
-								<c:when test="${ord.status==2}">
-								已送达
-								</c:when>
-								<c:when test="${ord.status==3}">
-								已确认收货
-								</c:when>
-								<c:when test="${ord.status==4}">
-								农资店申请退货
-								</c:when>
-								<c:when test="${ord.status==10}">
-								已取消
-								</c:when>
-								<c:when test="${ord.status==11}">
-								已成功退货
+								<c:when test="${rebate.rstatus==1}">
+								已结
 								</c:when>
 							</c:choose></td>
-						<td>
-							<c:if test="${loginUser.type.id==1 }">
-								<c:choose>
-									<c:when test="${ord.status == 0}">
-									
-								</c:when>
-									<c:when test="${ord.status==1}">
-							
-								</c:when>
-									<c:when test="${ord.status==2}">
-								
-								</c:when>
-									<c:when test="${ord.status==3}">
-								
-								</c:when>
-									<c:when test="${ord.status==4}">
-									<button class="btn btn-small btn-danger" type="button" onclick="alert(${commodity.id})">审核退货申请</button>
-								
-								</c:when>
-									<c:when test="${ord.status==10}">
-								
-								</c:when>
-									<c:when test="${ord.status==11}">
-								
-								</c:when>
-								</c:choose>
+						<td>							
+							<c:if test="${rebate.rstatus==0  }">
+								<button class="btn btn-small btn-danger" type="button" onclick="finalrebate(${rebate.id})">结算</button>
 							</c:if>
-						<c:if test="${loginUser.type.id==2  }">
-								<c:choose>
-									<c:when test="${ord.status == 0}">
-									<button class="btn btn-small btn-danger" type="button" onclick="confirmSend(${ord.id})">确定发货</button>
-								</c:when>
-									<c:when test="${ord.status==1}">
-									<button class="btn btn-small btn-danger" type="button" onclick="confirmArrival(${ord.id})">确定送达</button>
-								</c:when>
-									<c:when test="${ord.status==2}">
-								
-								</c:when>
-									<c:when test="${ord.status==3}">
-								
-								</c:when>
-									<c:when test="${ord.status==4}">
-								<button class="btn btn-small btn-danger" type="button" onclick="checkBack(${ord.id})">审核退货申请</button>
-
-								</c:when>
-									<c:when test="${ord.status==10}">
-								已取消
-								</c:when>
-									<c:when test="${ord.status==11}">
-								已成功退货
-								</c:when>
-								</c:choose>
-							</c:if>	
-							</td>
-							<td>
-							<c:url var="infoUrl" value="info?id=${ord.id}" /> 
-							<a class="btn btn-small btn-success" href="${infoUrl}">查看</a>
-							</td>
+						</td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -191,13 +126,13 @@
 		});
 	}
 	
-	function confirmArrival(id) {
-		bootbox.confirm("确定货物送达了吗？", "取消", "确定", function(isOk) {
+	function finalrebate(id) {
+		bootbox.confirm("确定结算吗？", "取消", "确定", function(isOk) {
 			if (!isOk) {
 				return;
 			}
 
-			$.post('<c:url value="confirmarrival" />', {
+			$.post('<c:url value="finalrebate" />', {
 				id : id
 			}).done(function(data) {
 				window.location.href = window.location.href;

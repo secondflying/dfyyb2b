@@ -61,6 +61,16 @@
 							</c:when>
 						</c:choose>
 						<c:choose>
+							<c:when test="${loginuser.status == 1}">
+								<c:set var="cssClass" value=" " />
+								<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/rebates')}">
+									<c:set var="cssClass" value="active" />
+								</c:if>
+								<c:url var="infoUrl" value="/provider/rebates/index" />
+								<li class="${cssClass}"><a id="infoLink" href="${infoUrl}">订单返利</a></li>
+							</c:when>
+						</c:choose>
+						<c:choose>
 							<c:when test="${loginuser.type.id == 2}">
 								<c:set var="cssClass" value=" " />
 								<c:if test="${fn:contains(requestScope['javax.servlet.forward.servlet_path'], '/dealers')}">

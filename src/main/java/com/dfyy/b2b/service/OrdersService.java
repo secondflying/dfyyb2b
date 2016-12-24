@@ -2,6 +2,7 @@ package com.dfyy.b2b.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dfyy.b2b.bussiness.Commodity;
+import com.dfyy.b2b.bussiness.CommodityGradualrebate;
 import com.dfyy.b2b.bussiness.CommodityOfNzd;
 import com.dfyy.b2b.bussiness.OrderBrokerage;
+import com.dfyy.b2b.bussiness.OrderRebate;
 import com.dfyy.b2b.bussiness.Orders;
 import com.dfyy.b2b.bussiness.OrdersInventory;
 import com.dfyy.b2b.bussiness.PartnerDealer;
@@ -19,8 +23,10 @@ import com.dfyy.b2b.bussiness.SalesmanStore;
 import com.dfyy.b2b.bussiness.User;
 import com.dfyy.b2b.dao.CommodityDao;
 import com.dfyy.b2b.dao.CommodityGradualpriceDao;
+import com.dfyy.b2b.dao.CommodityGradualrebateDao;
 import com.dfyy.b2b.dao.CommodityOfNzdDao;
 import com.dfyy.b2b.dao.OrderBrokerageDao;
+import com.dfyy.b2b.dao.OrderRebateDao;
 import com.dfyy.b2b.dao.OrdersDao;
 import com.dfyy.b2b.dao.OrdersInventoryDao;
 import com.dfyy.b2b.dao.PartnerDealerDao;
@@ -47,6 +53,9 @@ public class OrdersService {
 
 	@Autowired
 	private CommodityGradualpriceDao gradualpriceDao;
+	
+	@Autowired
+	private CommodityGradualrebateDao commodityGradualrebateDao;
 
 	@Autowired
 	private OrdersDao orderDao;
@@ -68,6 +77,9 @@ public class OrdersService {
 
 	@Autowired
 	private OrdersInventoryDao inventoryDao;
+	
+	@Autowired
+	private OrderRebateDao rebateDao;
 
 	/**
 	 * 获取某个农资店购买的所有订单列表
@@ -276,7 +288,88 @@ public class OrdersService {
 		}
 
 		orderBrokerageDao.save(orderbro);
-
+		
+		//确认收货，累计返利
+		OrderRebate orderRebate = null;
+		Commodity commodity = commodityDao.findOne(order.getCommodity().getId());
+		commodity.setGradualrebates(commodityGradualrebateDao.getByCommodity(order.getCommodity().getId()));
+		List<OrderRebate> rebates = rebateDao.getByNzdAndCommodity(order.getNzd().getId(), order.getCommodity().getId());
+		if(rebates==null || rebates.size()==0){
+			orderRebate = new OrderRebate();
+			orderRebate.setCommodity(order.getCommodity());
+			orderRebate.setNzd(order.getNzd());
+			orderRebate.setProvider(order.getCommodity().getProvider());
+			orderRebate.setCount(order.getCount());
+			orderRebate.setTotal(PublicHelper.correctTo(order.getCount()*order.getPrice()));
+			Date sDate = new Date();
+			orderRebate.setStarttime(sDate);
+			if(commodity.getRebatedays()!=null){
+				Date etime = PublicHelper.getNextday(sDate, commodity.getRebatedays());
+				orderRebate.setEndtime(etime);
+			}
+		}
+		else{
+			Date date = new Date();
+			for (Iterator iterator = rebates.iterator(); iterator.hasNext();) {
+				OrderRebate rebate = (OrderRebate) iterator.next();
+				if(rebate.getEndtime()==null){
+					orderRebate = rebate;
+					int count = orderRebate.getCount()==null?order.getCount():(orderRebate.getCount()+order.getCount());
+					orderRebate.setCount(count);
+					double total = orderRebate.getTotal()==null?PublicHelper.correctTo(order.getCount()*order.getPrice())
+							:PublicHelper.correctTo(orderRebate.getTotal()+order.getCount()*order.getPrice());
+					orderRebate.setTotal(total);
+					if(commodity.getRebatedays()!=null){
+						Date etime = PublicHelper.getNextday(orderRebate.getStarttime(), commodity.getRebatedays());
+						orderRebate.setEndtime(etime);
+					}
+					break;
+				}
+				else{
+					if(date.before(rebate.getEndtime())){
+						orderRebate = rebate;
+						int count = orderRebate.getCount()==null?order.getCount():(orderRebate.getCount()+order.getCount());
+						orderRebate.setCount(count);
+						double total = orderRebate.getTotal()==null?PublicHelper.correctTo(order.getCount()*order.getPrice())
+								:PublicHelper.correctTo(orderRebate.getTotal()+order.getCount()*order.getPrice());
+						orderRebate.setTotal(total);
+						break;
+					}
+				}
+			}	
+			if(orderRebate==null){
+				orderRebate = new OrderRebate();
+				orderRebate.setCommodity(order.getCommodity());
+				orderRebate.setNzd(order.getNzd());
+				orderRebate.setProvider(order.getCommodity().getProvider());
+				orderRebate.setCount(order.getCount());
+				orderRebate.setTotal(PublicHelper.correctTo(order.getCount()*order.getPrice()));
+				Date sDate = new Date();
+				orderRebate.setStarttime(sDate);
+				if(commodity.getRebatedays()!=null){
+					Date etime = PublicHelper.getNextday(sDate, commodity.getRebatedays());
+					orderRebate.setEndtime(etime);
+				}
+			}
+		}
+		
+		double rate = 0;
+		double amount = 0;
+		if(commodity.getGradualrebates()!=null && commodity.getGradualrebates().size()>0){
+			for (Iterator iterator = commodity.getGradualrebates().iterator(); iterator.hasNext();) {
+				CommodityGradualrebate crebate = (CommodityGradualrebate) iterator.next();
+				if(orderRebate.getCount()>=crebate.getMinnumber()){
+					rate = crebate.getRebate();
+					amount = PublicHelper.correctTo(rate*orderRebate.getTotal());
+				}
+			}
+		}
+		orderRebate.setRate(rate);
+		orderRebate.setAmount(amount);
+		orderRebate.setRstatus(0);
+		orderRebate.setStatus(0);
+		rebateDao.save(orderRebate);
+		
 		return true;
 	}
 

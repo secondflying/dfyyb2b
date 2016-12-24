@@ -10,7 +10,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="column span8">
-				<div class="well" style="height:440px;">
+				<div class="well" style="height:470px;">
 					<legend>
 						商品资料
 					</legend>
@@ -35,7 +35,7 @@
 										<c:set var="cssClass" value="active item" />
 									</c:if>
 									<div class="${cssClass}">
-										<img src="${imageUrl}/${doc.url}" alt="" style="width: auto; height: 400px;" />
+										<img src="${imageUrl}/${doc.url}" alt="" style="width: auto; height: 430px;" />
 									</div>
 									<c:set value="${sum + 1}" var="sum" />
 								</c:forEach>
@@ -47,7 +47,7 @@
 				</div>
 			</div>
 			<div class="column span4">
-				<div class="well" style="height:440px;">
+				<div class="well" style="height:470px;">
 					<legend>
 						${commodity.name }
 					</legend>
@@ -61,6 +61,7 @@
 					<p class="muted">限量：${commodity.maxcount }</p>
 					<p class="muted">增减阶梯步长：${commodity.step }</p>
 					<p class="muted">业务员佣金比例：${commodity.brokerage }</p>
+					<p class="muted">返利期限：${commodity.rebatedays }天</p>
 					<p class="muted">区域：${commodity.zone.name }</p>
 					<p class="muted">厂家：${commodity.factory }</p>
 					<p class="muted">登记证号：${commodity.code }</p>

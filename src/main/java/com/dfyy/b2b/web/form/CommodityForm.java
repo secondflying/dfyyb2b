@@ -33,6 +33,7 @@ public class CommodityForm implements Serializable {
 	private Double step;
 	private Double brokerage;
 	private Integer status;
+	private Integer rebatedays;
 
 	private List<AttachmentDto> docs;
 	private List<CommodityGradualprice> gprices;
@@ -212,6 +213,14 @@ public class CommodityForm implements Serializable {
 
 	public void setZone(Area zone) {
 		this.zone = zone;
+	}
+
+	public Integer getRebatedays() {
+		return rebatedays;
+	}
+
+	public void setRebatedays(Integer rebatedays) {
+		this.rebatedays = rebatedays;
 	}
 	
 }
