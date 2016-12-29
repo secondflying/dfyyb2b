@@ -68,7 +68,7 @@
 								<button class="btn btn-small btn-danger" type="button" onclick="extendProtectionConfirm(${ord.id})">同意延长保护期</button>
 								<button class="btn btn-small btn-danger" type="button" onclick="extendProtectionBack(${ord.id})">不同意延长保护期</button>
 						</c:if>
-								<button class="btn btn-small btn-success" type="button" onclick="confirmSend(${ord.id})">设置保护期</button>
+								<button class="btn btn-small btn-success" type="button" onclick="setProtection(${ord.id})">设置保护期</button>
 						</td>
 					</tr>
 				</c:forEach>
@@ -85,6 +85,7 @@
 	</div>
 	<div class="modal-body">
 	<input type="text" id="txtExtendDays" placeholder="延长保护期天数" />
+	<br>
 	<input type="text" id="txtExtendRadius" placeholder="保护期半径" />
 	</div>
 	<div class="modal-footer">
@@ -174,12 +175,13 @@
 		$('#btnSend').unbind('click');
 		$("#btnSend").click(function(){
 			$.post('<c:url value="setProtection" />', {
-				phone:phone,
+				id:oid,
 				days : $("#txtExtendDays").val(),
 				radius : $("#txtExtendRadius").val()
 			}).done(function(data) {
 				$('#myModal').modal('hide');
 				$("#successMessage").show().delay(2000).slideUp("slow");
+				window.location.href = window.location.href;
 			}).fail(function() {
 			}); 	
 		});
