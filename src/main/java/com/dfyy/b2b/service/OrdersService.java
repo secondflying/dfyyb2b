@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,7 @@ public class OrdersService {
 
 	@Autowired
 	private CommodityGradualpriceDao gradualpriceDao;
-	
+
 	@Autowired
 	private CommodityGradualrebateDao commodityGradualrebateDao;
 
@@ -77,7 +78,7 @@ public class OrdersService {
 
 	@Autowired
 	private OrdersInventoryDao inventoryDao;
-	
+
 	@Autowired
 	private OrderRebateDao rebateDao;
 
@@ -288,79 +289,82 @@ public class OrdersService {
 		}
 
 		orderBrokerageDao.save(orderbro);
-		
-		//确认收货，累计返利
+
+		// 确认收货，累计返利
 		OrderRebate orderRebate = null;
 		Commodity commodity = commodityDao.findOne(order.getCommodity().getId());
 		commodity.setGradualrebates(commodityGradualrebateDao.getByCommodity(order.getCommodity().getId()));
-		List<OrderRebate> rebates = rebateDao.getByNzdAndCommodity(order.getNzd().getId(), order.getCommodity().getId());
-		if(rebates==null || rebates.size()==0){
+		List<OrderRebate> rebates = rebateDao
+				.getByNzdAndCommodity(order.getNzd().getId(), order.getCommodity().getId());
+		if (rebates == null || rebates.size() == 0) {
 			orderRebate = new OrderRebate();
 			orderRebate.setCommodity(order.getCommodity());
 			orderRebate.setNzd(order.getNzd());
 			orderRebate.setProvider(order.getCommodity().getProvider());
 			orderRebate.setCount(order.getCount());
-			orderRebate.setTotal(PublicHelper.correctTo(order.getCount()*order.getPrice()));
+			orderRebate.setTotal(PublicHelper.correctTo(order.getCount() * order.getPrice()));
 			Date sDate = new Date();
 			orderRebate.setStarttime(sDate);
-			if(commodity.getRebatedays()!=null){
+			if (commodity.getRebatedays() != null) {
 				Date etime = PublicHelper.getNextday(sDate, commodity.getRebatedays());
 				orderRebate.setEndtime(etime);
 			}
-		}
-		else{
+		} else {
 			Date date = new Date();
 			for (Iterator iterator = rebates.iterator(); iterator.hasNext();) {
 				OrderRebate rebate = (OrderRebate) iterator.next();
-				if(rebate.getEndtime()==null){
+				if (rebate.getEndtime() == null) {
 					orderRebate = rebate;
-					int count = orderRebate.getCount()==null?order.getCount():(orderRebate.getCount()+order.getCount());
+					int count = orderRebate.getCount() == null ? order.getCount() : (orderRebate.getCount() + order
+							.getCount());
 					orderRebate.setCount(count);
-					double total = orderRebate.getTotal()==null?PublicHelper.correctTo(order.getCount()*order.getPrice())
-							:PublicHelper.correctTo(orderRebate.getTotal()+order.getCount()*order.getPrice());
+					double total = orderRebate.getTotal() == null ? PublicHelper.correctTo(order.getCount()
+							* order.getPrice()) : PublicHelper.correctTo(orderRebate.getTotal() + order.getCount()
+							* order.getPrice());
 					orderRebate.setTotal(total);
-					if(commodity.getRebatedays()!=null){
+					if (commodity.getRebatedays() != null) {
 						Date etime = PublicHelper.getNextday(orderRebate.getStarttime(), commodity.getRebatedays());
 						orderRebate.setEndtime(etime);
 					}
 					break;
-				}
-				else{
-					if(date.before(rebate.getEndtime())){
+				} else {
+					if (date.before(rebate.getEndtime())) {
 						orderRebate = rebate;
-						int count = orderRebate.getCount()==null?order.getCount():(orderRebate.getCount()+order.getCount());
+						int count = orderRebate.getCount() == null ? order.getCount() : (orderRebate.getCount() + order
+								.getCount());
 						orderRebate.setCount(count);
-						double total = orderRebate.getTotal()==null?PublicHelper.correctTo(order.getCount()*order.getPrice())
-								:PublicHelper.correctTo(orderRebate.getTotal()+order.getCount()*order.getPrice());
+						double total = orderRebate.getTotal() == null ? PublicHelper.correctTo(order.getCount()
+								* order.getPrice()) : PublicHelper.correctTo(orderRebate.getTotal() + order.getCount()
+								* order.getPrice());
 						orderRebate.setTotal(total);
 						break;
 					}
 				}
-			}	
-			if(orderRebate==null){
+			}
+			if (orderRebate == null) {
 				orderRebate = new OrderRebate();
 				orderRebate.setCommodity(order.getCommodity());
 				orderRebate.setNzd(order.getNzd());
 				orderRebate.setProvider(order.getCommodity().getProvider());
 				orderRebate.setCount(order.getCount());
-				orderRebate.setTotal(PublicHelper.correctTo(order.getCount()*order.getPrice()));
+				orderRebate.setTotal(PublicHelper.correctTo(order.getCount() * order.getPrice()));
 				Date sDate = new Date();
 				orderRebate.setStarttime(sDate);
-				if(commodity.getRebatedays()!=null){
+				if (commodity.getRebatedays() != null) {
 					Date etime = PublicHelper.getNextday(sDate, commodity.getRebatedays());
 					orderRebate.setEndtime(etime);
 				}
 			}
 		}
-		
+
 		double rate = 0;
 		double amount = 0;
-		if(commodity.getGradualrebates()!=null && commodity.getGradualrebates().size()>0){
+		if (commodity.getGradualrebates() != null && commodity.getGradualrebates().size() > 0) {
 			for (Iterator iterator = commodity.getGradualrebates().iterator(); iterator.hasNext();) {
 				CommodityGradualrebate crebate = (CommodityGradualrebate) iterator.next();
-				if(orderRebate.getCount()>=crebate.getMinnumber()){
+				if (orderRebate.getCount() >= crebate.getMinnumber()) {
 					rate = crebate.getRebate();
-					amount = PublicHelper.correctTo(rate*orderRebate.getTotal());
+					amount = PublicHelper.correctTo(rate * orderRebate.getTotal());
 				}
 			}
 		}
@@ -369,7 +373,7 @@ public class OrdersService {
 		orderRebate.setRstatus(0);
 		orderRebate.setStatus(0);
 		rebateDao.save(orderRebate);
-		
+
 		return true;
 	}
 
@@ -403,6 +407,95 @@ public class OrdersService {
 		return true;
 	}
 
+	/**
+	 * 申请延长保护期
+	 * 
+	 * @param oid
+	 * @param nzd
+	 * @return
+	 */
+	public boolean extendProtectionApply(int oid, String nzd, int days) {
+		Orders order = orderDao.findOne(oid);
+		checkOrderValid(nzd, order);
+
+		if (order.getStatus() != 3) {
+			throw new RuntimeException("订单未确认，不能申请延长保护期");
+		}
+
+		if (order.getExtendStatus() != null) {
+			throw new RuntimeException("已申请延长保护期，不能重复申请");
+		}
+
+		order.setExtendStatus(0);
+		order.setExtendDays(days);
+		orderDao.save(order);
+		return true;
+	}
+
+	/**
+	 * 通过延长保护期
+	 * 
+	 * @param oid
+	 * @return
+	 */
+	public boolean extendProtectionConfirm(int oid) {
+		Orders order = orderDao.findOne(oid);
+
+		if (order.getStatus() != 3) {
+			throw new RuntimeException("订单未确认，不能申请延长保护期");
+		}
+
+		if (!(order.getExtendStatus() != null && order.getExtendStatus() == 0)) {
+			throw new RuntimeException("该订单未申请延长保护期，无法审核");
+		}
+
+		order.setExtendStatus(null);
+
+		Date start = order.getEndtime() == null ? order.getTime() : order.getEndtime();
+		Date end = new DateTime(start).plusDays(order.getExtendDays()).toDate();
+		order.setEndtime(end);
+		order.setExtendStatus(null);
+		order.setExtendDays(null);
+		orderDao.save(order);
+		return true;
+	}
+
+	/**
+	 * 驳回延长保护期
+	 * 
+	 * @param oid
+	 * @return
+	 */
+	public boolean extendProtectionBack(int oid) {
+		Orders order = orderDao.findOne(oid);
+
+		if (order.getStatus() != 3) {
+			throw new RuntimeException("订单未确认，不能申请延长保护期");
+		}
+
+		if (!(order.getExtendStatus() != null && order.getExtendStatus() == 0)) {
+			throw new RuntimeException("该订单未申请延长保护期，无法审核");
+		}
+		order.setExtendStatus(null);
+		order.setExtendDays(null);
+		orderDao.save(order);
+		return true;
+	}
+
+	public boolean setProtection(int oid, int days, double radius) {
+		Orders order = orderDao.findOne(oid);
+		if (order.getStatus() != 3) {
+			throw new RuntimeException("订单未确认，不能申请延长保护期");
+		}
+
+		Date start = order.getEndtime() == null ? order.getTime() : order.getEndtime();
+		Date end = new DateTime(start).plusDays(days).toDate();
+		order.setEndtime(end);
+		order.setRadius(radius);
+		orderDao.save(order);
+		return true;
+	}
+
 	private void checkOrderValid(String nzd, Orders order) {
 		if (order == null) {
 			throw new RuntimeException("订单不存在");
@@ -422,18 +515,8 @@ public class OrdersService {
 	 * @return
 	 */
 	public List<Orders> getOrdersOfProvider(String userid, int page, int size) {
-
-		User provider = userDao.findOne(userid);
-		// 如果是合伙人，获取该合伙人下经销商的所有列表
-		List<String> users = new ArrayList<>();
-		users.add(provider.getId());
-		if (provider.getType().getId() == 2) {
-			List<PartnerDealer> dealers = dealerDao.getByPid(provider.getId());
-			for (PartnerDealer partnerDealer : dealers) {
-				users.add(partnerDealer.getDealer().getId());
-			}
-		}
-		List<Orders> list = orderDao.getByProvider(users.toArray(new String[0]), new PageRequest(page, size));
+		String[] users = getProviderName(userid);
+		List<Orders> list = orderDao.getByProvider(users, new PageRequest(page, size));
 		return list;
 	}
 
@@ -444,6 +527,41 @@ public class OrdersService {
 	 * @return
 	 */
 	public int getCountOrdersOfProvider(String userid) {
+		String[] users = getProviderName(userid);
+		int count = orderDao.getCountByProvider(users);
+		return count;
+	}
+
+	public List<Orders> getConfirmedOfProvider(String userid, int page, int size) {
+		String[] users = getProviderName(userid);
+		return orderDao.getConfirmedOfProvider(users, new PageRequest(page, size));
+	}
+
+	public int getConfirmedOfProviderCount(String userid) {
+		String[] users = getProviderName(userid);
+		return orderDao.getConfirmedOfProviderCount(users);
+	}
+
+	/**
+	 * 获取快到保护期的订单列表
+	 * 
+	 * @param userids
+	 * @param page
+	 * @return
+	 */
+	public List<Orders> getNearProtectionOfProvider(String userid, int days, int page, int size) {
+		String[] users = getProviderName(userid);
+		Date end = new DateTime().plusDays(days).toDate();
+		return orderDao.getNearProtectionOfProvider(users, end, new PageRequest(page, size));
+	}
+
+	public int getNearProtectionOfProviderCount(String userid, int days) {
+		String[] users = getProviderName(userid);
+		Date end = new DateTime().plusDays(days).toDate();
+		return orderDao.getNearProtectionOfProviderCount(users, end);
+	}
+
+	private String[] getProviderName(String userid) {
 		User provider = userDao.findOne(userid);
 		// 如果是合伙人，获取该合伙人下经销商的所有列表
 		List<String> users = new ArrayList<>();
@@ -454,7 +572,6 @@ public class OrdersService {
 				users.add(partnerDealer.getDealer().getId());
 			}
 		}
-		int count = orderDao.getCountByProvider(users.toArray(new String[0]));
-		return count;
+		return users.toArray(new String[0]);
 	}
 }

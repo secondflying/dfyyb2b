@@ -171,4 +171,26 @@ public class OrdersResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 	}
+	
+	
+	@POST
+	@Path("/extendProtection")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("application/json;charset=UTF-8")
+	public Response extendProtection(@FormParam("nzd") String userid, @FormParam("oid") int oid,
+			
+			 @FormParam("days") int days,
+			@HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+
+		TokenHelper.verifyToken(tokenService, userid, token);
+		try {
+			ordersService.extendProtectionApply(oid, userid,days);
+			return Response.status(Status.OK).entity(new CheckResult(true)).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
 }

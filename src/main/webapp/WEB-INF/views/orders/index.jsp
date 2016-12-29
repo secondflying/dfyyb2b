@@ -27,6 +27,7 @@
 					<th style="width: 120px;" align="center">订购农资店</th>
 					<th style="width: 120px;" align="center">下单时间</th>
 					<th style="width: 120px;" align="center">订购数量</th>
+					<th style="width: 120px;" align="center">保护期截止</th>
 					<th style="width: 120px;" align="center">状态</th>
 					<th style="width: 120px;" align="center">操作</th>
 					<th style="width: 120px;" align="center">收益查看</th>
@@ -46,6 +47,7 @@
 						<td><c:out value="${ord.nzd.alias}" /></td>
 						<td><fmt:formatDate value='${ord.time}' type='date' pattern='yyyy-MM-dd HH:mm:ss' /></td>
 						<td><c:out value="${ord.count}" /></td>
+						<td><fmt:formatDate value='${ord.endtime}' type='date' pattern='yyyy-MM-dd HH:mm:ss' /></td>
 						<td><c:choose>
 								<c:when test="${ord.status == 0}">
 								未发货	
@@ -70,33 +72,26 @@
 								</c:when>
 							</c:choose></td>
 						<td>
-							<c:if test="${loginUser.type.id==1 }">
+							<c:if test="${loginUser.type.id==1 ||loginUser.type.id==3  }">
 								<c:choose>
 									<c:when test="${ord.status == 0}">
-									
 								</c:when>
 									<c:when test="${ord.status==1}">
-							
 								</c:when>
 									<c:when test="${ord.status==2}">
-								
 								</c:when>
 									<c:when test="${ord.status==3}">
-								
 								</c:when>
 									<c:when test="${ord.status==4}">
-									<button class="btn btn-small btn-danger" type="button" onclick="alert(${commodity.id})">审核退货申请</button>
-								
+									<button class="btn btn-small btn-danger" type="button" onclick="checkBack(${commodity.id})">审核退货申请</button>
 								</c:when>
 									<c:when test="${ord.status==10}">
-								
 								</c:when>
 									<c:when test="${ord.status==11}">
-								
 								</c:when>
 								</c:choose>
 							</c:if>
-						<c:if test="${loginUser.type.id==2  }">
+							<c:if test="${loginUser.type.id==2  }">
 								<c:choose>
 									<c:when test="${ord.status == 0}">
 									<button class="btn btn-small btn-danger" type="button" onclick="confirmSend(${ord.id})">确定发货</button>
@@ -105,14 +100,11 @@
 									<button class="btn btn-small btn-danger" type="button" onclick="confirmArrival(${ord.id})">确定送达</button>
 								</c:when>
 									<c:when test="${ord.status==2}">
-								
 								</c:when>
 									<c:when test="${ord.status==3}">
-								
 								</c:when>
 									<c:when test="${ord.status==4}">
 								<button class="btn btn-small btn-danger" type="button" onclick="checkBack(${ord.id})">审核退货申请</button>
-
 								</c:when>
 									<c:when test="${ord.status==10}">
 								已取消
@@ -124,8 +116,8 @@
 							</c:if>	
 							</td>
 							<td>
-							<c:url var="infoUrl" value="info?id=${ord.id}" /> 
-							<a class="btn btn-small btn-success" href="${infoUrl}">查看</a>
+								<c:url var="infoUrl" value="info?id=${ord.id}" /> 
+								<a class="btn btn-small btn-success" href="${infoUrl}">查看</a>
 							</td>
 					</tr>
 				</c:forEach>

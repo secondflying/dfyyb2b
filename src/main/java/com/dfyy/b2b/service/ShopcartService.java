@@ -1,19 +1,27 @@
 package com.dfyy.b2b.service;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import net.sf.ehcache.search.aggregator.Count;
+
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dfyy.b2b.bussiness.Commodity;
 import com.dfyy.b2b.bussiness.CommodityGradualprice;
+import com.dfyy.b2b.bussiness.CommodityProtective;
 import com.dfyy.b2b.bussiness.Orders;
 import com.dfyy.b2b.bussiness.SUser;
 import com.dfyy.b2b.bussiness.Shopcart;
 import com.dfyy.b2b.dao.CommodityDao;
 import com.dfyy.b2b.dao.CommodityGradualpriceDao;
+import com.dfyy.b2b.dao.CommodityProtectiveDao;
 import com.dfyy.b2b.dao.OrdersDao;
 import com.dfyy.b2b.dao.SUserDao;
 import com.dfyy.b2b.dao.ShopcartDao;
@@ -35,6 +43,9 @@ public class ShopcartService {
 
 	@Autowired
 	private CommodityGradualpriceDao gradualpriceDao;
+
+	@Autowired
+	private CommodityProtectiveDao protectiveDao;
 
 	@Autowired
 	private OrdersDao orderDao;
@@ -119,13 +130,41 @@ public class ShopcartService {
 				shopcart.setPrice(c.getPrice());
 			}
 
+			DateTime dt = new DateTime();
+
 			Orders order = new Orders();
 			order.setNzd(sUserDao.findOne(userid));
-			order.setTime(new Date());
+			order.setTime(dt.toDate());
 			order.setStatus(0);
 			order.setCount(shopcart.getCount());
 			order.setPrice(shopcart.getPrice());
 			order.setCommodity(c);
+
+			// 根据数量计算保护期时间和半径
+
+			List<CommodityProtective> protectives = protectiveDao.getByCommodity(c.getId());
+			if (protectives != null && protectives.size() > 0) {
+				Collections.sort(protectives, new Comparator<CommodityProtective>() {
+
+					@Override
+					public int compare(CommodityProtective o1, CommodityProtective o2) {
+						if (o1.getMinnumber() < o2.getMinnumber()) {
+							return -1;
+						} else if (o1.getMinnumber() == o2.getMinnumber()) {
+							return 0;
+						} else {
+							return 1;
+						}
+					}
+				});
+				for (CommodityProtective p : protectives) {
+					if (shopcart.getCount() >= p.getMinnumber()) {
+						order.setTime(dt.plusDays(p.getDays().intValue()).toDate());
+						order.setRadius(p.getRadius());
+					}
+				}
+			}
+
 			orderDao.save(order);
 
 			total += shopcart.getPrice() * shopcart.getCount();

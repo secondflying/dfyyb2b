@@ -61,6 +61,23 @@ public class Orders implements Serializable {
 	@XmlElement
 	private int status;
 
+	@Column(name = "endtime")
+	@XmlElement
+	@XmlJavaTypeAdapter(JaxbDateSerializer.class)
+	private Date endtime;
+
+	@Column(name = "radius")
+	@XmlElement
+	private Double radius;
+
+	@Column(name = "extendStatus")
+	@XmlElement
+	private Integer extendStatus;
+
+	@Column(name = "extendDays")
+	@XmlElement
+	private Integer extendDays;
+
 	public Orders() {
 
 	}
@@ -119,6 +136,38 @@ public class Orders implements Serializable {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public Date getEndtime() {
+		return endtime;
+	}
+
+	public void setEndtime(Date endtime) {
+		this.endtime = endtime;
+	}
+
+	public Double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(Double radius) {
+		this.radius = radius;
+	}
+
+	public Integer getExtendStatus() {
+		return extendStatus;
+	}
+
+	public void setExtendStatus(Integer extendStatus) {
+		this.extendStatus = extendStatus;
+	}
+
+	public Integer getExtendDays() {
+		return extendDays;
+	}
+
+	public void setExtendDays(Integer extendDays) {
+		this.extendDays = extendDays;
 	}
 
 }

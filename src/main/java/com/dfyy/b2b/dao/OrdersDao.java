@@ -19,17 +19,42 @@ public interface OrdersDao extends CrudRepository<Orders, Integer>, JpaSpecifica
 
 	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.nzd.id = ?1 and u.time <= ?2 and u.status >= 0 order by u.time desc ")
 	public List<Orders> getByNzd(String nzd, Date lasttime, Pageable page);
-	
-	
+
 	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.nzd.id = ?1 and u.commodity.id = ?2 and u.status = 3 order by u.time desc ")
-	public List<Orders> getNzdBuyCommodity(String nzd,int cid, Pageable page);
+	public List<Orders> getNzdBuyCommodity(String nzd, int cid, Pageable page);
 
 	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.nzd.id = ?1 and u.commodity.id = ?2 and u.time <= ?3 and u.status = 3 order by u.time desc ")
-	public List<Orders> getNzdBuyCommodity(String nzd,int cid, Date lasttime, Pageable page);
+	public List<Orders> getNzdBuyCommodity(String nzd, int cid, Date lasttime, Pageable page);
 
 	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.commodity.provider.id in (?1) order by u.time desc ")
 	public List<Orders> getByProvider(String[] userids, Pageable page);
 
 	@Query("select count(*) from Orders as u where u.commodity.provider.id in (?1) ")
 	public int getCountByProvider(String[] userids);
+
+	/**
+	 * 已确认收获的订单列表
+	 * 
+	 * @param userids
+	 * @param page
+	 * @return
+	 */
+	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.commodity.provider.id in (?1) and u.status = 3  order by u.time desc ")
+	public List<Orders> getConfirmedOfProvider(String[] userids, Pageable page);
+
+	@Query("select count(*) from Orders as u where u.commodity.provider.id in (?1)  and u.status = 3")
+	public int getConfirmedOfProviderCount(String[] userids);
+	
+	/**
+	 * 获取快到保护期的订单列表
+	 * @param userids
+	 * @param page
+	 * @return
+	 */
+	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.commodity.provider.id in (?1) and u.status = 3  and u.endtime < ?2  order by u.time desc ")
+	public List<Orders> getNearProtectionOfProvider(String[] userids, Date end, Pageable page);
+
+	@Query("select count(*) from Orders as u where u.commodity.provider.id in (?1)  and u.status = 3 and u.endtime < ?2")
+	public int getNearProtectionOfProviderCount(String[] userids, Date end);
+
 }

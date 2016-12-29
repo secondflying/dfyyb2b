@@ -102,19 +102,44 @@ public class CommodityService {
 	 * @param size
 	 * @return
 	 */
-	public CommoditiesResult getOnlineCommodity(String nzd, int page, long time) {
+	public CommoditiesResult getOnlineCommodity(String nzd, String type, String key, int page, long time) {
 		CommoditiesResult result = new CommoditiesResult();
 		SUser user = sUserDao.findOne(nzd);
+		List<CommodityOfPro> list = null;
 		if (page == 0) {
-			List<CommodityOfPro> list = commodityOfProDao.getOnline(nzd,user.getY(),user.getX(), new PageRequest(page, 20));
-			result.setResults(list);
+			if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(key)) {
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), Integer.parseInt(type), key,
+						new PageRequest(page, 20));
+			} else if (StringUtils.isNotBlank(type) && StringUtils.isBlank(key)) {
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), Integer.parseInt(type),
+						new PageRequest(page, 20));
+			} else if (StringUtils.isNotBlank(key) && StringUtils.isBlank(type)) {
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), key, new PageRequest(page, 20));
+			} else {
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), new PageRequest(page, 20));
+			}
 
 			result.setLastTime(new Date().getTime());
 		} else {
-			List<CommodityOfPro> list = commodityOfProDao.getOnline(nzd,user.getY(),user.getX(), new Date(time), new PageRequest(page, 20));
-			result.setResults(list);
+
+			if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(key)) {
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), Integer.parseInt(type), key,
+						new Date(time), new PageRequest(page, 20));
+			} else if (StringUtils.isNotBlank(type) && StringUtils.isBlank(key)) {
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), Integer.parseInt(type),
+						new Date(time), new PageRequest(page, 20));
+			} else if (StringUtils.isNotBlank(key) && StringUtils.isBlank(type)) {
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), key, new Date(time), new PageRequest(
+						page, 20));
+			} else {
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), new Date(time), new PageRequest(page,
+						20));
+			}
+
 			result.setLastTime(time);
 		}
+
+		result.setResults(list);
 		return result;
 	}
 
@@ -162,13 +187,13 @@ public class CommodityService {
 	public int getCommoditiesCountByStatus(int status) {
 		return commodityDao.getCountByStatus(status);
 	}
-	
+
 	/**
 	 * 按状态和名称查找商品
 	 * 
 	 * @return
 	 */
-	public List<Commodity> findCommoditiesByStatus(String key,int status, int page, int size) {
+	public List<Commodity> findCommoditiesByStatus(String key, int status, int page, int size) {
 		return commodityDao.searchByStatus(key, status, new PageRequest(page, size));
 	}
 
@@ -177,7 +202,7 @@ public class CommodityService {
 	 * 
 	 * @return
 	 */
-	public int findCommoditiesCountByStatus(String key,int status) {
+	public int findCommoditiesCountByStatus(String key, int status) {
 		return commodityDao.searchCountByStatus(key, status);
 	}
 

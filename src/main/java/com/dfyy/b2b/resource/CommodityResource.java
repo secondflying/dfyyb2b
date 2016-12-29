@@ -43,7 +43,8 @@ public class CommodityResource {
 	@GET
 	@Path("/online")
 	@Produces("application/json;charset=UTF-8")
-	public Response online(@QueryParam("nzd") String userid, @QueryParam("page") @DefaultValue("0") int page,
+	public Response online(@QueryParam("nzd") String userid, @QueryParam("type") String type,
+			@QueryParam("key") String key, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("time") @DefaultValue("0") long time, @HeaderParam("X-Token") String token) {
 		if (StringUtils.isBlank(userid)) {
 			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
@@ -52,7 +53,7 @@ public class CommodityResource {
 		TokenHelper.verifyToken(tokenService, userid, token);
 
 		try {
-			CommoditiesResult result = commodityService.getOnlineCommodity(userid, page, time);
+			CommoditiesResult result = commodityService.getOnlineCommodity(userid, type, key, page, time);
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

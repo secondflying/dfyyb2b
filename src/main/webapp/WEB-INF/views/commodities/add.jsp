@@ -6,16 +6,7 @@
 <c:set var="pageTitle" value="新增商品" scope="request" />
 <jsp:include page="../includes/proheader.jsp" />
 
-<div class="navbar">
-	<div class="navbar-inner">
-		<ul class="nav">
-			<c:url var="infoUrl" value="index" />
-			<li class="active"><a href="${infoUrl}">商品列表</a></li>
-			<c:url var="infoUrl2" value="orders" />
-			<li class=""><a href="${infoUrl2}">订单列表</a></li>
-		</ul>
-	</div>
-</div>
+
 <section class="well">
 	<c:url var="addUrl" value="addone" />
 	<form id="commodity" action="${addUrl}" method="post">

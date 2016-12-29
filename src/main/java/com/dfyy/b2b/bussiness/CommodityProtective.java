@@ -23,9 +23,6 @@ import com.dfyy.b2b.util.JaxbDateSerializer;
 @XmlAccessorType(XmlAccessType.NONE)
 public class CommodityProtective implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	@Id
