@@ -108,10 +108,13 @@ public class CommodityService {
 		List<CommodityOfPro> list = null;
 		if (page == 0) {
 			if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(key)) {
-				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), Integer.parseInt(type), key,
+				 
+				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, key,
 						new PageRequest(page, 20));
 			} else if (StringUtils.isNotBlank(type) && StringUtils.isBlank(key)) {
-				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), Integer.parseInt(type),
+				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs,
 						new PageRequest(page, 20));
 			} else if (StringUtils.isNotBlank(key) && StringUtils.isBlank(type)) {
 				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), key, new PageRequest(page, 20));
@@ -123,10 +126,12 @@ public class CommodityService {
 		} else {
 
 			if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(key)) {
-				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), Integer.parseInt(type), key,
+				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, key,
 						new Date(time), new PageRequest(page, 20));
 			} else if (StringUtils.isNotBlank(type) && StringUtils.isBlank(key)) {
-				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), Integer.parseInt(type),
+				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
+				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs,
 						new Date(time), new PageRequest(page, 20));
 			} else if (StringUtils.isNotBlank(key) && StringUtils.isBlank(type)) {
 				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), key, new Date(time), new PageRequest(

@@ -1,5 +1,7 @@
 package com.dfyy.b2b.resource;
 
+import java.util.List;
+
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dfyy.b2b.bussiness.Commodity;
+import com.dfyy.b2b.bussiness.CommodityType;
 import com.dfyy.b2b.dto.CommoditiesResult;
 import com.dfyy.b2b.service.CommodityService;
 import com.dfyy.b2b.service.TokenService;
@@ -66,6 +69,18 @@ public class CommodityResource {
 	public Response single(@PathParam("cid") int cid) {
 		try {
 			Commodity result = commodityService.getCommodityFull(cid);
+			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path("/ptypes")
+	@Produces("application/json;charset=UTF-8")
+	public Response ptypes(@HeaderParam("X-Token") String token) {
+		try {
+			List<CommodityType> result = commodityService.getCommodityTypeParent();
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
