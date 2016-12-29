@@ -55,6 +55,24 @@ public class SMSService {
 		}
 	}
 
+	public void sendNotice(String phone) {
+		try {
+			String content = URLEncoder.encode("尊敬的用户，您的订单保护期还有15天，提醒您注意。", "UTF-8");
+			URL url = new URL(PublicConfig.getSmsaddress() + "&mobile=" + phone + "&content=" + content);
+			HttpGet httpGet = new HttpGet(url.toURI());
+			HttpClient httpClient = HTTPClientUtils.getClient(true);
+			HttpResponse response = httpClient.execute(httpGet);
+			HttpEntity entity = response.getEntity();
+			if (null != entity) {
+				String responsecontent = EntityUtils.toString(entity, "UTF-8");
+				logger.info("互亿短信接口返回结果：{}", responsecontent);
+			}
+
+		} catch (Exception e) {
+			logger.error("互亿短信接口报错", e);
+		}
+	}
+
 	public void sendsms2(String phone, String code) {
 		try {
 			String content = URLEncoder.encode("【种好地】尊敬的用户，您的验证码是：" + code + "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！", "UTF-8");

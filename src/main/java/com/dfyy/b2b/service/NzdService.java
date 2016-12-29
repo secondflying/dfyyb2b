@@ -11,9 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dfyy.b2b.bussiness.NzdMember;
 import com.dfyy.b2b.bussiness.SUser;
+import com.dfyy.b2b.bussiness.SalesmanStore;
+import com.dfyy.b2b.bussiness.User;
 import com.dfyy.b2b.bussiness.UserToken;
 import com.dfyy.b2b.dao.NzdMemberDao;
 import com.dfyy.b2b.dao.SUserDao;
+import com.dfyy.b2b.dao.SalesmanStoreDao;
+import com.dfyy.b2b.dao.UserDao;
 import com.dfyy.b2b.dao.UserTokenDao;
 import com.dfyy.b2b.dto.NzdMembersResult;
 
@@ -23,12 +27,18 @@ public class NzdService {
 
 	@Autowired
 	private SUserDao sUserDao;
+	
+	@Autowired
+	private UserDao userDao;
 
 	@Autowired
 	private UserTokenDao tokenDao;
 
 	@Autowired
 	private NzdMemberDao nzdMemberDao;
+
+	@Autowired
+	private SalesmanStoreDao salesmanStoreDao;
 
 	/**
 	 * 农资店用户登录
@@ -106,6 +116,14 @@ public class NzdService {
 			result.setLastTime(time);
 		}
 		return result;
+	}
+
+	public User salesman(String nzd) {
+		SalesmanStore store = salesmanStoreDao.getBySid(nzd);
+		if(store!= null){
+			return userDao.findOne(store.getUid());
+		}
+		return null;
 	}
 
 }

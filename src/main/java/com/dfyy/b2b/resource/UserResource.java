@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.dfyy.b2b.bussiness.SUser;
+import com.dfyy.b2b.bussiness.User;
 import com.dfyy.b2b.dto.NzdMembersResult;
 import com.dfyy.b2b.service.NzdService;
 import com.dfyy.b2b.service.TokenService;
@@ -96,6 +97,15 @@ public class UserResource {
 			@QueryParam("time") @DefaultValue("0") long time, @HeaderParam("X-Token") String token) {
 		TokenHelper.verifyToken(tokenService, uid, token);
 		return nzdService.myMembers(uid, page, time);
+	}
+	
+	
+	@GET
+	@Path("/salesman")
+	@Produces("application/json;charset=UTF-8")
+	public User salesman(@PathParam("uid") String uid,  @HeaderParam("X-Token") String token) {
+		TokenHelper.verifyToken(tokenService, uid, token);
+		return nzdService.salesman(uid);
 	}
 
 }

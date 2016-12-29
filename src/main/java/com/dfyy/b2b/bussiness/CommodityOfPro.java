@@ -122,6 +122,11 @@ public class CommodityOfPro implements Serializable {
 	@Column(name = "endtime")
 	@XmlTransient
 	private Date endtime;
+	
+	
+	@Column(name = "hastag")
+	@XmlTransient
+	private int hastag;
 
 	public CommodityOfPro() {
 
@@ -301,6 +306,14 @@ public class CommodityOfPro implements Serializable {
 
 	public void setEndtime(Date endtime) {
 		this.endtime = endtime;
+	}
+
+	public int getHastag() {
+		return hastag;
+	}
+
+	public void setHastag(int hastag) {
+		this.hastag = hastag;
 	}
 
 }

@@ -174,6 +174,26 @@ public class OrdersResource {
 	
 	
 	@POST
+	@Path("/backCancel")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("application/json;charset=UTF-8")
+	public Response backCancel(@FormParam("nzd") String userid, @FormParam("oid") int oid,
+			@HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+
+		TokenHelper.verifyToken(tokenService, userid, token);
+		try {
+			ordersService.cancelBack(oid, userid);
+			return Response.status(Status.OK).entity(new CheckResult(true)).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+	}
+	
+	
+	@POST
 	@Path("/extendProtection")
 	@Consumes("application/x-www-form-urlencoded")
 	@Produces("application/json;charset=UTF-8")

@@ -57,4 +57,21 @@ public interface OrdersDao extends CrudRepository<Orders, Integer>, JpaSpecifica
 	@Query("select count(*) from Orders as u where u.commodity.provider.id in (?1)  and u.status = 3 and u.endtime < ?2")
 	public int getNearProtectionOfProviderCount(String[] userids, Date end);
 
+	
+	/**
+	 * 获取已送达订单超过7天的订单，
+	 */
+	@Query("select u from Orders as u where u.status = 2 and u.alterTime <= ?1")
+	public List<Orders> getHasArrival(Date end);
+	
+	
+	/**
+	 * 获取保护期快到的
+	 * @param userids
+	 * @param end
+	 * @param page
+	 * @return
+	 */
+	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.status = 3  and u.endtime <= ?2 and u.sendmsg <>1 order by u.time desc ")
+	public List<Orders> getNearProtectionOfProvider( Date end);
 }

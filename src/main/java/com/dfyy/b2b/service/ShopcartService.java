@@ -159,7 +159,7 @@ public class ShopcartService {
 				});
 				for (CommodityProtective p : protectives) {
 					if (shopcart.getCount() >= p.getMinnumber()) {
-						order.setTime(dt.plusDays(p.getDays().intValue()).toDate());
+						order.setEndtime(dt.plusDays(p.getDays().intValue()).toDate());
 						order.setRadius(p.getRadius());
 					}
 				}

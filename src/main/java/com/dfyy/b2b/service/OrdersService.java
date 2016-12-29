@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +86,36 @@ public class OrdersService {
 
 	@Autowired
 	private OrderRebateDao rebateDao;
+
+	@Autowired
+	private SMSService smsService;
+
+	@PostConstruct
+	public void initServiceContext() {
+
+		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+		executor.scheduleWithFixedDelay(new Runnable() {
+			@Override
+			public void run() {
+				Date end = new DateTime().minusDays(7).toDate();
+				List<Orders> list = orderDao.getHasArrival(end);
+				for (Orders o : list) {
+					o.setAlterTime(new Date());
+					o.setStatus(3);
+					orderDao.save(o);
+				}
+
+				Date end2 = new DateTime().minusDays(15).toDate();
+				List<Orders> list2 = orderDao.getNearProtectionOfProvider(end2);
+				for (Orders o : list2) {
+					smsService.sendNotice(o.getNzd().getPhone());
+
+					o.setSendmsg(true);
+					orderDao.save(o);
+				}
+			}
+		}, 1, 1, TimeUnit.HOURS);
+	}
 
 	/**
 	 * 获取某个农资店购买的所有订单列表
@@ -178,6 +213,7 @@ public class OrdersService {
 		}
 
 		order.setStatus(10);
+		order.setAlterTime(new Date());
 		orderDao.save(order);
 		return true;
 	}
@@ -191,6 +227,7 @@ public class OrdersService {
 	public boolean confirmSend(int oid) {
 		Orders order = orderDao.findOne(oid);
 		order.setStatus(1);
+		order.setAlterTime(new Date());
 		orderDao.save(order);
 		return true;
 	}
@@ -204,6 +241,7 @@ public class OrdersService {
 	public boolean confirmArrival(int oid) {
 		Orders order = orderDao.findOne(oid);
 		order.setStatus(2);
+		order.setAlterTime(new Date());
 		orderDao.save(order);
 		return true;
 	}
@@ -217,6 +255,7 @@ public class OrdersService {
 	public boolean backStop(int oid) {
 		Orders order = orderDao.findOne(oid);
 		order.setStatus(2);
+		order.setAlterTime(new Date());
 		orderDao.save(order);
 		return true;
 	}
@@ -230,6 +269,7 @@ public class OrdersService {
 	public boolean backPass(int oid) {
 		Orders order = orderDao.findOne(oid);
 		order.setStatus(11);
+		order.setAlterTime(new Date());
 		orderDao.save(order);
 		return true;
 	}
@@ -249,6 +289,7 @@ public class OrdersService {
 			throw new RuntimeException("订单未送达，不能确定收货");
 		}
 		order.setStatus(3);
+		order.setAlterTime(new Date());
 		orderDao.save(order);
 
 		// 确认收货，增加库存
@@ -403,6 +444,30 @@ public class OrdersService {
 		}
 
 		order.setStatus(4);
+		order.setAlterTime(new Date());
+
+		orderDao.save(order);
+		return true;
+	}
+
+	/**
+	 * 撤销退货
+	 * 
+	 * @param oid
+	 * @param nzd
+	 * @return
+	 */
+	public boolean cancelBack(int oid, String nzd) {
+		Orders order = orderDao.findOne(oid);
+		checkOrderValid(nzd, order);
+
+		if (order.getStatus() != 4) {
+			throw new RuntimeException("未申请退货，不能撤销退货");
+		}
+
+		order.setStatus(2);
+		order.setAlterTime(new Date());
+
 		orderDao.save(order);
 		return true;
 	}

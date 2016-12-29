@@ -77,6 +77,15 @@ public class Orders implements Serializable {
 	@Column(name = "extendDays")
 	@XmlElement
 	private Integer extendDays;
+	
+	
+	@Column(name = "alterTime")
+	@XmlElement
+	@XmlJavaTypeAdapter(JaxbDateSerializer.class)
+	private Date alterTime;
+	
+	@Column(name = "sendmsg")
+	private boolean sendmsg;
 
 	public Orders() {
 
@@ -168,6 +177,22 @@ public class Orders implements Serializable {
 
 	public void setExtendDays(Integer extendDays) {
 		this.extendDays = extendDays;
+	}
+
+	public Date getAlterTime() {
+		return alterTime;
+	}
+
+	public void setAlterTime(Date alterTime) {
+		this.alterTime = alterTime;
+	}
+
+	public boolean isSendmsg() {
+		return sendmsg;
+	}
+
+	public void setSendmsg(boolean sendmsg) {
+		this.sendmsg = sendmsg;
 	}
 
 }
