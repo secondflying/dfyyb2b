@@ -2,6 +2,7 @@ package com.dfyy.b2b.resource;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -11,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.Response.Status;
@@ -20,10 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.dfyy.b2b.bussiness.OrderRebate;
 import com.dfyy.b2b.bussiness.SUser;
 import com.dfyy.b2b.bussiness.User;
+import com.dfyy.b2b.dto.CommoditiesResult;
 import com.dfyy.b2b.dto.NzdMembersResult;
 import com.dfyy.b2b.service.NzdService;
+import com.dfyy.b2b.service.RebateService;
 import com.dfyy.b2b.service.TokenService;
 import com.dfyy.b2b.util.TokenHelper;
 import com.google.zxing.BarcodeFormat;
@@ -40,6 +45,9 @@ public class UserResource {
 
 	@Autowired
 	private TokenService tokenService;
+
+	@Autowired
+	private RebateService rebateService;
 
 	private String uid;
 
@@ -98,14 +106,31 @@ public class UserResource {
 		TokenHelper.verifyToken(tokenService, uid, token);
 		return nzdService.myMembers(uid, page, time);
 	}
-	
-	
+
 	@GET
 	@Path("/salesman")
 	@Produces("application/json;charset=UTF-8")
-	public User salesman(@PathParam("uid") String uid,  @HeaderParam("X-Token") String token) {
+	public User salesman(@PathParam("uid") String uid, @HeaderParam("X-Token") String token) {
 		TokenHelper.verifyToken(tokenService, uid, token);
 		return nzdService.salesman(uid);
+	}
+
+	@GET
+	@Path("/rebates")
+	@Produces("application/json;charset=UTF-8")
+	public Response rebates(@QueryParam("nzd") String userid, @QueryParam("page") @DefaultValue("0") int page,
+			@HeaderParam("X-Token") String token) {
+		if (StringUtils.isBlank(userid)) {
+			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();
+		}
+		TokenHelper.verifyToken(tokenService, userid, token);
+
+		try {
+			List<OrderRebate> result = rebateService.getByNzd(userid, page);
+			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.dfyy.b2b.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ public interface OrderRebateDao extends CrudRepository<OrderRebate, Integer>, Jp
 
 	@Query("select u from OrderRebate as u left join fetch u.nzd left join fetch u.commodity left join fetch u.provider where u.nzd.id=?1 and u.status <> -1 order by u.starttime desc ")
 	public List<OrderRebate> getByNzd(String nid,Pageable page);
+	
 	
 	@Query("select count(u) from OrderRebate as u where u.nzd.id=?1 and u.status <> -1")
 	public int getCountByNzd(String userid);
