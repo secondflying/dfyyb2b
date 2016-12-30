@@ -19,6 +19,9 @@ public interface OrdersDao extends CrudRepository<Orders, Integer>, JpaSpecifica
 
 	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.nzd.id = ?1 and u.time <= ?2 and u.status >= 0 order by u.time desc ")
 	public List<Orders> getByNzd(String nzd, Date lasttime, Pageable page);
+	
+	@Query("select count(*) from Orders as u where u.nzd.id = ?1 and u.status >= 0 ")
+	public int getCountByNzd(String nzd);
 
 	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.nzd.id = ?1 and u.commodity.id = ?2 and u.status = 3 order by u.time desc ")
 	public List<Orders> getNzdBuyCommodity(String nzd, int cid, Pageable page);
@@ -31,6 +34,13 @@ public interface OrdersDao extends CrudRepository<Orders, Integer>, JpaSpecifica
 
 	@Query("select count(*) from Orders as u where u.commodity.provider.id in (?1) ")
 	public int getCountByProvider(String[] userids);
+	
+	
+	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.nzd.id in (?1) order by u.time desc ")
+	public List<Orders> getBySalesman(String[] userids, Pageable page);
+
+	@Query("select count(*) from Orders as u where u.nzd.id in (?1) ")
+	public int getCountBySalesman(String[] userids);
 
 	/**
 	 * 已确认收获的订单列表

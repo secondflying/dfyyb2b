@@ -56,6 +56,9 @@ public class ProInfoController {
 		if(user.getType()==null){
 			return "redirect:perfect";
 		}
+		if(user.getType().getId()==4){
+			return "redirect:/provider/salesman/info";
+		}
 		int size = 0;
 		if(user.getDocs()!=null && user.getDocs().size()>0){
 			size = user.getDocs().size();
@@ -67,12 +70,7 @@ public class ProInfoController {
 			UserReview userReview = reviewService.getByUid(user.getId());
 			model.addAttribute("review", userReview);
 		}
-		if(user.getType().getId()==4){
-			return "proinfo/pinfo";
-		}
-		else{
-			return "proinfo/info";
-		}
+		return "proinfo/info";
 	}
 	
 	@RequestMapping(value = "/proinfo/perfect",method=RequestMethod.GET)

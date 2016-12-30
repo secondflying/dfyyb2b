@@ -21,5 +21,8 @@ public interface CommodityOfNzdDao extends CrudRepository<CommodityOfNzd, Intege
 
 	@Query("select u from CommodityOfNzd as u left join fetch u.provider left join fetch u.type left join fetch u.unit where u.status = 3 and u.nzd=?1 and u.buytime <= ?2  order by u.buytime desc ")
 	public List<CommodityOfNzd> getNzdBuyed(String nzd, Date lasttime, Pageable page);
+	
+	@Query("select count(*) from CommodityOfNzd as u where u.status = 3 and u.nzd=?1")
+	public int getCountNzdBuyed(String nzd);
 
 }

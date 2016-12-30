@@ -4,25 +4,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <c:set var="pageTitle" value="农资店信息" scope="request" />
-<jsp:include page="../includes/mheader.jsp" />
-<div class="navbar">
-	<div class="navbar-inner">
-		<ul class="nav">
-			<c:url var="infoUrl" value="partners" />
-			<li class=""><a href="${infoUrl}">合伙人</a></li>
-			<c:url var="dealerUrl" value="dealers" />
-			<li class=""><a href="${dealerUrl}">经销商</a></li>
-			<c:url var="manuUrl" value="manufacturers" />
-			<li class=""><a href="${manuUrl}">厂家</a></li>
-			<c:url var="saleUrl" value="salesmans" />
-			<li class=""><a href="${saleUrl}">业务员</a></li>
-			<c:url var="storeUrl" value="stores" />
-			<li class="active"><a href="${storeUrl}">农资店</a></li>
-			<c:url var="infoUrl2" value="informal" />
-			<li class=""><a href="${infoUrl2}">待审核用户</a></li>
-		</ul>
-	</div>
-</div>
+<jsp:include page="../includes/saleheader.jsp" />
+
 <section class="content-wrap">
 	<div class="container">
 		
@@ -51,10 +34,7 @@
 						<c:if test="${salesman!=null}">
 							${salesman.alias }
 						</c:if>
-						<a id="editone" class="btn btn-small btn-success" href="#myModal" data-toggle="modal">
-							设置
-						</a>
-					</p>	
+					</p>
 					<p class="muted">订单情况：
 						<c:url var="orderUrl" value="storeorders?uid=${user.id}" />
 						<a  class="btn btn-small btn-success" href="${orderUrl }" target="_Blank">
@@ -74,36 +54,11 @@
 	</div>
 	
 </section>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-	aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					选择业务员
-				</h4>
-			</div>
-			<div class="modal-body" id="treeChooseZoneId">
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">
-					关闭
-				</button>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
+
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
 <script>
 $(document).ready(function () {
-	
-	$('#treeChooseZoneId').load('<c:url value="/utils/select/salesmans" />');
+
 
 	var map = new BMap.Map("mapContainer");
 	var point = new BMap.Point(${user.x}, ${user.y}); // 创建点坐标
@@ -122,21 +77,6 @@ $(document).ready(function () {
 	}
 
 });	
-function clickSalesmanNote(id,name){
-	$('#myModal').modal('hide');
-	var uid = $('#userid').val();
-	$.post('<c:url value="setsalesman" />', {
-		uid : id,
-		sid : uid
-	}).done(function(data) {
-		if(data=="true"){
-			window.location.href = window.location.href;
-		}
-		else{
-			
-		}
-	}).fail(function() {
-	});
-}
+
 </script>
 <jsp:include page="../includes/footer.jsp" />
