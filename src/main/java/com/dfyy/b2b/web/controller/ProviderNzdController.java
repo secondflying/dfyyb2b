@@ -3,6 +3,7 @@ package com.dfyy.b2b.web.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,6 +81,17 @@ public class ProviderNzdController {
 			@RequestParam(required = true) double radius) {
 		ordersService.setProtection(id, days, radius);
 		return "true";
+	}
+
+	@RequestMapping(value = "/info", method = RequestMethod.GET)
+	public String index(Model model) {
+		return "buyedNzd/info";
+	}
+
+	@RequestMapping(value = "/competitors", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Orders> Competitors(@RequestParam int oid, @RequestParam double size) {
+		return ordersService.getCompetitors(oid, size);
 	}
 
 }

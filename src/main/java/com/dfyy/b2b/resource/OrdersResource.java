@@ -197,7 +197,7 @@ public class OrdersResource {
 	@Path("/extendProtection")
 	@Consumes("application/x-www-form-urlencoded")
 	@Produces("application/json;charset=UTF-8")
-	public Response extendProtection(@FormParam("nzd") String userid, @FormParam("oid") int oid,
+	public Response extendProtection(@FormParam("nzd") String userid, @FormParam("cid") int cid,
 			
 			 @FormParam("days") int days,
 			@HeaderParam("X-Token") String token) {
@@ -207,7 +207,7 @@ public class OrdersResource {
 
 		TokenHelper.verifyToken(tokenService, userid, token);
 		try {
-			ordersService.extendProtectionApply(oid, userid,days);
+			ordersService.extendProtectionApply(cid, userid,days);
 			return Response.status(Status.OK).entity(new CheckResult(true)).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

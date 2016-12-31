@@ -84,4 +84,19 @@ public interface OrdersDao extends CrudRepository<Orders, Integer>, JpaSpecifica
 	 */
 	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.status = 3  and u.endtime <= ?2 and u.sendmsg <>1 order by u.time desc ")
 	public List<Orders> getNearProtectionOfProvider( Date end);
+	
+	
+	/**
+	 * 获取农资店购买的某个商品的记录
+	 * @param cid
+	 * @param nzd
+	 * @param page
+	 * @return
+	 */
+	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.status = 3  and u.nzd.id = ?2 and u.commodity.id = ?1 order by u.endtime desc")
+	public List<Orders> getByCommodityAndNzd( int cid, String nzd,Pageable page);
+	
+	
+	@Query("select u from Orders as u left join fetch u.nzd  left join fetch u.commodity  where u.status = 3  and u.nzd.id <> ?1 and u.commodity.id = ?2 and GETDISTANCE(?3,?4,u.nzd.y,u.nzd.x) <= ?5 order by u.time desc")
+	public List<Orders> getCompetitors(String nzd, int cid,double y, double x, double size);
 }

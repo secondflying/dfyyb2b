@@ -49,7 +49,10 @@
 				</c:if>
 				<c:forEach items="${orders}" var="ord">
 					<tr>
-						<td><c:out value="${ord.nzd.alias}" /></td>
+						<td>
+						<c:url value="info?oid=${ord.id}" var="infUrl" />
+						<a href="${infUrl}"><c:out value="${ord.nzd.alias}" /></a>
+						</td>
 						<td><c:out value="${ord.commodity.name}" /></td>
 						<td><c:out value="${ord.commodity.provider.alias}" /></td>
 						<td><fmt:formatDate value='${ord.time}' type='date' pattern='yyyy-MM-dd HH:mm:ss' /></td>

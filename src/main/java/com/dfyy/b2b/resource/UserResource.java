@@ -118,7 +118,7 @@ public class UserResource {
 	@GET
 	@Path("/rebates")
 	@Produces("application/json;charset=UTF-8")
-	public Response rebates(@QueryParam("nzd") String userid, @QueryParam("page") @DefaultValue("0") int page,
+	public Response rebates(@PathParam("nzd") String userid, @QueryParam("page") @DefaultValue("0") int page,
 			@HeaderParam("X-Token") String token) {
 		if (StringUtils.isBlank(userid)) {
 			return Response.status(Status.BAD_REQUEST).entity("用户ID未指定").build();

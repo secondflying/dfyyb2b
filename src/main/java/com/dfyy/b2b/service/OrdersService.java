@@ -186,7 +186,7 @@ public class OrdersService {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 获取农资店购买的商品列表
 	 * 
@@ -195,18 +195,19 @@ public class OrdersService {
 	 * @param size
 	 * @return
 	 */
-	public List<CommodityOfNzd>  getMyBuyedCommodity(String nzd, int page, int size) {
+	public List<CommodityOfNzd> getMyBuyedCommodity(String nzd, int page, int size) {
 		CommodityOfNzdResult result = new CommodityOfNzdResult();
 		List<CommodityOfNzd> list = commodityOfNzdDao.getNzdBuyed(nzd, new PageRequest(page, size));
 		return list;
 	}
-	
+
 	/**
 	 * 获取农资店已购商品个数
+	 * 
 	 * @param nzd
 	 * @return
 	 */
-	public int getCountMyBuyedCommodity(String nzd){
+	public int getCountMyBuyedCommodity(String nzd) {
 		int count = commodityOfNzdDao.getCountNzdBuyed(nzd);
 		return count;
 	}
@@ -504,8 +505,12 @@ public class OrdersService {
 	 * @param nzd
 	 * @return
 	 */
-	public boolean extendProtectionApply(int oid, String nzd, int days) {
-		Orders order = orderDao.findOne(oid);
+	public boolean extendProtectionApply(int cid, String nzd, int days) {
+		List<Orders> orders = orderDao.getByCommodityAndNzd(cid, nzd, new PageRequest(0, 1));
+		if (orders == null || orders.size() == 0) {
+			throw new RuntimeException("为购买该商品");
+		}
+		Orders order = orders.get(0);
 		checkOrderValid(nzd, order);
 
 		if (order.getStatus() != 3) {
@@ -609,7 +614,6 @@ public class OrdersService {
 		List<Orders> list = orderDao.getByProvider(users, new PageRequest(page, size));
 		return list;
 	}
-	
 
 	/**
 	 * 获取供应商订单个数
@@ -622,33 +626,36 @@ public class OrdersService {
 		int count = orderDao.getCountByProvider(users);
 		return count;
 	}
-	
+
 	/**
 	 * 获取业务云相关订单
+	 * 
 	 * @param userid
 	 * @param page
 	 * @param size
 	 * @return
 	 */
-	public List<Orders> getOrdersOfSalesman(String userid,int page,int size){
+	public List<Orders> getOrdersOfSalesman(String userid, int page, int size) {
 		String[] users = getNzdIds(userid);
 		List<Orders> list = orderDao.getBySalesman(users, new PageRequest(page, size));
 		return list;
 	}
-	
+
 	/**
 	 * 获取业务员相关订单个数
+	 * 
 	 * @param userid
 	 * @return
 	 */
-	public int getCountOrdersOfSalesman(String userid){
+	public int getCountOrdersOfSalesman(String userid) {
 		String[] users = getNzdIds(userid);
 		int count = orderDao.getCountBySalesman(users);
 		return count;
 	}
-	
+
 	/**
 	 * 获取农资店的订单
+	 * 
 	 * @param nzd
 	 * @param page
 	 * @param size
@@ -658,39 +665,41 @@ public class OrdersService {
 		List<Orders> list = orderDao.getByNzd(nzd, new PageRequest(page, size));
 		return list;
 	}
-	
+
 	/**
 	 * 获取农资店订单个数
+	 * 
 	 * @param nzd
 	 * @return
 	 */
-	public int getCountNzdOrders(String nzd){
+	public int getCountNzdOrders(String nzd) {
 		int count = orderDao.getCountByNzd(nzd);
 		return count;
 	}
-	
+
 	/**
 	 * 获取业务员佣金记录
+	 * 
 	 * @param uid
 	 * @param page
 	 * @param size
 	 * @return
 	 */
-	public List<OrderBrokerage> getBrokeragesOfSalesman(String uid,int page,int size){
+	public List<OrderBrokerage> getBrokeragesOfSalesman(String uid, int page, int size) {
 		List<OrderBrokerage> brokerages = orderBrokerageDao.getBySalesman(uid, new PageRequest(page, size));
 		return brokerages;
 	}
-	
+
 	/**
 	 * 获取业务员佣金记录个数
+	 * 
 	 * @param uid
 	 * @return
 	 */
-	public int getBrokeragesCountOfSalesman(String uid){
+	public int getBrokeragesCountOfSalesman(String uid) {
 		int count = orderBrokerageDao.getCountBySalesman(uid);
 		return count;
 	}
-	
 
 	public List<Orders> getConfirmedOfProvider(String userid, int page, int size) {
 		String[] users = getProviderName(userid);
@@ -734,16 +743,31 @@ public class OrdersService {
 		}
 		return users.toArray(new String[0]);
 	}
-	
-	private String[] getNzdIds(String ywyid){
-		
+
+	private String[] getNzdIds(String ywyid) {
+
 		List<SalesmanStore> salesmanStores = salesmanStoreDao.getByUid(ywyid);
 		List<String> nzds = new ArrayList<String>();
-		if(salesmanStores!=null && salesmanStores.size()>0){
-			for(SalesmanStore salesmanStore:salesmanStores){
+		if (salesmanStores != null && salesmanStores.size() > 0) {
+			for (SalesmanStore salesmanStore : salesmanStores) {
 				nzds.add(salesmanStore.getStore().getId());
 			}
 		}
 		return nzds.toArray(new String[0]);
+	}
+
+	/**
+	 * 获取该订单的农资店周边同时卖该商品的农资店
+	 * 
+	 * @param oid
+	 * @param size
+	 * @return
+	 */
+	public List<Orders> getCompetitors(int oid, double size) {
+		Orders ord = orderDao.findOne(oid);
+
+		List<Orders> orders = orderDao.getCompetitors(ord.getNzd().getId(), ord.getCommodity().getId(), ord.getNzd()
+				.getY(), ord.getNzd().getX(), size);
+		return orders;
 	}
 }
