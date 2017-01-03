@@ -24,6 +24,7 @@ import com.dfyy.b2b.bussiness.CommodityReview;
 import com.dfyy.b2b.bussiness.CommodityTag;
 import com.dfyy.b2b.bussiness.CommodityType;
 import com.dfyy.b2b.bussiness.CommodityUnit;
+import com.dfyy.b2b.bussiness.OrderOfPro;
 import com.dfyy.b2b.bussiness.PartnerDealer;
 import com.dfyy.b2b.bussiness.SUser;
 import com.dfyy.b2b.dao.Commodity2Dao;
@@ -38,6 +39,7 @@ import com.dfyy.b2b.dao.CommodityReviewDao;
 import com.dfyy.b2b.dao.CommodityTagDao;
 import com.dfyy.b2b.dao.CommodityTypeDao;
 import com.dfyy.b2b.dao.CommodityUnitDao;
+import com.dfyy.b2b.dao.OrderOfProDao;
 import com.dfyy.b2b.dao.PartnerDealerDao;
 import com.dfyy.b2b.dao.SUserDao;
 import com.dfyy.b2b.dao.UserDao;
@@ -94,6 +96,9 @@ public class CommodityService {
 	@Autowired
 	private SUserDao sUserDao;
 
+	@Autowired
+	private OrderOfProDao orderOfProDao;
+
 	/**
 	 * 获取某个农资店能看到的在线商品列表
 	 * 
@@ -108,14 +113,17 @@ public class CommodityService {
 		List<CommodityOfPro> list = null;
 		if (page == 0) {
 			if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(key)) {
-				 
+
 				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
-				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, key,
-						new PageRequest(page, 20));
+				if (subs != null && subs.size() > 0) {
+					list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, key, new PageRequest(page,
+							20));
+				}
 			} else if (StringUtils.isNotBlank(type) && StringUtils.isBlank(key)) {
 				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
-				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs,
-						new PageRequest(page, 20));
+				if (subs != null && subs.size() > 0) {
+					list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, new PageRequest(page, 20));
+				}
 			} else if (StringUtils.isNotBlank(key) && StringUtils.isBlank(type)) {
 				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), key, new PageRequest(page, 20));
 			} else {
@@ -127,12 +135,16 @@ public class CommodityService {
 
 			if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(key)) {
 				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
-				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, key,
-						new Date(time), new PageRequest(page, 20));
+				if (subs != null && subs.size() > 0) {
+					list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, key, new Date(time),
+							new PageRequest(page, 20));
+				}
 			} else if (StringUtils.isNotBlank(type) && StringUtils.isBlank(key)) {
 				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
-				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs,
-						new Date(time), new PageRequest(page, 20));
+				if (subs != null && subs.size() > 0) {
+					list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, new Date(time),
+							new PageRequest(page, 20));
+				}
 			} else if (StringUtils.isNotBlank(key) && StringUtils.isBlank(type)) {
 				list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), key, new Date(time), new PageRequest(
 						page, 20));
@@ -713,6 +725,10 @@ public class CommodityService {
 			}
 		}
 		return childrens;
+	}
+
+	public List<OrderOfPro> getCommodityProtection(int cid) {
+		return orderOfProDao.getCommodityProtection(cid);
 	}
 
 }

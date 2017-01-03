@@ -63,7 +63,7 @@ public class UserService {
 			throw new RuntimeException("此手机号无效，请获取正确的验证码");
 		}
 
-		SUser suser1 = sUserDao.getUserByPhone(form.getPhone());
+		User suser1 = userDao.findByPhone(form.getPhone());
 		if (suser1 != null) {
 			throw new RuntimeException("该手机号已注册。");
 		}
@@ -72,31 +72,31 @@ public class UserService {
 
 		// 在种好地的用户表中创建用户
 
-		SUser suser = new SUser();
-		suser.setId(codeString);
-		suser.setPhone(form.getPassword());
-		// suser.setPassword(form.getPassword());
-		suser.setAlias("");
-		suser.setAddress("");
-		suser.setThumbnail("");
-		suser.setPoint(0);
-		suser.setCurrency(0);
-		suser.setTime(new Date());
-		suser.setScoring(0.0);
-		suser.setTjcoin(0);
-		suser.setLevelID(1);
-
-		// 生成唯一推荐码
-		String code = PublicHelper.generateCode();
-		while (true) {
-			if (sUserDao.getUserByTjCode(code) == null) {
-				suser.setTjcode(code);
-				break;
-			}
-			code = PublicHelper.generateCode();
-		}
-
-		sUserDao.save(suser);
+//		SUser suser = new SUser();
+//		suser.setId(codeString);
+//		suser.setPhone(form.getPassword());
+//		// suser.setPassword(form.getPassword());
+//		suser.setAlias("");
+//		suser.setAddress("");
+//		suser.setThumbnail("");
+//		suser.setPoint(0);
+//		suser.setCurrency(0);
+//		suser.setTime(new Date());
+//		suser.setScoring(0.0);
+//		suser.setTjcoin(0);
+//		suser.setLevelID(1);
+//
+//		// 生成唯一推荐码
+//		String code = PublicHelper.generateCode();
+//		while (true) {
+//			if (sUserDao.getUserByTjCode(code) == null) {
+//				suser.setTjcode(code);
+//				break;
+//			}
+//			code = PublicHelper.generateCode();
+//		}
+//
+//		sUserDao.save(suser);
 
 		// 在b2b的用户表中创建用户
 		User user = new User();
