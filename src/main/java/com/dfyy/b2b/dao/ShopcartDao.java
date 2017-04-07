@@ -15,6 +15,9 @@ public interface ShopcartDao extends CrudRepository<Shopcart, Integer>, JpaSpeci
 
 	@Query("select u from Shopcart as u left join fetch u.commodity left join fetch u.nzd  where u.nzd.id = ?1 order by u.time desc ")
 	public List<Shopcart> getList(String userid);
+	
+	@Query("select u from Shopcart as u left join fetch u.commodity left join fetch u.nzd  where u.nzd.id = ?1 and u.commodity.status=3 order by u.time desc ")
+	public List<Shopcart> getOnlineList(String userid);
 
 	@Query("select u from Shopcart as u left join fetch u.commodity left join fetch u.nzd  where u.nzd.id = ?1 and u.commodity.id = ?2")
 	public Shopcart getSingle(String userid, int cid);

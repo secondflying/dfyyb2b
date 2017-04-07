@@ -66,16 +66,15 @@
 						</td>
 						<td>
 							<c:choose>
-								<c:when test="${commodity.status == 0 || commodity.status == 2 || commodity.status == 4}">
+								<c:when test="${commodity.status == 0 || commodity.status == 2 || commodity.status == 4||commodity.status==3}">
+									<c:url var="infoUrl" value="info?id=${commodity.id}" /> 
+									<a id="infoa"	class="btn btn-small btn-info" href="${infoUrl}" target="_Blank"> 查看 </a>
 									<c:url var="eUrl" value="edit?id=${commodity.id}" /> 
 									<a id="editone"	class="btn btn-small btn-warning" href="${eUrl}"> 编辑 </a>
 									<button class="btn btn-small btn-danger" type="button" onclick="deleteOne(${commodity.id})">下架</button>
 								</c:when>
 							</c:choose>
-							<c:if test="${commodity.status==3 }">
-								<c:url var="infoUrl" value="info?id=${commodity.id}" /> 
-								<a id="infoa"	class="btn btn-small btn-info" href="${infoUrl}" target="_Blank"> 查看 </a>
-							</c:if>
+							
 						</td>
 					</tr>
 				</c:forEach>

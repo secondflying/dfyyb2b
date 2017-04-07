@@ -57,10 +57,11 @@ public class ShopcartService {
 	 * @return
 	 */
 	public ShopcartResult getList(String userid) {
-		List<Shopcart> resultList = sDao.getList(userid);
+		List<Shopcart> resultList = sDao.getOnlineList(userid);
 		double totalPrice = 0;
 		for (Shopcart shopcart : resultList) {
 			Commodity c = shopcart.getCommodity();
+			
 			List<CommodityGradualprice> prices = gradualpriceDao.getByCommodityAndCount(c.getId(), shopcart.getCount());
 			if (prices != null && prices.size() > 0) {
 				shopcart.setPrice(prices.get(0).getPrice());
