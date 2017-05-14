@@ -378,7 +378,7 @@
 
 $(document).ready(function () {
 	setplaceholderSupport();
-	addFormValidate();
+	addFormValidate(); 
 	
 	$("#multiple_file_upload").uploadify({
 		'removeTimeOut' : 0,
