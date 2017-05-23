@@ -64,6 +64,24 @@ public class UsersResource {
 			}
 		}
 	}
+	
+	
+	/**
+	 * 检查昵称是否存在
+	 * 
+	 * @param uid
+	 * @param points
+	 * @return
+	 */
+	@POST
+	@Path("/checkname")
+	@Produces("application/json;charset=UTF-8")
+	@Consumes("application/x-www-form-urlencoded")
+	public CheckResult checkname(@FormParam("alias") String alias) {
+		boolean exist = nzdService.checkByAlias(alias);
+		return new CheckResult(exist);
+	}
+
 
 	@Path("/{uid}")
 	public UserResource getById(@PathParam("uid") String uid) {

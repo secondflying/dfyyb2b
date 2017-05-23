@@ -166,6 +166,7 @@
 		    var $pager = $('<div class="page"></div>');  
 		    $pager.insertAfter($('table'));
 		    $pager.bootstrapPaginator(options);
+		   
 	});
 
 	function confirmSend(id) {

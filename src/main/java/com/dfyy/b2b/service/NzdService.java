@@ -20,6 +20,7 @@ import com.dfyy.b2b.dao.SalesmanStoreDao;
 import com.dfyy.b2b.dao.UserDao;
 import com.dfyy.b2b.dao.UserTokenDao;
 import com.dfyy.b2b.dto.NzdMembersResult;
+import com.dfyy.b2b.dto.UserFullDto;
 
 @Service
 @Transactional
@@ -64,6 +65,25 @@ public class NzdService {
 	public SUser getByID(String userid) {
 		SUser suser1 = sUserDao.findOne(userid);
 		return suser1;
+	}
+
+	
+	public boolean checkByAlias(String alias) {
+		int count = sUserDao.findByAlias(alias);
+		return count > 0;
+	}
+	
+	
+	public SUser update(String uid, UserFullDto dto) {
+		SUser user = sUserDao.findOne(uid);
+		if (user != null) {
+			user.setThumbnail(dto.getThumbnail());
+			user.setDescription(dto.getDescription());
+			user.setAlias(dto.getAlias());
+			user.setAddress(dto.getAddress());
+			sUserDao.save(user);
+		}
+		return user;
 	}
 
 	/**

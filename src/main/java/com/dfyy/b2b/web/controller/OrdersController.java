@@ -1,5 +1,6 @@
 package com.dfyy.b2b.web.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class OrdersController {
 
 	@Autowired
 	private BrokerageService brokerageService;
-	
+
 	@Autowired
 	private CommodityService commodityService;
 
@@ -53,17 +54,17 @@ public class OrdersController {
 
 		return "orders/index";
 	}
-	
+
 	@RequestMapping(value = "/info", method = RequestMethod.GET)
 	public String info(Model model, @RequestParam(required = true) int id) {
 
 		B2BUserDetails loginUser = LoginUtil.getLoginUser();
 		Orders orders = ordersService.getSingle(id);
 		double totalprice = 0;
-		totalprice = PublicHelper.correctTo(orders.getCount()*orders.getPrice());
+		totalprice = PublicHelper.correctTo(orders.getCount() * orders.getPrice());
 		List<CommodityAttachment> docs = commodityService.getdocByCommodity(orders.getCommodity().getId());
 		int size = 0;
-		if(docs!=null && docs.size()>0){
+		if (docs != null && docs.size() > 0) {
 			size = docs.size();
 		}
 		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "b2bcommodity/small");
@@ -71,35 +72,35 @@ public class OrdersController {
 		model.addAttribute("order", orders);
 		model.addAttribute("size", size);
 		model.addAttribute("totalprice", totalprice);
-		if(orders.getStatus()==3){
+		if (orders.getStatus() == 3) {
 			OrderBrokerage orderBrokerage = ordersService.getBrokerageByOid(orders.getId());
 			model.addAttribute("brokerage", orderBrokerage);
 		}
 
 		return "orders/info";
 	}
-	
+
 	@RequestMapping(value = "/confirmsend", method = RequestMethod.POST)
 	@ResponseBody
 	public String confirmsend(@RequestParam(required = true) Integer id) {
 		ordersService.confirmSend(id);
 		return "true";
 	}
-	
+
 	@RequestMapping(value = "/confirmarrival", method = RequestMethod.POST)
 	@ResponseBody
 	public String confirmarrival(@RequestParam(required = true) Integer id) {
 		ordersService.confirmArrival(id);
 		return "true";
 	}
-	
+
 	@RequestMapping(value = "/backstop", method = RequestMethod.POST)
 	@ResponseBody
 	public String backstop(@RequestParam(required = true) Integer id) {
 		ordersService.backStop(id);
 		return "true";
 	}
-	
+
 	@RequestMapping(value = "/backpass", method = RequestMethod.POST)
 	@ResponseBody
 	public String backpass(@RequestParam(required = true) Integer id) {
@@ -107,38 +108,13 @@ public class OrdersController {
 		return "true";
 	}
 
-	// @RequestMapping(value = "/info", method = RequestMethod.GET)
-	// public String edit(@RequestParam(required = true) int id, Model model) {
-	// model.addAttribute("imageUrl", PublicConfig.getImageUrl() +
-	// "b2bcommodity/small");
-	// Commodity commodity = commodityService.getCommodity(id);
-	// List<CommodityAttachment> docs =
-	// commodityService.getdocByCommodity(commodity.getId());
-	// List<CommodityGradualprice> gradualprices =
-	// commodityService.getGradualprices(commodity.getId());
-	// List<CommodityGradualrebate> gradualrebates =
-	// commodityService.getGradualrebates(commodity.getId());
-	// List<CommodityProtective> protectives =
-	// commodityService.getProtectives(commodity.getId());
-	// int size = 0;
-	// if (docs != null && docs.size() > 0) {
-	// size = docs.size();
-	// }
-	// model.addAttribute("commodity", commodity);
-	// model.addAttribute("docs", docs);
-	// model.addAttribute("size", size);
-	// model.addAttribute("gprices", gradualprices);
-	// model.addAttribute("grebates", gradualrebates);
-	// model.addAttribute("protectives", protectives);
-	// return "orders/info";
-	// }
-
-	// @RequestMapping(value = "/delete", method = RequestMethod.POST)
-	// @ResponseBody
-	// public String deleteCommodity(@RequestParam(required = true) Integer id)
-	// {
-	// commodityService.deleteCommodity(id);
-	// return "true";
-	// }
+	@RequestMapping(value = "/newOrders", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Orders> newOrders(Model model, @RequestParam(required = true) long time) {
+		Date date = new Date(time);
+		B2BUserDetails loginUser = LoginUtil.getLoginUser();
+		List<Orders> orders = ordersService.getNewOrdersOfProvider(loginUser.getId(), date);
+		return orders;
+	}
 
 }

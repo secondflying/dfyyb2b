@@ -26,6 +26,47 @@
         <![endif]-->
 
 <jsp:include page="js.jsp" />
+
+<script>
+$(document).ready(function () {
+	
+	window.setInterval(getNewOrders,10000);
+	
+	function getNewOrders(){
+		$.get('<c:url value="/provider/orders/newOrders" />', {
+			time :$.now() 
+		}).done(function(data) {
+			if(data.length > 0){
+				Notification.requestPermission(function (permission) {
+					// 可在确认后直接弹出
+					if (permission === 'granted') {
+						var options = {
+							dir : "ltr",
+							lang : "utf-8",
+							icon : "<c:url value='/assets/img/tongzhi.png' />",
+							body : "您有新订单，请及时处理"
+						};
+						var notification = new Notification('新订单', options);
+						notification.onshow = function () {
+							window.setInternal
+							setTimeout(function () {
+								notification.close();
+							}, 2000);
+						};
+						
+						notification.onclick = function(event) {
+							  event.preventDefault(); // prevent the browser from focusing the Notification's tab
+							  window.location.href = "<c:url value='/provider/orders/index' />";
+						}
+					}
+				});
+			}
+		}).fail(function() {
+		});
+	}
+});
+
+</script>
 </head>
 <body>
 	<div id="nav-bar" class="navbar">

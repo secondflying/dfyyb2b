@@ -626,6 +626,13 @@ public class OrdersService {
 		int count = orderDao.getCountByProvider(users);
 		return count;
 	}
+	
+	
+	public List<Orders> getNewOrdersOfProvider(String userid, Date time) {
+		String[] users = getProviderName(userid);
+		List<Orders> list = orderDao.getNewByProvider(users, time);
+		return list;
+	}
 
 	/**
 	 * 获取业务云相关订单

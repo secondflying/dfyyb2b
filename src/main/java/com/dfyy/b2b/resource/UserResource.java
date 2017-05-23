@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -14,8 +16,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,8 @@ import org.springframework.stereotype.Component;
 import com.dfyy.b2b.bussiness.OrderRebate;
 import com.dfyy.b2b.bussiness.SUser;
 import com.dfyy.b2b.bussiness.User;
-import com.dfyy.b2b.dto.CommoditiesResult;
 import com.dfyy.b2b.dto.NzdMembersResult;
+import com.dfyy.b2b.dto.UserFullDto;
 import com.dfyy.b2b.service.NzdService;
 import com.dfyy.b2b.service.RebateService;
 import com.dfyy.b2b.service.TokenService;
@@ -70,6 +72,21 @@ public class UserResource {
 	public SUser getDetail(@PathParam("uid") String uid, @HeaderParam("X-Token") String token) {
 		TokenHelper.verifyToken(tokenService, uid, token);
 		return nzdService.getByID(uid);
+	}
+
+	/**
+	 * 更新用户资料
+	 * 
+	 * @param uid
+	 * @param dtoo
+	 * @return
+	 */
+	@POST
+	@Consumes("application/json")
+	@Produces("application/json;charset=UTF-8")
+	public SUser update(@PathParam("uid") String uid, UserFullDto dtoo, @HeaderParam("X-Token") String token) {
+		TokenHelper.verifyToken(tokenService, uid, token);
+		return nzdService.update(uid, dtoo);
 	}
 
 	@GET
