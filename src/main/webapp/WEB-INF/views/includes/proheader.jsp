@@ -30,11 +30,12 @@
 <script>
 $(document).ready(function () {
 	
-	window.setInterval(getNewOrders,10000);
+	var time = $.now();
+	window.setInterval(function(){getNewOrders(time)},10000);
 	
-	function getNewOrders(){
+	function getNewOrders(time){
 		$.get('<c:url value="/provider/orders/newOrders" />', {
-			time :$.now() 
+			time : time
 		}).done(function(data) {
 			if(data.length > 0){
 				Notification.requestPermission(function (permission) {
