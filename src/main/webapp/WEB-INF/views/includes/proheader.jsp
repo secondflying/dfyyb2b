@@ -31,7 +31,7 @@
 $(document).ready(function () {
 	
 	var time = $.now();
-	window.setInterval(function(){getNewOrders(time)},10000);
+	var getorderInt=window.setInterval(function(){getNewOrders(time)},10000);
 	
 	function getNewOrders(time){
 		$.get('<c:url value="/provider/orders/newOrders" />', {
@@ -49,15 +49,20 @@ $(document).ready(function () {
 						};
 						var notification = new Notification('新订单', options);
 						notification.onshow = function () {
-							window.setInternal
-							setTimeout(function () {
+							window.setTimeout(function () {
 								notification.close();
-							}, 2000);
+							}, 5000);
+
+							
+							window.clearInterval(getorderInt);
+							var time2 = $.now();
+							getorderInt=window.setInterval(function(){getNewOrders(time2)},10000);
 						};
 						
 						notification.onclick = function(event) {
 							  event.preventDefault(); // prevent the browser from focusing the Notification's tab
 							  window.location.href = "<c:url value='/provider/orders/index' />";
+							  notification.close();
 						}
 					}
 				});
