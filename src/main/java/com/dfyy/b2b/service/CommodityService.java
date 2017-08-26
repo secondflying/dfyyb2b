@@ -304,6 +304,7 @@ public class CommodityService {
 
 		// 添加别的属性
 		commodity.setName(obj.getName());
+		commodity.setIsad(obj.isIsad());
 		commodity.setBrokerage(obj.getBrokerage());
 		commodity.setCode(obj.getCode());
 		commodity.setComposition(obj.getComposition());
@@ -402,6 +403,7 @@ public class CommodityService {
 
 		// 添加别的属性
 		commodity.setName(obj.getName());
+		commodity.setIsad(obj.isIsad());
 		commodity.setBrokerage(obj.getBrokerage());
 		commodity.setCode(obj.getCode());
 		commodity.setComposition(obj.getComposition());

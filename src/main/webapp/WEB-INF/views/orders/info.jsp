@@ -93,16 +93,16 @@
 					<p class="muted"></p>
 					<p class="muted">订购时间：${order.time }</p>
 					<p class="muted">订单价：${order.price }&nbsp;&nbsp;数量：${order.count }&nbsp;&nbsp;金额：${totalprice }</p>
-					<c:if test="${brokerage!=null }">
-						<p class="muted">平台佣金：${brokerage.bplatform }
-						<c:if test="${brokerage.bpartner!=null }">
-							&nbsp;&nbsp;合伙人佣金：${brokerage.bpartner }
-						</c:if>
-						<c:if test="${brokerage.bsalesman!=null }">
-							&nbsp;&nbsp;业务员佣金：${brokerage.bsalesman }
-						</c:if>
-						</p>
-					</c:if>
+<%-- 					<c:if test="${brokerage!=null }"> --%>
+<%-- 						<p class="muted">平台佣金：${brokerage.bplatform } --%>
+<%-- 						<c:if test="${brokerage.bpartner!=null }"> --%>
+<%-- 							&nbsp;&nbsp;合伙人佣金：${brokerage.bpartner } --%>
+<%-- 						</c:if> --%>
+<%-- 						<c:if test="${brokerage.bsalesman!=null }"> --%>
+<%-- 							&nbsp;&nbsp;业务员佣金：${brokerage.bsalesman } --%>
+<%-- 						</c:if> --%>
+<!-- 						</p> -->
+<%-- 					</c:if> --%>
 				</div>
 			</div>
 		</div>

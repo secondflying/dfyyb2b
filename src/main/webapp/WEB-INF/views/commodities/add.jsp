@@ -26,6 +26,12 @@
 						</div>
 					</div>
 					<div class="control-group">
+					<label class="control-label" for="cname">是否是宣传产品</label>
+					<div class="controls">
+						<input  path="isad" name='isad' id="isad" type="checkbox"}
+					</div>
+				</div>
+					<div class="control-group">
 						<label class="control-label" for="cname">类别</label>
 						<div class="controls">
 							<input path="cname" name='cname' id="cname" class="span5" placeholder="" required/>

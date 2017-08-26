@@ -34,6 +34,8 @@ public class CommodityForm implements Serializable {
 	private Double brokerage;
 	private Integer status;
 	private Integer rebatedays;
+	private boolean isad;
+	
 
 	private List<AttachmentDto> docs;
 	private List<CommodityGradualprice> gprices;
@@ -221,6 +223,14 @@ public class CommodityForm implements Serializable {
 
 	public void setRebatedays(Integer rebatedays) {
 		this.rebatedays = rebatedays;
+	}
+
+	public boolean isIsad() {
+		return isad;
+	}
+
+	public void setIsad(boolean isad) {
+		this.isad = isad;
 	}
 	
 }

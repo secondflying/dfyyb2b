@@ -81,7 +81,7 @@ public class CommodityResource {
 	@Produces("application/json;charset=UTF-8")
 	public Response ptypes(@HeaderParam("X-Token") String token) {
 		try {
-			List<CommodityType> result = commodityService.getCommodityTypeParent();
+			List<CommodityType> result = commodityService.getTreeCommodityType();
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

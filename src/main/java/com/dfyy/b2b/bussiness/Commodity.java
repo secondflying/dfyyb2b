@@ -131,6 +131,10 @@ public class Commodity implements Serializable {
 	@XmlElement
 	private Integer rebatedays;
 	
+	@Column(name = "isad")
+	@XmlElement
+	private boolean isad;
+	
 	
 	@Transient
 	@XmlElementWrapper
@@ -377,5 +381,13 @@ public class Commodity implements Serializable {
 
 	public void setProtectives(List<CommodityProtective> protectives) {
 		this.protectives = protectives;
+	}
+
+	public boolean isIsad() {
+		return isad;
+	}
+
+	public void setIsad(boolean isad) {
+		this.isad = isad;
 	}
 }
