@@ -50,6 +50,7 @@
 					<th align="center">名称</th>
 					<th align="center">类别</th>
 					<th align="center">地址</th>
+					<th align="center">操作</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -65,6 +66,8 @@
 						<td style="width:200px;"><a href="${infoUrl }"><c:out value="${user.alias}" /></a></td>
 						<td style="width:200px;"><c:out value="${user.type.name}" /></td>
 						<td style="width:200px;"><c:out value="${user.address}" /></td>
+						<c:url var="editUrl" value="edit?id=${user.id}" />
+						<td style="width:120px;"><a href="${editUrl }">编辑</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>

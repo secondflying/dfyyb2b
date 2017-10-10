@@ -52,6 +52,7 @@
 					<th align="center">联系人</th>
 					<th align="center">地址</th>
 					<th align="center">区域</th>
+					<th align="center">操作</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -69,6 +70,8 @@
 						<td style="width:120px;"><c:out value="${user.contacts}" /></td>
 						<td style="width:160px;"><c:out value="${user.address}" /></td>
 						<td style="width:120px;"><c:out value='${user.zone==null ? "" : user.zone.name}' /></td>
+						<c:url var="editUrl" value="edit?id=${user.id}" />
+						<td style="width:120px;"><a href="${editUrl }">编辑</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>

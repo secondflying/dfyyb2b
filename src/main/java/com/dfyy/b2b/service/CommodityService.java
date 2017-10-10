@@ -39,6 +39,7 @@ import com.dfyy.b2b.dao.CommodityReviewDao;
 import com.dfyy.b2b.dao.CommodityTagDao;
 import com.dfyy.b2b.dao.CommodityTypeDao;
 import com.dfyy.b2b.dao.CommodityUnitDao;
+import com.dfyy.b2b.dao.GoodfarmingdicDao;
 import com.dfyy.b2b.dao.OrderOfProDao;
 import com.dfyy.b2b.dao.PartnerDealerDao;
 import com.dfyy.b2b.dao.SUserDao;
@@ -98,6 +99,10 @@ public class CommodityService {
 
 	@Autowired
 	private OrderOfProDao orderOfProDao;
+	
+	
+	@Autowired
+	private GoodfarmingdicDao dicdDao;
 
 	/**
 	 * 获取某个农资店能看到的在线商品列表
@@ -115,12 +120,14 @@ public class CommodityService {
 			if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(key)) {
 
 				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
+				subs.add(Integer.parseInt(type));
 				if (subs != null && subs.size() > 0) {
 					list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, key, new PageRequest(page,
 							20));
 				}
 			} else if (StringUtils.isNotBlank(type) && StringUtils.isBlank(key)) {
 				List<Integer> subs = commodityTypeDao.getSubs(Integer.parseInt(type));
+				subs.add(Integer.parseInt(type));
 				if (subs != null && subs.size() > 0) {
 					list = commodityOfProDao.getOnline(nzd, user.getY(), user.getX(), subs, new PageRequest(page, 20));
 				}
@@ -155,7 +162,7 @@ public class CommodityService {
 
 			result.setLastTime(time);
 		}
-
+		
 		result.setResults(list);
 		return result;
 	}

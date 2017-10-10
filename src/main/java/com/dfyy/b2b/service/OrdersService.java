@@ -626,8 +626,7 @@ public class OrdersService {
 		int count = orderDao.getCountByProvider(users);
 		return count;
 	}
-	
-	
+
 	public List<Orders> getNewOrdersOfProvider(String userid, Date time) {
 		String[] users = getProviderName(userid);
 		List<Orders> list = orderDao.getNewByProvider(users, time);
@@ -741,11 +740,13 @@ public class OrdersService {
 		User provider = userDao.findOne(userid);
 		// 如果是合伙人，获取该合伙人下经销商的所有列表
 		List<String> users = new ArrayList<>();
-		users.add(provider.getId());
-		if (provider.getType().getId() == 2) {
-			List<PartnerDealer> dealers = dealerDao.getByPid(provider.getId());
-			for (PartnerDealer partnerDealer : dealers) {
-				users.add(partnerDealer.getDealer().getId());
+		if (provider != null) {
+			users.add(provider.getId());
+			if (provider.getType().getId() == 2) {
+				List<PartnerDealer> dealers = dealerDao.getByPid(provider.getId());
+				for (PartnerDealer partnerDealer : dealers) {
+					users.add(partnerDealer.getDealer().getId());
+				}
 			}
 		}
 		return users.toArray(new String[0]);

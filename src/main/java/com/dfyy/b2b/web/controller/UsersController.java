@@ -1,6 +1,7 @@
 package com.dfyy.b2b.web.controller;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,8 +33,10 @@ import com.dfyy.b2b.bussiness.SUser;
 import com.dfyy.b2b.bussiness.SalesmanStore;
 import com.dfyy.b2b.bussiness.SalesmanZone;
 import com.dfyy.b2b.bussiness.User;
+import com.dfyy.b2b.bussiness.UserDoc;
 import com.dfyy.b2b.bussiness.UserReview;
 import com.dfyy.b2b.bussiness.UserType;
+import com.dfyy.b2b.dto.AttachmentDto;
 import com.dfyy.b2b.service.CommodityService;
 import com.dfyy.b2b.service.OrdersService;
 import com.dfyy.b2b.service.PartnerDealerService;
@@ -44,6 +48,7 @@ import com.dfyy.b2b.service.UserReviewService;
 import com.dfyy.b2b.service.UserService;
 import com.dfyy.b2b.util.PublicConfig;
 import com.dfyy.b2b.util.PublicHelper;
+import com.dfyy.b2b.web.form.UserForm;
 
 @Controller
 @RequestMapping("/manager")
@@ -138,18 +143,18 @@ public class UsersController {
 		return "b2busers/informal";
 	}
 	
-	@RequestMapping(value = "/users/info",method=RequestMethod.GET)
-	public String edit(Model model,@RequestParam(required = true) String id){
-		User user = userService.getById(id);
-		int size = 0;
-		if(user.getDocs()!=null && user.getDocs().size()>0){
-			size = user.getDocs().size();
-		}
-		model.addAttribute("user", user);
-		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "providers/small");
-		model.addAttribute("size", size);
-		return "b2busers/info_"+user.getType().getId();
-	}
+//	@RequestMapping(value = "/users/info",method=RequestMethod.GET)
+//	public String edit(Model model,@RequestParam(required = true) String id){
+//		User user = userService.getById(id);
+//		int size = 0;
+//		if(user.getDocs()!=null && user.getDocs().size()>0){
+//			size = user.getDocs().size();
+//		}
+//		model.addAttribute("user", user);
+//		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "providers/small");
+//		model.addAttribute("size", size);
+//		return "b2busers/info_"+user.getType().getId();
+//	}
 	
 	@RequestMapping(value = "/users/manufactureinfo",method=RequestMethod.GET)
 	public String manufactureinfo(Model model,@RequestParam(required = true) String id){
@@ -192,6 +197,48 @@ public class UsersController {
 		model.addAttribute("pdealers", pDealers);
 		model.addAttribute("zones", zones);
 		return "b2busers/info_2";
+	}
+	
+	
+	@RequestMapping(value = "/users/edit",method=RequestMethod.GET)
+	public String partneredit(Model model,@RequestParam(required = true) String id){
+		User user = userService.getById(id);
+		int size = 0;
+		if(user.getDocs()!=null && user.getDocs().size()>0){
+			size = user.getDocs().size();
+		}
+		List<PartnerDealer> pDealers = pdealerService.getByPid(user.getId());
+		List<ProviderZone> zones = pzoneService.getByUid(user.getId());
+		model.addAttribute("user", user);
+		model.addAttribute("imageUrl", PublicConfig.getImageUrl() + "providers/small");
+		model.addAttribute("size", size);
+		model.addAttribute("pdealers", pDealers);
+		model.addAttribute("zones", zones);
+		return "b2busers/parner_edit";
+	}
+	
+	
+	@RequestMapping(value = "/users/edit", method = RequestMethod.POST)
+	public String perfectUser(@ModelAttribute("userform") UserForm userForm) {
+		if (userForm != null) {
+			User u = userService.getById(userForm.getId());
+			u.setAlias(userForm.getAlias());
+			u.setAddress(userForm.getAddress());
+			u.setZipcode(userForm.getZipcode());
+			if(u.getType().getId()!=4){				
+				u.setContacts(userForm.getContacts());
+				Area zone = null;
+				if(userForm.getZone()!=0){
+					zone = new Area();
+					zone.setId(userForm.getZone());
+				}
+				u.setZone(zone);			
+			}
+			userService.update(u);
+			return "redirect:partners";
+		} else {
+			return "b2busers/edit";
+		}
 	}
 	
 	/**

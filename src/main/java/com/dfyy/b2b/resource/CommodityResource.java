@@ -21,8 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dfyy.b2b.bussiness.Commodity;
+import com.dfyy.b2b.bussiness.CommodityOfPro;
 import com.dfyy.b2b.bussiness.CommodityType;
 import com.dfyy.b2b.bussiness.OrderOfPro;
+import com.dfyy.b2b.dao.GoodfarmingdicDao;
 import com.dfyy.b2b.dto.CommoditiesResult;
 import com.dfyy.b2b.service.CommodityService;
 import com.dfyy.b2b.service.TokenService;
@@ -43,6 +45,9 @@ public class CommodityResource {
 
 	@Autowired
 	private TokenService tokenService;
+	
+	@Autowired
+	private GoodfarmingdicDao dicDao;
 
 	@GET
 	@Path("/online")
@@ -58,6 +63,11 @@ public class CommodityResource {
 
 		try {
 			CommoditiesResult result = commodityService.getOnlineCommodity(userid, type, key, page, time);
+			
+			String phone = dicDao.getByName("hotline").getDescription();
+			for (CommodityOfPro com : result.getResults()) {
+				com.getProvider().setPhone(phone);
+			}
 			return Response.status(Status.OK).entity(result).type(MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
